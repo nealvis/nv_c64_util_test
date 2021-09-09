@@ -9,8 +9,6 @@
 // import all nv_c64_util macros and data.  The data
 // will go in default place
 #import "../../nv_c64_util/nv_c64_util_macs_and_data.asm"
-//#import "../nv_c64_util/nv_c64_util_macs.asm"
-//#import "../nv_c64_util/nv_debug_macs.asm"
 
 *=$0800 "BASIC Start"
 .byte 0 // first byte should be 0
