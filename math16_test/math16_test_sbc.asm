@@ -43,11 +43,6 @@ lsr_str: .text@">>\$00"
 
 title_str: .text @"MATH16\$00"          // null terminated string to print
                                         // via the BASIC routine
-title_adc16_str: .text @"TEST ADC16 \$00"
-title_adc16_8u_str: .text @"TEST ADC16 8U \$00"
-title_adc16_8s_str: .text @"TEST ADC16 8S \$00"
-title_adc16_immediate_str: .text @"TEST ADC16 IMMED\$00"
-title_lsr16_str: .text @"TEST LSR16 \$00"
 title_sbc16_str: .text @"TEST SBC16 \$00"
 
 hit_anykey_str: .text @"HIT ANY KEY ...\$00"
@@ -137,7 +132,7 @@ op_FE: .byte $FE
     
     //////////////////////////////////////////////////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_adc16_str)
+    nv_screen_print_str(title_sbc16_str)
     //////////////////////////////////////////////////////////////////////////
     .eval row++
 
@@ -250,7 +245,7 @@ op_FE: .byte $FE
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 // inline macro to print the specified addition at the current curor location
-// nv_adc16 us used to do the addition.
+// nv_sbc16 us used to do the addition.
 // C, V or CV will show up to indicate the carry and overflow  
 // Will look like this with no borrow needed (carry still set) and no overflow
 //    $3333 - $2222 = (C) $1111
