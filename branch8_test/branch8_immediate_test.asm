@@ -117,6 +117,10 @@ passed: .byte 0
     .eval use_far = true
     test_ble8_immediate(0, use_far)
 
+    .eval use_far = false
+    test_bgt8_immediate(0, use_far)
+    .eval use_far = true
+    test_bgt8_immediate(0, use_far)
 
 /*    
     test_ble16(0)
@@ -413,6 +417,106 @@ passed: .byte 0
 
     wait_and_clear_at_row(row)
 }
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_bgt8_immediate(init_row, use_far)
+{
+    .var row = init_row
+        
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    .if (use_far)
+    {
+        nv_screen_print_str(title_bgt8_immediate_far_str)
+    }
+    else
+    {
+        nv_screen_print_str(title_bgt8_immediate_str)
+    }
+
+
+
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opBE, $BE, use_far, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opSmall, $58, use_far, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opBig, $05, use_far, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opSmall, $05, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opTwo, $01, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opOne, $00, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opOne, $FF, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opZero, $FF, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opZero, $01, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opMax, $01, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opMax, $00, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opMax, $FF, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opOne, $01, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opZero, $00, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opHighOnes, $0F, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opLowOnes, $F0, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opHighOnes, $F0, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt8_immediate(opLowOnes, $0F, use_far, false)
+
+    wait_and_clear_at_row(row)
+}
+
+
 
 
 /*
@@ -873,6 +977,59 @@ Done:
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
+// Print to current screen location the expression (either < or >= ) 
+// for the relationship of the one byte in memory and an immediate 
+// 8 bit value.  Use nv_blt8_immediate or nv_blt8_immediate_far to do it.
+// macro params
+//   addr1: is the address of byte1
+//   num: is the immediate value
+//   use_far: pass true to use the var version of nv_blt
+//   expect_to_branch: pass true if the expected outcome is
+//                     to branch or false if not.  pass/fail 
+//                     based on this.
+.macro print_bgt8_immediate(addr1, num, use_far, expect_to_branch)
+{
+    lda #1
+    sta passed
+    lda addr1
+    jsr PrintHexByteAccum
+    .if (use_far)
+    {
+        nv_bgt8_immediate_far(addr1, num, BranchTarget)
+    }
+    else
+    {
+        nv_bgt8_immediate(addr1, num, BranchTarget)
+    }
+    nv_screen_print_str(less_equal_str)
+    .if (expect_to_branch == true)
+    {   // expected to branch, but did not branch
+        lda #$00
+        sta passed
+    }
+
+    jmp Done
+    .if (use_far)
+    {
+        // nops to make sure more than 128 bytes between branch and target label
+        .var index = 0
+        .for(index = 0; index < 124; index = index + 1) {nop}
+    }
+
+BranchTarget:
+    .if (expect_to_branch == false)
+    {   // didn't expect to branch, but did branch
+        lda #$00
+        sta passed
+    }
+    nv_screen_print_str(greater_than_str)
+
+Done:
+    lda #num
+    jsr PrintHexByteAccum
+    jsr PrintPassed
+}
 
 
 /*
