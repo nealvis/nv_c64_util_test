@@ -124,6 +124,12 @@ passed: .byte 0
     .eval use_far = true
     test_bgt8(0, use_far)
 
+    .eval use_far = false
+    test_bge8(0, use_far)
+    .eval use_far = true
+    test_bge8(0, use_far)
+
+
 /*    
     test_bgt16(0)
     test_bge16(0)
@@ -519,6 +525,102 @@ passed: .byte 0
     wait_and_clear_at_row(row)
 }
 
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_bge8(init_row, use_far)
+{
+    .var row = init_row
+        
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    .if (use_far)
+    {
+        nv_screen_print_str(title_bge8_far_str)
+    }
+    else
+    {
+        nv_screen_print_str(title_bge8_str)
+    }
+
+
+
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opBE, opBE, use_far, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opSmall, opBig, use_far, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opBig, opSmall, use_far, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opSmall, opSmall, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opTwo, opOne, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opOne, opZero, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opOne, opMax, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opZero, opMax, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opZero, opOne, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opMax, opOne, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opMax, opZero, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opMax, opMax, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opOne, opOne, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opZero, opZero, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opHighOnes, opLowOnes, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opLowOnes, opHighOnes, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opHighOnes, opHighOnes, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge8(opLowOnes, opLowOnes, use_far, true)
+
+    wait_and_clear_at_row(row)
+}
 
 
 
@@ -981,6 +1083,63 @@ Done:
 
     jsr PrintPassed
 }
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Print to current screen location the expression (either >= or < ) 
+// for the relationship of the two bytes in memory.  Use nv_bge8 or
+// nv_bge8_far to do it.
+// macro params
+//   addr1: is the address of byte1
+//   addr2: is the address of byte2
+//   use_far: pass true to use the var version of nv_blt
+//   expect_to_branch: pass true if the expected outcome is
+//                     to branch or false if not.  pass/fail 
+//                     based on this.
+.macro print_bge8(addr1, addr2, use_far, expect_to_branch)
+{
+    lda #1
+    sta passed
+    lda addr1
+    jsr PrintHexByteAccum
+    .if (use_far)
+    {
+        nv_bge8_far(addr1, addr2, BranchTarget)
+    }
+    else
+    {
+        nv_bge8(addr1, addr2, BranchTarget)
+    }
+    nv_screen_print_str(less_than_str)
+    .if (expect_to_branch == true)
+    {   // expected to branch, but did not branch
+        lda #$00
+        sta passed
+    }
+
+    jmp Done
+    .if (use_far)
+    {
+        // nops to make sure more than 128 bytes between branch and target label
+        .var index = 0
+        .for(index = 0; index < 124; index = index + 1) {nop}
+    }
+
+BranchTarget:
+    .if (expect_to_branch == false)
+    {   // didn't expect to branch, but did branch
+        lda #$00
+        sta passed
+    }
+    nv_screen_print_str(greater_equal_str)
+
+Done:
+    lda addr2
+    jsr PrintHexByteAccum
+
+    jsr PrintPassed
+}
+
 
 
 //////////////////////////////////////////////////////////////////////////////
