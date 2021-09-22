@@ -110,6 +110,12 @@ passed: .byte 0
     test_beq8(0, use_far)
 
     .eval use_far = false
+    test_bne8(0, use_far)
+    .eval use_far = true
+    test_bne8(0, use_far)
+
+
+    .eval use_far = false
     test_blt8(0, use_far)
     .eval use_far = true
     test_blt8(0, use_far)
@@ -130,10 +136,6 @@ passed: .byte 0
     test_bge8(0, use_far)
 
 
-/*    
-    test_bgt16(0)
-    test_bge16(0)
-*/
     rts
 
 
@@ -156,10 +158,6 @@ passed: .byte 0
     }
     //////////////////////////////////////////////////////////////////////////
     .eval row++
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq8(opBE, opBE, use_far, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
@@ -232,6 +230,96 @@ passed: .byte 0
     wait_and_clear_at_row(row)
 }
 
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_bne8(init_row, use_far)
+{
+    .var row = init_row
+
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    .if (use_far)
+    {
+        nv_screen_print_str(title_bne8_far_str)
+    }
+    else
+    {
+        nv_screen_print_str(title_bne8_str)
+    }
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8(opSmall, opBig, use_far, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8(opBig, opSmall, use_far, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8(opSmall, opSmall, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8(opTwo, opOne, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8(opOne, opZero, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8(opOne, opMax, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8(opZero, opMax, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8(opZero, opOne, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8(opMax, opOne, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8(opMax, opZero, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8(opMax, opMax, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8(opOne, opOne, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8(opZero, opZero, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8(opHighOnes, opLowOnes, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8(opLowOnes, opHighOnes, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8(opHighOnes, opHighOnes, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8(opLowOnes, opLowOnes, use_far, false)
+
+    wait_and_clear_at_row(row)
+}
+
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -254,10 +342,6 @@ passed: .byte 0
 
     //////////////////////////////////////////////////////////////////////////
     .eval row++
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_blt8(opBE, opBE, use_far, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
@@ -355,10 +439,6 @@ passed: .byte 0
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble8(opBE, opBE, use_far, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
     print_ble8(opSmall, opBig, use_far, true)
 
     /////////////////////////////
@@ -452,10 +532,6 @@ passed: .byte 0
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt8(opBE, opBE, use_far, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
     print_bgt8(opSmall, opBig, use_far, false)
 
     /////////////////////////////
@@ -546,10 +622,6 @@ passed: .byte 0
 
     //////////////////////////////////////////////////////////////////////////
     .eval row++
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge8(opBE, opBE, use_far, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
@@ -971,6 +1043,54 @@ Done:
 
     jsr PrintPassed
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// Print to current screen location the expression (either != or = ) 
+// for the relationship of the two bytes in memorys.  Use nv_bne8 or
+// nv_bne8_far to do it.
+//   addr1: is the address byte1
+//   addr2: is the address byte2
+.macro print_bne8(addr1, addr2, use_far, expect_to_branch)
+{
+    lda #1
+    sta passed
+    lda addr1
+    jsr PrintHexByteAccum
+    .if (use_far)
+    {
+        nv_bne8_far(addr1, addr2, Same)
+    }
+    else
+    {
+        nv_bne8(addr1, addr2, Same)
+    }
+    nv_screen_print_str(equal_str)
+    .if (expect_to_branch)
+    {   // expected to branch, but didn't branch
+        lda #$00
+        sta passed
+    }
+    jmp Done
+    .if (use_far)
+    {
+        // nops to make sure more than 128 bytes between branch and target label
+        .var index = 0
+        .for(index = 0; index < 124; index = index + 1) {nop}
+    }
+Same:
+    nv_screen_print_str(not_equal_str)
+    .if (expect_to_branch == false)
+    {   // didn't expect to branch, but did branch
+        lda #$00
+        sta passed
+    }
+Done:
+    lda addr2
+    jsr PrintHexByteAccum
+
+    jsr PrintPassed
+}
+
 
 
 //////////////////////////////////////////////////////////////////////////////

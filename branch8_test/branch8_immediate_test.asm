@@ -108,6 +108,11 @@ passed: .byte 0
     test_beq8_immediate(0, use_far)
 
     .eval use_far = false
+    test_bne8_immediate(0, use_far)
+    .eval use_far = true
+    test_bne8_immediate(0, use_far)
+
+    .eval use_far = false
     test_blt8_immediate(0, use_far)
     .eval use_far = true
     test_blt8_immediate(0, use_far)
@@ -153,10 +158,6 @@ passed: .byte 0
     }
     //////////////////////////////////////////////////////////////////////////
     .eval row++
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq8_immediate(opBE, $BE, use_far, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
@@ -232,6 +233,97 @@ passed: .byte 0
 
 //////////////////////////////////////////////////////////////////////////////
 //
+.macro test_bne8_immediate(init_row, use_far)
+{
+    .var row = init_row
+
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    .if (use_far)
+    {
+        nv_screen_print_str(title_bne8_immediate_far_str)
+    }
+    else
+    {
+        nv_screen_print_str(title_bne8_immediate_str)
+    }
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8_immediate(opSmall, $58, use_far, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8_immediate(opBig, $05, use_far, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8_immediate(opSmall, $05, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8_immediate(opTwo, $01, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8_immediate(opOne, $00, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8_immediate(opOne, $FF, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8_immediate(opZero, $FF, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8_immediate(opZero, $01, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8_immediate(opMax, $01, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8_immediate(opMax, $00, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8_immediate(opMax, $FF, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8_immediate(opOne, $01, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8_immediate(opZero, $00, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8_immediate(opHighOnes, $0F, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8_immediate(opLowOnes, $F0, use_far, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8_immediate(opHighOnes, $F0, use_far, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne8_immediate(opLowOnes, $0F, use_far, false)
+
+    wait_and_clear_at_row(row)
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
 .macro test_blt8_immediate(init_row, use_far)
 {
     .var row = init_row
@@ -251,10 +343,6 @@ passed: .byte 0
 
     //////////////////////////////////////////////////////////////////////////
     .eval row++
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_blt8_immediate(opBE, $BE, use_far, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
@@ -350,10 +438,6 @@ passed: .byte 0
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble8_immediate(opBE, $BE, use_far, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
     print_ble8_immediate(opSmall, $58, use_far, true)
 
     /////////////////////////////
@@ -446,9 +530,6 @@ passed: .byte 0
     //////////////////////////////////////////////////////////////////////////
     .eval row++
 
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt8_immediate(opBE, $BE, use_far, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
@@ -541,9 +622,6 @@ passed: .byte 0
     //////////////////////////////////////////////////////////////////////////
     .eval row++
 
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge8_immediate(opBE, $BE, use_far, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
@@ -617,285 +695,6 @@ passed: .byte 0
 }
 
 
-
-
-/*
-
-.macro test_ble16(init_row)
-{
-    .var row = init_row
-
-    //////////////////////////////////////////////////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_ble16_str)
-    //////////////////////////////////////////////////////////////////////////
-    .eval row++
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(op1Beef, op2Beef)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opSmall, opBig)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opBig, opSmall)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opSmall, opSmall)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opBig, opSmall)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opTwo, opOne)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opOne, opZero)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opOne, opMax)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opZero, opMax)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opZero, opOne)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opMax, opOne)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opMax, opZero)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opMax, opMax)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opOne, opOne)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opZero, opZero)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opHighOnes, opLowOnes)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opLowOnes, opHighOnes)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opHighOnes, opHighOnes)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16(opLowOnes, opLowOnes)
-
-    wait_and_clear_at_row(row)
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-//
-.macro test_bgt16(init_row)
-{
-    .var row = init_row
-
-    //////////////////////////////////////////////////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_bgt16_str)
-    //////////////////////////////////////////////////////////////////////////
-    .eval row++
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(op1Beef, op2Beef)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opSmall, opBig)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opBig, opSmall)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opSmall, opSmall)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opBig, opSmall)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opTwo, opOne)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opOne, opZero)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opOne, opMax)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opZero, opMax)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opZero, opOne)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opMax, opOne)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opMax, opZero)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opMax, opMax)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opOne, opOne)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opZero, opZero)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opHighOnes, opLowOnes)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opLowOnes, opHighOnes)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opHighOnes, opHighOnes)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16(opLowOnes, opLowOnes)
-
-    wait_and_clear_at_row(row)
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-//
-.macro test_bge16(init_row)
-{
-    .var row = init_row
-
-    //////////////////////////////////////////////////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_bge16_str)
-    //////////////////////////////////////////////////////////////////////////
-    .eval row++
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(op1Beef, op2Beef)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opSmall, opBig)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opBig, opSmall)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opSmall, opSmall)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opBig, opSmall)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opTwo, opOne)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opOne, opZero)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opOne, opMax)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opZero, opMax)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opZero, opOne)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opMax, opOne)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opMax, opZero)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opMax, opMax)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opOne, opOne)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opZero, opZero)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opHighOnes, opLowOnes)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opLowOnes, opHighOnes)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opHighOnes, opHighOnes)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16(opLowOnes, opLowOnes)
-
-    wait_and_clear_at_row(row)
-}
-*/
-
-
 /////////////////////////////////////////////////////////////////////////////
 // wait for key then clear screen when its detected
 .macro wait_and_clear_at_row(init_row)
@@ -905,12 +704,19 @@ passed: .byte 0
     nv_screen_plot_cursor(row++, 0)
     nv_screen_print_str(hit_anykey_str)
 
-    nv_key_wait_any_key()
+    //nv_key_wait_any_key()
+    jsr WaitAnyKey
 
     nv_screen_clear()
     .eval row=0
     nv_screen_plot_cursor(row++, 25)
     nv_screen_print_str(title_str)
+}
+
+WaitAnyKey:
+{
+    nv_key_wait_any_key()
+    rts
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -952,6 +758,52 @@ passed: .byte 0
     }
 Same:
     nv_screen_print_str(equal_str)
+    .if (expect_to_branch == false)
+    {   // didn't expect to branch, but did branch
+        lda #$00
+        sta passed
+    }
+Done:
+    lda #num
+    jsr PrintHexByteAccum
+
+    jsr PrintPassed
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Print to current screen location the expression (either != or = ) 
+// for the relationship of the two bytes in memory.  Use nv_bne8 to do it.
+//   addr1: is the address of byte1
+//   addr2: is the address of byte2
+.macro print_bne8_immediate(addr1, num, use_far, expect_to_branch)
+{
+    lda #1
+    sta passed
+    lda addr1
+    jsr PrintHexByteAccum
+    .if (use_far)
+    {
+        nv_bne8_immediate_far(addr1, num, BranchTarget)
+    }
+    else
+    {
+        nv_bne8_immediate(addr1, num, BranchTarget)
+    }
+    nv_screen_print_str(equal_str)
+    .if (expect_to_branch)
+    {   // expected to branch, but didn't branch
+        lda #$00
+        sta passed
+    }
+    jmp Done
+    .if (use_far)
+    {
+        // nops to make sure more than 128 bytes between branch and target label
+        .var index = 0
+        .for(index = 0; index < 124; index = index + 1) {nop}
+    }
+BranchTarget:
+    nv_screen_print_str(not_equal_str)
     .if (expect_to_branch == false)
     {   // didn't expect to branch, but did branch
         lda #$00
