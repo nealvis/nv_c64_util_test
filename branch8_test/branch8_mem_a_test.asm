@@ -4,7 +4,7 @@
 // License: MIT. See LICENSE file in root directory.
 //////////////////////////////////////////////////////////////////////////////
 // This program demonstrates and tests the 8bit branch operations 
-// in nv_branch8_macs.asm that use accumulator as an operand
+// in nv_branch8_macs.asm that use a mem addr and accum as operands
 
 // import all nv_c64_util macros and data.  The data
 // will go in default place
@@ -97,7 +97,7 @@ passed: .byte 0
 .var row = 0
     nv_screen_print_str(normal_control_str)
     nv_screen_clear()
-    nv_screen_plot_cursor(row++, 20)
+    nv_screen_plot_cursor(row++, 22)
     nv_screen_print_str(title_str)
 
     .var use_far = false
@@ -704,7 +704,7 @@ passed: .byte 0
 
     nv_screen_clear()
     .eval row=0
-    nv_screen_plot_cursor(row++, 20)
+    nv_screen_plot_cursor(row++, 22)
     nv_screen_print_str(title_str)
 }
 

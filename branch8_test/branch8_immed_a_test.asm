@@ -4,7 +4,7 @@
 // License: MIT. See LICENSE file in root directory.
 //////////////////////////////////////////////////////////////////////////////
 // This program demonstrates and tests the 8bit branch operations 
-// in nv_branch8_macs.asm that use immed value and accumulator as operands
+// in nv_branch8_macs.asm that use immed value and accum as operands
 
 // import all nv_c64_util macros and data.  The data
 // will go in default place

@@ -4,7 +4,7 @@
 // License: MIT. See LICENSE file in root directory.
 //////////////////////////////////////////////////////////////////////////////
 // This program demonstrates and tests the 8bit branch operations 
-// in nv_branch8_macs.asm that use y reg as an operand
+// in nv_branch8_macs.asm that use memory addr and y reg as operands
 
 // import all nv_c64_util macros and data.  The data
 // will go in default place
@@ -44,7 +44,7 @@ less_than_str: .text@" < \$00"
 greater_than_str: .text@" > \$00"
 less_equal_str: .text@" <= \$00" 
 
-title_str: .text @"BRANCH8 REGS Y REG\$00"          // null terminated string to print
+title_str: .text @"BRANCH8 MEM Y\$00"          // null terminated string to print
                                         // via the BASIC routine
 title_beq8_y_str: .text @"TEST BEQ8 Y\$00"
 title_beq8_y_far_str: .text @"TEST BEQ8 Y FAR\$00"
@@ -97,7 +97,7 @@ passed: .byte 0
 .var row = 0
     nv_screen_print_str(normal_control_str)
     nv_screen_clear()
-    nv_screen_plot_cursor(row++, 20)
+    nv_screen_plot_cursor(row++, 27)
     nv_screen_print_str(title_str)
 
     .var use_far = false
@@ -704,7 +704,7 @@ passed: .byte 0
 
     nv_screen_clear()
     .eval row=0
-    nv_screen_plot_cursor(row++, 20)
+    nv_screen_plot_cursor(row++, 27)
     nv_screen_print_str(title_str)
 }
 
