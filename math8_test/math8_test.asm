@@ -32,6 +32,18 @@
 
 .const dollar_sign = $24
 
+space_str: .text @" \$00"
+passed_str: .text @" PASSED\$00"
+failed_str: .text @" FAILED\$00"
+
+fail_control_str: nv_screen_red_fg_str()
+pass_control_str: nv_screen_green_fg_str()
+normal_control_str: nv_screen_white_fg_str()
+
+passed: .byte 0
+temp_byte: .byte 0
+
+
 // program variables
 bit_str: .text @" BIT \$00"
 negated_str: .text @" NEGATED \$00"
@@ -93,6 +105,7 @@ op_07: .byte $07
 
 .var row = 0
 
+    nv_screen_print_str(normal_control_str)
     nv_screen_clear()
     nv_screen_plot_cursor(row++, 33)
     nv_screen_print_str(title_str)
@@ -117,35 +130,35 @@ op_07: .byte $07
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_00)
+    print_mask_from_bit_num_mem(op_00, $01)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_01)
+    print_mask_from_bit_num_mem(op_01, $02)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_02)
+    print_mask_from_bit_num_mem(op_02, $04)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_03)
+    print_mask_from_bit_num_mem(op_03, $08)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_04)
+    print_mask_from_bit_num_mem(op_04, $10)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_05)
+    print_mask_from_bit_num_mem(op_05, $20)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_06)
+    print_mask_from_bit_num_mem(op_06, $40)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_07)
+    print_mask_from_bit_num_mem(op_07, $80)
 
     wait_and_clear_at_row(row)
 }
@@ -164,35 +177,35 @@ op_07: .byte $07
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_00)
+    print_mask_from_bit_num_a(op_00, $01, $FE)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_01)
+    print_mask_from_bit_num_a(op_01, $02, $FD)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_02)
+    print_mask_from_bit_num_a(op_02, $04, ~$04)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_03)
+    print_mask_from_bit_num_a(op_03, $08, ~$08)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_04)
+    print_mask_from_bit_num_a(op_04, $10, ~$10)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_05)
+    print_mask_from_bit_num_a(op_05, $20, ~$20)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_06)
+    print_mask_from_bit_num_a(op_06, $40, ~$40)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_07)
+    print_mask_from_bit_num_a(op_07, $80, ~$80)
 
     wait_and_clear_at_row(row)
 }
@@ -229,16 +242,33 @@ op_07: .byte $07
 // it will look like this
 //    BIT $00 = MASK $01
 //    BIT $01 = MASK $02
-.macro print_mask_from_bit_num_mem(op1)
+.macro print_mask_from_bit_num_mem(op1, expected_mask)
 {
+    .var expected_neg_mask = ~expected_mask
+    lda #1
+    sta passed
     nv_screen_print_str(bit_str)
     nv_screen_print_hex_byte_mem(op1, true)
     nv_screen_print_str(equal_str)
+
     nv_mask_from_bit_num_mem(op1, false)
+    //sta temp_byte
+    nv_beq8_immed_a(expected_mask, MaskGood)
+    ldx #0 
+    stx passed
+
+MaskGood:    
     nv_screen_print_hex_byte_a(true)
     nv_screen_print_str(negated_str)
     nv_mask_from_bit_num_mem(op1, true)
+    nv_beq8_immed_a(expected_neg_mask, NegMaskGood)
+    ldx #0 
+    stx passed
+    //sta temp_byte
+NegMaskGood:
     nv_screen_print_hex_byte_a(true)
+
+    jsr PrintPassed
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -248,19 +278,62 @@ op_07: .byte $07
 // it will look like this
 //    BIT $00 = MASK $01
 //    BIT $01 = MASK $02
-.macro print_mask_from_bit_num_a(op1)
+.macro print_mask_from_bit_num_a(op1, expected_mask, expected_neg_mask)
 {
+    lda #1
+    sta passed
     nv_screen_print_str(bit_str)
     nv_screen_print_hex_byte_mem(op1, true)
     nv_screen_print_str(equal_str)
     lda op1
     nv_mask_from_bit_num_a(false)
-    nv_screen_print_hex_byte_a(true)
+    sta temp_byte
+    nv_beq8_immed_a(expected_mask, MaskGood)
+    lda #0
+    sta passed
+    lda temp_byte
+MaskGood:
+    jsr PrintHexByteAccum
+    //nv_screen_print_hex_byte_a(true)
 
     nv_screen_print_str(negated_str)
     lda op1
     nv_mask_from_bit_num_a(true)
-    nv_screen_print_hex_byte_a(true)
+    sta temp_byte
+    nv_beq8_immed_a(expected_neg_mask, NegMaskGood)
+    lda #0 
+    sta passed
+    lda temp_byte
+NegMaskGood:
+    jsr PrintHexByteAccum
+    //nv_screen_print_hex_byte_a(true)
 
+    jsr PrintPassed
 }
 
+
+PrintHexByteAccum:
+{
+    nv_screen_print_hex_byte_a(true)
+    rts
+}
+
+
+PrintPassed:
+{
+    nv_screen_print_str(space_str)
+    lda passed
+    bne PrintPassed
+PrintFailed:
+    nv_screen_print_str(fail_control_str)
+    nv_screen_print_str(failed_str)
+    jmp Done
+
+PrintPassed:
+    nv_screen_print_str(pass_control_str)
+    nv_screen_print_str(passed_str)
+
+Done:
+    nv_screen_print_str(normal_control_str)
+    rts
+}
