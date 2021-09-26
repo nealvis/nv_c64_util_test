@@ -1187,3 +1187,4 @@ Done:
     nv_screen_print_str(normal_control_str)
     rts
 }
+

@@ -252,7 +252,6 @@ op_07: .byte $07
     nv_screen_print_str(equal_str)
 
     nv_mask_from_bit_num_mem(op1, false)
-    //sta temp_byte
     nv_beq8_immed_a(expected_mask, MaskGood)
     ldx #0 
     stx passed
@@ -264,7 +263,6 @@ MaskGood:
     nv_beq8_immed_a(expected_neg_mask, NegMaskGood)
     ldx #0 
     stx passed
-    //sta temp_byte
 NegMaskGood:
     nv_screen_print_hex_byte_a(true)
 
