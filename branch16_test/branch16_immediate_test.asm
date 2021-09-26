@@ -101,6 +101,7 @@ opLowOnes: .word $00FF
 
     test_cmp16_immediate(0)
     test_beq16_immediate(0)
+    test_bne16_immediate(0)
     test_blt16_immediate(0)
     test_ble16_immediate(0)
     test_bgt16_immediate(0)
@@ -280,6 +281,95 @@ opLowOnes: .word $00FF
 
     wait_and_clear_at_row(row)
 }
+
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_bne16_immediate(init_row)
+{
+    .var row = init_row
+
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_bne16_immediate_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(opSmall, $BEEF, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(op1Beef, $BEEF, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(opSmall, $D3B0, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(opZero, $0000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(opMax, $FFFF, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(opTwo, $0001, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(opTwo, $0002, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(opOne, $0002, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(opOne, $0001, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(opMax, $0000, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(opMax, $FFFE, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(opHighOnes, $FFFF, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(opHighOnes, $FF00, false)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(opHighOnes, $FF01, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(opLowOnes, $FF01, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(opLowOnes, $01FF, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(opLowOnes, $FF00, true)
+
+    ////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne16_immed(opLowOnes, $FE, true)
+
+
+    wait_and_clear_at_row(row)
+}
+
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -645,13 +735,19 @@ opLowOnes: .word $00FF
     nv_screen_plot_cursor(row++, 0)
     nv_screen_print_str(hit_anykey_str)
 
-    nv_key_wait_any_key()
+    //nv_key_wait_any_key()
+    jsr WaitAnyKey
 
     nv_screen_clear()
     .eval row=0
     nv_screen_plot_cursor(row++, 25)
     nv_screen_print_str(title_str)
 }
+
+//////////////////////////////////////////////////////////////////////////////
+WaitAnyKey:
+    nv_key_wait_any_key()
+    rts
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -739,6 +835,38 @@ Done:
     jsr PrintPassed
 }
 
+
+//////////////////////////////////////////////////////////////////////////////
+// Print to current screen location the expression (either != or = ) 
+// for the relationship of one word in memory with an immediate 16 bit value
+// Also use bne16 to do it.
+//   addr1: is the address of LSB of one word (addr1+1 is MSB)
+//   num: is the immediate value
+.macro print_bne16_immed(addr1, num, expect_to_branch)
+{
+    lda #1 
+    sta passed
+    nv_screen_print_hex_word_mem(addr1, true)
+    nv_bne16_immed(addr1, num, BranchTarget)
+    .if (expect_to_branch)
+    {
+        lda #0 
+        sta passed
+    }
+    nv_screen_print_str(equal_str)
+    jmp Done
+BranchTarget:
+    .if(!expect_to_branch)
+    {
+        lda #0
+        sta passed
+    }
+    nv_screen_print_str(not_equal_str)
+
+Done:
+    nv_screen_print_hex_word_immed(num, true)
+    jsr PrintPassed
+}
 
 
 //////////////////////////////////////////////////////////////////////////////
