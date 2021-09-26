@@ -36,7 +36,7 @@ space_str: .text @" \$00"
 passed_str: .text @" PASSED\$00"
 failed_str: .text @" FAILED\$00"
 
-fail_control_str: nv_screen_red_fg_str()
+fail_control_str: nv_screen_lite_red_fg_str()
 pass_control_str: nv_screen_green_fg_str()
 normal_control_str: nv_screen_white_fg_str()
 
@@ -48,11 +48,17 @@ temp_byte: .byte 0
 bit_str: .text @" BIT \$00"
 negated_str: .text @" NEGATED \$00"
 equal_str: .text@" = \$00"
+minus_str: .text@" - \$00"
+
+bad_carry_str: .text@" C\$00"
+bad_overflow_str: .text@" V\$00"
+bad_neg_str: .text@" N\$00"
 
 title_str: .text @"MATH8\$00"          // null terminated string to print
                                         // via the BASIC routine
 title_mask_from_bit_num_mem_str: .text @"TEST MASK FROM BIT NUM MEM\$00"
 title_mask_from_bit_num_a_str: .text @"TEST MASK FROM BIT NUM ACCUM\$00"
+title_sbc8_mem_mem_str: .text @"TEST SBC8 MEM MEM\$00"
 hit_anykey_str: .text @"HIT ANY KEY ...\$00"
 
 word_to_print: .word $DEAD
@@ -110,11 +116,56 @@ op_07: .byte $07
     nv_screen_plot_cursor(row++, 33)
     nv_screen_print_str(title_str)
 
+    test_sbc8_mem_mem(0)
     test_mask_from_bit_num_mem(0)
     test_mask_from_bit_num_a(0)
 
     rts
 
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_sbc8_mem_mem(init_row)
+{
+    .var row = init_row
+    
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_sbc8_mem_mem_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    // carry, overflow, negative flags
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)     // C      V      N
+    print_sbc8_mem_mem(op_01, op_00, $01, true, false, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)      // C      V      N
+    print_sbc8_mem_mem(op_00, op_01, $FF, false, false, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)      // C      V      N
+    print_sbc8_mem_mem(op_02, op8_FF, $03, false, false, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)      // C      V      N
+    print_sbc8_mem_mem(op_02, op8_0F, $F3, false, false, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)      // C      V      N
+    print_sbc8_mem_mem(op8_80, op_01, $7F, true, true, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)      // C      V      N
+    print_sbc8_mem_mem(op8_80, op8_7F, $01, true, true, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)      // C      V     N
+    print_sbc8_mem_mem(op_00, op_00, $00, true, false, false)
+
+    wait_and_clear_at_row(row)
+}
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -236,6 +287,95 @@ op_07: .byte $07
 
 
 //////////////////////////////////////////////////////////////////////////////
+.macro print_sbc8_mem_mem(addr1, addr2, expected_result, expect_carry_set, 
+                          expect_overflow_set, expect_neg_set)
+{
+    lda #1
+    sta passed
+    lda addr1 
+    jsr PrintHexByteAccum 
+    nv_screen_print_str(minus_str)
+    lda addr2
+    jsr PrintHexByteAccum
+    nv_screen_print_str(equal_str)
+    nv_sbc8(addr1, addr2, result_byte)
+    php
+    lda result_byte
+    nv_beq8_immed_a(expected_result, ResultGood)
+    lda #0 
+    sta passed
+
+ResultGood:
+    lda result_byte
+    jsr PrintHexByteAccum
+
+    plp
+    pass_or_fail_status_flags(expect_carry_set, expect_overflow_set, 
+                             expect_neg_set)
+    
+    jsr PrintPassed
+}
+result_byte: .byte 0
+
+//////////////////////////////////////////////////////////////////////////////
+.macro pass_or_fail_status_flags(expect_carry_set, expect_overflow_set, 
+                                 expect_neg_set)
+{
+    php
+    nv_screen_print_str(fail_control_str)
+    plp
+    .if (expect_carry_set)
+    {
+        bcs CarryGood
+    }
+    else 
+    {
+        bcc CarryGood
+    }
+    php
+    nv_screen_print_str(bad_carry_str)
+    plp
+    lda #0 
+    sta passed
+
+CarryGood: 
+    .if (expect_overflow_set)
+    {
+        bvs OverflowGood
+    }
+    else 
+    {
+        bvc OverflowGood
+    }
+    php
+    nv_screen_print_str(bad_overflow_str)
+    plp
+    lda #0 
+    sta passed
+
+OverflowGood:
+    .if (expect_neg_set)
+    {
+        bmi NegGood
+    }
+    else 
+    {
+        bpl NegGood
+    }
+    php
+    nv_screen_print_str(bad_neg_str)
+    plp
+    lda #0 
+    sta passed
+    
+NegGood:
+    nv_screen_print_str(normal_control_str)
+
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
 // inline macro to print the specified mask from bit number operation
 // at the current cursor location
 // nv_mask_from_bit_num is used to do the operation.  
@@ -309,14 +449,14 @@ NegMaskGood:
     jsr PrintPassed
 }
 
-
+///////////////////////////////////////////////////////////////////////
 PrintHexByteAccum:
 {
     nv_screen_print_hex_byte_a(true)
     rts
 }
 
-
+///////////////////////////////////////////////////////////////////////
 PrintPassed:
 {
     nv_screen_print_str(space_str)
