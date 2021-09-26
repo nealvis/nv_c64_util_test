@@ -31,8 +31,24 @@
 *=$0820 "Vars"
 
 .const dollar_sign = $24
+.const CMP_EQUAL = 0
+.const CMP_LESS = -1
+.const CMP_GREATER = 1
+
 
 // program variables
+space_str: .text @" \$00"
+passed_str: .text @" PASSED\$00"
+failed_str: .text @" FAILED\$00"
+
+fail_control_str: nv_screen_red_fg_str()
+pass_control_str: nv_screen_green_fg_str()
+normal_control_str: nv_screen_white_fg_str()
+
+// byte that gets set to 0 for fail or non zero for pass during every test
+passed: .byte 0
+
+
 equal_str: .text@" = \$00"
 not_equal_str: .text@" != \$00"
 greater_equal_str: .text@" >= \$00" 
@@ -78,7 +94,7 @@ opLowOnes: .word $00FF
 *=$1000 "Main Start"
 
 .var row = 0
-
+    nv_screen_print_str(normal_control_str)
     nv_screen_clear()
     nv_screen_plot_cursor(row++, 25)
     nv_screen_print_str(title_str)
@@ -107,71 +123,71 @@ opLowOnes: .word $00FF
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp16_immediate(op1Beef, $BEEF)
+    print_cmp16_immed(op1Beef, $BEEF, CMP_EQUAL)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp16_immediate(opSmall, $D3B0)
+    print_cmp16_immed(opSmall, $D3B0, CMP_LESS)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp16_immediate(opZero, $0000)
+    print_cmp16_immed(opZero, $0000, CMP_EQUAL)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp16_immediate(opMax, $FFFF)
+    print_cmp16_immed(opMax, $FFFF, CMP_EQUAL)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp16_immediate(opTwo, $0001)
+    print_cmp16_immed(opTwo, $0001, CMP_GREATER)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp16_immediate(opTwo, $0002)
+    print_cmp16_immed(opTwo, $0002, CMP_EQUAL)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp16_immediate(opOne, $0002)
+    print_cmp16_immed(opOne, $0002, CMP_LESS)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp16_immediate(opOne, $0001)
+    print_cmp16_immed(opOne, $0001, CMP_EQUAL)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp16_immediate(opMax, $0000)
+    print_cmp16_immed(opMax, $0000, CMP_GREATER)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp16_immediate(opMax, $FFFE)
+    print_cmp16_immed(opMax, $FFFE, CMP_GREATER)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp16_immediate(opHighOnes, $FFFF)
+    print_cmp16_immed(opHighOnes, $FFFF, CMP_LESS)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp16_immediate(opHighOnes, $FF00)
+    print_cmp16_immed(opHighOnes, $FF00, CMP_EQUAL)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp16_immediate(opHighOnes, $FF01)
+    print_cmp16_immed(opHighOnes, $FF01, CMP_LESS)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp16_immediate(opLowOnes, $FF01)
+    print_cmp16_immed(opLowOnes, $FF01, CMP_LESS)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp16_immediate(opLowOnes, $01FF)
+    print_cmp16_immed(opLowOnes, $01FF, CMP_LESS)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp16_immediate(opLowOnes, $FF00)
+    print_cmp16_immed(opLowOnes, $FF00, CMP_LESS)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp16_immediate(opLowOnes, $FE)
+    print_cmp16_immed(opLowOnes, $FE, CMP_GREATER)
 
     wait_and_clear_at_row(row)
 }
@@ -191,79 +207,75 @@ opLowOnes: .word $00FF
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(opSmall, $BEEF)
+    print_beq16_immed(opSmall, $BEEF, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(op1Beef, $BEEF)
+    print_beq16_immed(op1Beef, $BEEF, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(op1Beef, $BEEF)
+    print_beq16_immed(opSmall, $D3B0, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(opSmall, $D3B0)
+    print_beq16_immed(opZero, $0000, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(opZero, $0000)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(opMax, $FFFF)
+    print_beq16_immed(opMax, $FFFF, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(opTwo, $0001)
+    print_beq16_immed(opTwo, $0001, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(opTwo, $0002)
+    print_beq16_immed(opTwo, $0002, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(opOne, $0002)
+    print_beq16_immed(opOne, $0002, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(opOne, $0001)
+    print_beq16_immed(opOne, $0001, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(opMax, $0000)
+    print_beq16_immed(opMax, $0000, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(opMax, $FFFE)
+    print_beq16_immed(opMax, $FFFE, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(opHighOnes, $FFFF)
+    print_beq16_immed(opHighOnes, $FFFF, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(opHighOnes, $FF00)
+    print_beq16_immed(opHighOnes, $FF00, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(opHighOnes, $FF01)
+    print_beq16_immed(opHighOnes, $FF01, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(opLowOnes, $FF01)
+    print_beq16_immed(opLowOnes, $FF01, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(opLowOnes, $01FF)
+    print_beq16_immed(opLowOnes, $01FF, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(opLowOnes, $FF00)
+    print_beq16_immed(opLowOnes, $FF00, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq16_immediate(opLowOnes, $FE)
+    print_beq16_immed(opLowOnes, $FE, false)
 
 
     wait_and_clear_at_row(row)
@@ -284,79 +296,75 @@ opLowOnes: .word $00FF
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(opSmall, $BEEF)
+    print_blt16_immed(opSmall, $BEEF, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(op1Beef, $BEEF)
+    print_blt16_immed(op1Beef, $BEEF, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(op1Beef, $BEEF)
+    print_blt16_immed(opSmall, $D3B0, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(opSmall, $D3B0)
+    print_blt16_immed(opZero, $0000, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(opZero, $0000)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(opMax, $FFFF)
+    print_blt16_immed(opMax, $FFFF, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(opTwo, $0001)
+    print_blt16_immed(opTwo, $0001, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(opTwo, $0002)
+    print_blt16_immed(opTwo, $0002, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(opOne, $0002)
+    print_blt16_immed(opOne, $0002, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(opOne, $0001)
+    print_blt16_immed(opOne, $0001, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(opMax, $0000)
+    print_blt16_immed(opMax, $0000, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(opMax, $FFFE)
+    print_blt16_immed(opMax, $FFFE, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(opHighOnes, $FFFF)
+    print_blt16_immed(opHighOnes, $FFFF, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(opHighOnes, $FF00)
+    print_blt16_immed(opHighOnes, $FF00, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(opHighOnes, $FF01)
+    print_blt16_immed(opHighOnes, $FF01, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(opLowOnes, $FF01)
+    print_blt16_immed(opLowOnes, $FF01, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(opLowOnes, $01FF)
+    print_blt16_immed(opLowOnes, $01FF, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(opLowOnes, $FF00)
+    print_blt16_immed(opLowOnes, $FF00, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt16_immediate(opLowOnes, $FE)
+    print_blt16_immed(opLowOnes, $FE, false)
 
 
     wait_and_clear_at_row(row)
@@ -377,79 +385,75 @@ opLowOnes: .word $00FF
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(opSmall, $BEEF)
+    print_ble16_immed(opSmall, $BEEF, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(op1Beef, $BEEF)
+    print_ble16_immed(op1Beef, $BEEF, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(op1Beef, $BEEF)
+    print_ble16_immed(opSmall, $D3B0, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(opSmall, $D3B0)
+    print_ble16_immed(opZero, $0000, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(opZero, $0000)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(opMax, $FFFF)
+    print_ble16_immed(opMax, $FFFF, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(opTwo, $0001)
+    print_ble16_immed(opTwo, $0001, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(opTwo, $0002)
+    print_ble16_immed(opTwo, $0002, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(opOne, $0002)
+    print_ble16_immed(opOne, $0002, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(opOne, $0001)
+    print_ble16_immed(opOne, $0001, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(opMax, $0000)
+    print_ble16_immed(opMax, $0000, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(opMax, $FFFE)
+    print_ble16_immed(opMax, $FFFE, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(opHighOnes, $FFFF)
+    print_ble16_immed(opHighOnes, $FFFF, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(opHighOnes, $FF00)
+    print_ble16_immed(opHighOnes, $FF00, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(opHighOnes, $FF01)
+    print_ble16_immed(opHighOnes, $FF01, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(opLowOnes, $FF01)
+    print_ble16_immed(opLowOnes, $FF01, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(opLowOnes, $01FF)
+    print_ble16_immed(opLowOnes, $01FF, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(opLowOnes, $FF00)
+    print_ble16_immed(opLowOnes, $FF00, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble16_immediate(opLowOnes, $FE)
+    print_ble16_immed(opLowOnes, $FE, false)
 
 
     wait_and_clear_at_row(row)
@@ -470,79 +474,75 @@ opLowOnes: .word $00FF
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(opSmall, $BEEF)
+    print_bgt16_immed(opSmall, $BEEF, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(op1Beef, $BEEF)
+    print_bgt16_immed(op1Beef, $BEEF, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(op1Beef, $BEEF)
+    print_bgt16_immed(opSmall, $D3B0, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(opSmall, $D3B0)
+    print_bgt16_immed(opZero, $0000, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(opZero, $0000)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(opMax, $FFFF)
+    print_bgt16_immed(opMax, $FFFF, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(opTwo, $0001)
+    print_bgt16_immed(opTwo, $0001, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(opTwo, $0002)
+    print_bgt16_immed(opTwo, $0002, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(opOne, $0002)
+    print_bgt16_immed(opOne, $0002, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(opOne, $0001)
+    print_bgt16_immed(opOne, $0001, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(opMax, $0000)
+    print_bgt16_immed(opMax, $0000, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(opMax, $FFFE)
+    print_bgt16_immed(opMax, $FFFE, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(opHighOnes, $FFFF)
+    print_bgt16_immed(opHighOnes, $FFFF, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(opHighOnes, $FF00)
+    print_bgt16_immed(opHighOnes, $FF00, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(opHighOnes, $FF01)
+    print_bgt16_immed(opHighOnes, $FF01, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(opLowOnes, $FF01)
+    print_bgt16_immed(opLowOnes, $FF01, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(opLowOnes, $01FF)
+    print_bgt16_immed(opLowOnes, $01FF, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(opLowOnes, $FF00)
+    print_bgt16_immed(opLowOnes, $FF00, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt16_immediate(opLowOnes, $FE)
+    print_bgt16_immed(opLowOnes, $FE, true)
 
     wait_and_clear_at_row(row)
 }
@@ -562,79 +562,75 @@ opLowOnes: .word $00FF
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(opSmall, $BEEF)
+    print_bge16_immed(opSmall, $BEEF, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(op1Beef, $BEEF)
+    print_bge16_immed(op1Beef, $BEEF, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(op1Beef, $BEEF)
+    print_bge16_immed(opSmall, $D3B0, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(opSmall, $D3B0)
+    print_bge16_immed(opZero, $0000, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(opZero, $0000)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(opMax, $FFFF)
+    print_bge16_immed(opMax, $FFFF, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(opTwo, $0001)
+    print_bge16_immed(opTwo, $0001, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(opTwo, $0002)
+    print_bge16_immed(opTwo, $0002, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(opOne, $0002)
+    print_bge16_immed(opOne, $0002, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(opOne, $0001)
+    print_bge16_immed(opOne, $0001, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(opMax, $0000)
+    print_bge16_immed(opMax, $0000, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(opMax, $FFFE)
+    print_bge16_immed(opMax, $FFFE, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(opHighOnes, $FFFF)
+    print_bge16_immed(opHighOnes, $FFFF, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(opHighOnes, $FF00)
+    print_bge16_immed(opHighOnes, $FF00, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(opHighOnes, $FF01)
+    print_bge16_immed(opHighOnes, $FF01, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(opLowOnes, $FF01)
+    print_bge16_immed(opLowOnes, $FF01, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(opLowOnes, $01FF)
+    print_bge16_immed(opLowOnes, $01FF, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(opLowOnes, $FF00)
+    print_bge16_immed(opLowOnes, $FF00, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge16_immediate(opLowOnes, $FE)
+    print_bge16_immed(opLowOnes, $FE, true)
 
     wait_and_clear_at_row(row)
 }
@@ -662,32 +658,52 @@ opLowOnes: .word $00FF
 //                          Print macros 
 //////////////////////////////////////////////////////////////////////////////
 
-
 //////////////////////////////////////////////////////////////////////////////
 // Print a comparison of a 16bit value in memory and an immediate value. 
 // Prints at the current cursor location via a basic call
-.macro print_cmp16_immediate(addr1, num)
+.macro print_cmp16_immed(addr1, num, expected_cmp)
 {
+    lda #1 
+    sta passed
+
     nv_screen_print_hex_word_mem(addr1, true)
-    nv_cmp16_immediate(addr1, num)
+    nv_cmp16_immed(addr1, num)
     bne NotEq
 // Equal here
+    .if (!(expected_cmp == CMP_EQUAL)) 
+    {
+        lda #0
+        sta passed
+    }
     nv_screen_print_str(equal_str)
     jmp PrintOp2
 
 NotEq:
     bcs GreaterOrEqual
 // less than here
+    .if (!(expected_cmp == CMP_LESS)) 
+    {
+        lda #0
+        sta passed
+    }
+
     nv_screen_print_str(less_than_str)
     jmp PrintOp2
 
 // Greater here
 GreaterOrEqual:
+    .if (!(expected_cmp == CMP_GREATER)) 
+    {
+        lda #0
+        sta passed
+    }
+
     nv_screen_print_str(greater_than_str)
 
 PrintOp2:
     nv_screen_print_hex_word_immed(num, true)
 
+    jsr PrintPassed
 }
 
 
@@ -697,77 +713,165 @@ PrintOp2:
 // Also use beq16 to do it.
 //   addr1: is the address of LSB of one word (addr1+1 is MSB)
 //   num: is the immediate value
-.macro print_beq16_immediate(addr1, num)
+.macro print_beq16_immed(addr1, num, expect_to_branch)
 {
+    lda #1 
+    sta passed
     nv_screen_print_hex_word_mem(addr1, true)
-    nv_beq16_immediate(addr1, num, Same)
+    nv_beq16_immed(addr1, num, BranchTarget)
+    .if (expect_to_branch)
+    {
+        lda #0 
+        sta passed
+    }
     nv_screen_print_str(not_equal_str)
     jmp Done
-Same:
+BranchTarget:
+    .if(!expect_to_branch)
+    {
+        lda #0
+        sta passed
+    }
     nv_screen_print_str(equal_str)
 
 Done:
     nv_screen_print_hex_word_immed(num, true)
+    jsr PrintPassed
 }
 
 
 
 //////////////////////////////////////////////////////////////////////////////
-.macro print_blt16_immediate(addr1, num)
+.macro print_blt16_immed(addr1, num, expect_to_branch)
 {
+    lda #1 
+    sta passed
     nv_screen_print_hex_word_mem(addr1, true)
-    nv_blt16_immediate(addr1, num, LessThan)
+    nv_blt16_immed(addr1, num, BranchTarget)
+    .if(expect_to_branch)
+    {
+        lda #0
+        sta passed
+    }
     nv_screen_print_str(greater_equal_str)
     jmp Done
-LessThan:
+BranchTarget:
+    .if (!expect_to_branch)
+    {
+        lda #0 
+        sta passed
+    }
     nv_screen_print_str(less_than_str)
 
 Done:
     nv_screen_print_hex_word_immed(num, true)
-
+    jsr PrintPassed
 }
 
 
 //////////////////////////////////////////////////////////////////////////////
-.macro print_ble16_immediate(addr1, num)
+.macro print_ble16_immed(addr1, num, expect_to_branch)
 {
+    lda #1 
+    sta passed
     nv_screen_print_hex_word_mem(addr1, true)
-    nv_ble16_immediate(addr1, num, LessEqual)
+    nv_ble16_immed(addr1, num, BranchTarget)
+    .if (expect_to_branch)
+    {
+        lda #0
+        sta passed
+    }
     nv_screen_print_str(greater_than_str)
     jmp Done
-LessEqual:
+BranchTarget:
+    .if (!expect_to_branch)
+    {
+        lda #0
+        sta passed
+    }
     nv_screen_print_str(less_equal_str)
 
 Done:
     nv_screen_print_hex_word_immed(num, true)
-
+    jsr PrintPassed
 }
 
 //////////////////////////////////////////////////////////////////////////////
-.macro print_bgt16_immediate(addr1, num)
+.macro print_bgt16_immed(addr1, num, expect_to_branch)
 {
+    lda #1 
+    sta passed
+
     nv_screen_print_hex_word_mem(addr1, true)
-    nv_bgt16_immediate(addr1, num, GreaterThan)
+    nv_bgt16_immed(addr1, num, BranchTarget)
+    .if(expect_to_branch)
+    {
+        lda #0 
+        sta passed
+    }
     nv_screen_print_str(less_equal_str)
     jmp Done
-GreaterThan:
+BranchTarget:
+    .if(!expect_to_branch)
+    {
+        lda #0 
+        sta passed
+    }
     nv_screen_print_str(greater_than_str)
 
 Done:
     nv_screen_print_hex_word_immed(num, true)
+    jsr PrintPassed
 }
 
 
 //////////////////////////////////////////////////////////////////////////////
-.macro print_bge16_immediate(addr1, num)
+.macro print_bge16_immed(addr1, num, expect_to_branch)
 {
+    lda #1 
+    sta passed
+
     nv_screen_print_hex_word_mem(addr1, true)
-    nv_bge16_immediate(addr1, num, GreaterEqual)
+    nv_bge16_immed(addr1, num, BranchTarget)
+    .if (expect_to_branch)
+    {
+        lda #0 
+        sta passed
+    }
     nv_screen_print_str(less_than_str)
     jmp Done
-GreaterEqual:
+BranchTarget:
+    .if (!expect_to_branch)
+    {
+        lda #0 
+        sta passed
+    }
+
     nv_screen_print_str(greater_equal_str)
 
 Done:
     nv_screen_print_hex_word_immed(num, true)
+    jsr PrintPassed
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// print pass/fail status at current cursor location
+PrintPassed:
+{
+    nv_screen_print_str(space_str)
+    lda passed
+    bne PrintPassed
+PrintFailed:
+    nv_screen_print_str(fail_control_str)
+    nv_screen_print_str(failed_str)
+    jmp Done
+
+PrintPassed:
+    nv_screen_print_str(pass_control_str)
+    nv_screen_print_str(passed_str)
+
+Done:
+    nv_screen_print_str(normal_control_str)
+    rts
+}
+
