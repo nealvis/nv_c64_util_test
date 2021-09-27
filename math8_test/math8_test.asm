@@ -49,6 +49,7 @@ bit_str: .text @" BIT \$00"
 negated_str: .text @" NEGATED \$00"
 equal_str: .text@" = \$00"
 minus_str: .text@" - \$00"
+transform_str: .text@" -> \$00"
 
 bad_carry_str: .text@" C\$00"
 bad_overflow_str: .text@" V\$00"
@@ -59,6 +60,8 @@ title_str: .text @"MATH8\$00"          // null terminated string to print
 title_mask_from_bit_num_mem_str: .text @"TEST MASK FROM BIT NUM MEM\$00"
 title_mask_from_bit_num_a_str: .text @"TEST MASK FROM BIT NUM ACCUM\$00"
 title_sbc8_mem_mem_str: .text @"TEST SBC8 MEM MEM\$00"
+title_twos_comp_a_str: .text @"TEST TWOS COMP A\$00"
+
 hit_anykey_str: .text @"HIT ANY KEY ...\$00"
 
 word_to_print: .word $DEAD
@@ -96,6 +99,7 @@ op8_0F: .byte $0F
 op8_F0: .byte $F0
 op8_80: .byte $80  // -128
 op8_81: .byte $81  // -127
+op8_FE: .byte $FE
 
 op_00: .byte $00
 op_01: .byte $01
@@ -116,11 +120,63 @@ op_07: .byte $07
     nv_screen_plot_cursor(row++, 33)
     nv_screen_print_str(title_str)
 
+    test_twos_comp_a(0)
     test_sbc8_mem_mem(0)
     test_mask_from_bit_num_mem(0)
     test_mask_from_bit_num_a(0)
 
     rts
+//////////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_twos_comp_a(init_row)
+{
+    .var row = init_row
+    
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_twos_comp_a_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_twos_comp_a(op_01, $FF)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_twos_comp_a(op8_FF, $01)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_twos_comp_a(op_00, $00)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_twos_comp_a(op_02, $FE)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_twos_comp_a(op8_FE, $02)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_twos_comp_a(op8_7F, $81)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_twos_comp_a(op8_81, $7F)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_twos_comp_a(op8_80, $80)
+
+
+    wait_and_clear_at_row(row)
+
+}
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -285,6 +341,27 @@ op_07: .byte $07
 //                          Print macros 
 //////////////////////////////////////////////////////////////////////////////
 
+
+//////////////////////////////////////////////////////////////////////////////
+.macro print_twos_comp_a(addr1, expected_result)
+{
+    lda #1
+    sta passed
+
+    lda addr1
+    jsr PrintHexByteAccum  // print init accum before operation
+    nv_screen_print_str(transform_str)
+
+    lda addr1
+    nv_twos_comp8_a()
+    nv_beq8_immed_a(expected_result, GoodResult)
+    ldx #0
+    stx passed
+
+GoodResult:
+    jsr PrintHexByteAccum  // print result of operation in accum
+    jsr PrintPassed
+}
 
 //////////////////////////////////////////////////////////////////////////////
 .macro print_sbc8_mem_mem(addr1, addr2, expected_result, expect_carry_set, 
