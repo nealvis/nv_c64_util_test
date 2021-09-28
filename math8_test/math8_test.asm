@@ -61,6 +61,7 @@ title_mask_from_bit_num_mem_str: .text @"TEST MASK FROM BIT NUM MEM\$00"
 title_mask_from_bit_num_a_str: .text @"TEST MASK FROM BIT NUM ACCUM\$00"
 title_sbc8_mem_mem_str: .text @"TEST SBC8 MEM MEM\$00"
 title_twos_comp_a_str: .text @"TEST TWOS COMP A\$00"
+title_twos_comp_mem_str: .text @"TEST TWOS COMP MEM\$00"
 
 hit_anykey_str: .text @"HIT ANY KEY ...\$00"
 
@@ -120,6 +121,7 @@ op_07: .byte $07
     nv_screen_plot_cursor(row++, 33)
     nv_screen_print_str(title_str)
 
+    test_twos_comp_mem(0)
     test_twos_comp_a(0)
     test_sbc8_mem_mem(0)
     test_mask_from_bit_num_mem(0)
@@ -127,6 +129,57 @@ op_07: .byte $07
 
     rts
 //////////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_twos_comp_mem(init_row)
+{
+    .var row = init_row
+    
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_twos_comp_mem_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_twos_comp_mem(op_01, $FF)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_twos_comp_mem(op8_FF, $01)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_twos_comp_mem(op_00, $00)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_twos_comp_mem(op_02, $FE)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_twos_comp_mem(op8_FE, $02)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_twos_comp_mem(op8_7F, $81)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_twos_comp_mem(op8_81, $7F)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_twos_comp_mem(op8_80, $80)
+
+
+    wait_and_clear_at_row(row)
+
+}
+
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -340,6 +393,30 @@ op_07: .byte $07
 //////////////////////////////////////////////////////////////////////////////
 //                          Print macros 
 //////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////
+.macro print_twos_comp_mem(addr1, expected_result)
+{
+    lda #1
+    sta passed
+
+    lda addr1
+    sta temp_byte
+    jsr PrintHexByteAccum  // print init accum before operation
+    nv_screen_print_str(transform_str)
+
+    nv_twos_comp8_mem(temp_byte)
+    lda temp_byte
+    nv_beq8_immed_a(expected_result, GoodResult)
+    ldx #0
+    stx passed
+
+GoodResult:
+    lda temp_byte
+    jsr PrintHexByteAccum  // print result of operation in accum
+    jsr PrintPassed
+}
+
 
 
 //////////////////////////////////////////////////////////////////////////////
