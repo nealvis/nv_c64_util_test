@@ -62,6 +62,9 @@ title_mul8_mem_mem_1_str: .text @"TEST MUL8 MEM MEM 1\$00"
 title_mul8_mem_mem_2_str: .text @"TEST MUL8 MEM MEM 2\$00"
 title_mul8_mem_mem_3_str: .text @"TEST MUL8 MEM MEM 3\$00"
 
+
+title_mul8_immed_a_1_str: .text @"TEST MUL8 IMMED A 1\$00"
+
 hit_anykey_str: .text @"HIT ANY KEY ...\$00"
 
 
@@ -124,12 +127,69 @@ op8_40: .byte $40
     nv_screen_plot_cursor(row++, 33)
     nv_screen_print_str(title_str)
 
+    test_mul8_immed_a_1(0)
+
     test_mul8_mem_mem_1(0)
     test_mul8_mem_mem_2(0)
     test_mul8_mem_mem_3(0)
 
     rts
 //////////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_mul8_immed_a_1(init_row)
+{
+    .var row = init_row
+    
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_mul8_immed_a_1_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_mul8_immed_a($01, op8_01, $0001)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_mul8_immed_a($01, op8_02, $0002)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_mul8_immed_a($02, op8_02, $0004)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_mul8_immed_a($07, op8_00, $0000)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_mul8_immed_a($00, op8_04, $0000)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_mul8_immed_a($00, op8_00, $0000)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_mul8_immed_a($00, op8_00, $0000)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_mul8_immed_a($01, op8_03, $0003)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_mul8_immed_a($FF, op8_FF, $FE01)
+
+    wait_and_clear_at_row(row)
+
+}
+
+
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -315,8 +375,6 @@ op8_40: .byte $40
     nv_screen_plot_cursor(row++, 0)
     print_mul8_mem_mem(op8_06, op8_3F, $017A)
 
-
-
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
     print_mul8_mem_mem(op8_3F, op8_01, $003F)
@@ -364,7 +422,7 @@ op8_40: .byte $40
     nv_screen_plot_cursor(row++, 0)
     print_mul8_mem_mem(op8_FF, op8_FF, $FE01)
 
-    
+
     wait_and_clear_at_row(row)
 
 }
@@ -439,6 +497,46 @@ GoodResult:
     jsr PrintPassed
 }
 
+//////////////////////////////////////////////////////////////////////////////
+.macro print_mul8_immed_a(num, addr2, expected_result)
+{
+    // set passed to true until evidence of a fail below
+    lda #1
+    sta passed
+
+    // put some garbage in the result
+    nv_store16_immediate(result16, $BEEF)
+
+    // print the first operand
+    lda #num
+    jsr PrintHexByteAccum 
+
+    // print multiplication operator *
+    nv_screen_print_str(times_str)
+
+    // do multiplication
+    lda addr2
+    nv_mul8_immed_a(num, result16)
+
+    // if match expected result then skip setting passed to false
+    nv_beq16_immed(result16, expected_result, GoodResult)
+    ldx #0
+    stx passed
+
+GoodResult:
+    // print the second operand
+    lda addr2
+    jsr PrintHexByteAccum  // print result of operation in accum
+
+    // print = sign
+    nv_screen_print_str(equal_str)
+
+    // print the result
+    nv_screen_print_hex_word_mem(result16, true)
+
+    // print if passed or failed
+    jsr PrintPassed
+}
 
 //////////////////////////////////////////////////////////////////////////////
 .macro pass_or_fail_status_flags(expect_carry_set, expect_overflow_set, 
