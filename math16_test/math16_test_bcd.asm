@@ -300,7 +300,7 @@ op_FE: .byte $FE
     nv_screen_print_bcd_word_immed(num)
     nv_screen_print_str(equal_str)
 
-    nv_bcd_adc16_immediate(op1, num, result)
+    nv_bcd_adc16_immed(op1, num, result)
     PrintCarryAndOverflow()
 
 PrintResult:
