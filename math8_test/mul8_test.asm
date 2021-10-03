@@ -464,7 +464,7 @@ WaitAnyKey:
     sta passed
 
     // put some garbage in the result
-    nv_store16_immediate(result16, $BEEF)
+    nv_store16_immed(result16, $BEEF)
 
     // print the first operand
     lda addr1
@@ -505,7 +505,7 @@ GoodResult:
     sta passed
 
     // put some garbage in the result
-    nv_store16_immediate(result16, $BEEF)
+    nv_store16_immed(result16, $BEEF)
 
     // print the first operand
     lda #num
