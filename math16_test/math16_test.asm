@@ -641,7 +641,7 @@ NoCarry:
 
 //////////////////////////////////////////////////////////////////////////////
 // inline macro to print the specified addition at the current curor location
-// nv_adc16_immediate us used to do the addition.  
+// nv_adc16_immed us used to do the addition.  
 // it will look like this with no carry:
 //    $2222 + $3333 = $5555
 // or look like this if there is a carry:
@@ -653,7 +653,7 @@ NoCarry:
     nv_screen_print_hex_word_immed(num, true)
     nv_screen_print_str(equal_str)
 
-    nv_adc16_immediate(op1, num, result)
+    nv_adc16_immed(op1, num, result)
     bcc NoCarry
     nv_screen_print_str(carry_str)
 NoCarry:
