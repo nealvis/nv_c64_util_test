@@ -273,6 +273,15 @@ op_07: .byte $07
     nv_screen_plot_cursor(row++, 0)      // C      V     N
     print_sbc8_mem_mem(op_00, op_00, $00, true, false, false)
 
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)        // C      V     N
+    print_sbc8_mem_mem(op_00, op8_FF, $01, false, false, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)        // C      V     N
+    print_sbc8_mem_mem(op_00, op8_7F, $81, false, false, true)
+
+
     wait_and_clear_at_row(row)
 }
 
@@ -452,7 +461,7 @@ GoodResult:
     lda addr2
     jsr PrintHexByteAccum
     nv_screen_print_str(equal_str)
-    nv_sbc8(addr1, addr2, result_byte)
+    nv_sbc8s(addr1, addr2, result_byte)
     php
     lda result_byte
     nv_beq8_immed_a(expected_result, ResultGood)
