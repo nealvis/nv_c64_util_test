@@ -414,7 +414,7 @@ op_07: .byte $07
     jsr PrintHexByteAccum  // print init accum before operation
     nv_screen_print_str(transform_str)
 
-    nv_twos_comp8_mem(temp_byte)
+    nv_twos_comp8x_mem(temp_byte)
     lda temp_byte
     nv_beq8_immed_a(expected_result, GoodResult)
     ldx #0
@@ -439,7 +439,7 @@ GoodResult:
     nv_screen_print_str(transform_str)
 
     lda addr1
-    nv_twos_comp8_a()
+    nv_twos_comp8x_a()
     nv_beq8_immed_a(expected_result, GoodResult)
     ldx #0
     stx passed
