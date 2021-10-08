@@ -60,6 +60,8 @@ title_str: .text @"MATH8\$00"          // null terminated string to print
 title_mask_from_bit_num_mem_str: .text @"TEST MASK FROM BIT NUM MEM\$00"
 title_mask_from_bit_num_a_str: .text @"TEST MASK FROM BIT NUM ACCUM\$00"
 title_sbc8_mem_mem_str: .text @"TEST SBC8 MEM MEM\$00"
+title_sbc8_mem_immed_str: .text @"TEST SBC8 MEM IMMED\$00"
+
 title_twos_comp_a_str: .text @"TEST TWOS COMP A\$00"
 title_twos_comp_mem_str: .text @"TEST TWOS COMP MEM\$00"
 
@@ -111,6 +113,8 @@ op_05: .byte $05
 op_06: .byte $06
 op_07: .byte $07
 
+result_byte: .byte 0
+
 
 *=$1000 "Main Start"
 
@@ -124,6 +128,8 @@ op_07: .byte $07
     test_twos_comp_mem(0)
     test_twos_comp_a(0)
     test_sbc8_mem_mem(0)
+    test_sbc8_mem_immed(0)
+
     test_mask_from_bit_num_mem(0)
     test_mask_from_bit_num_a(0)
 
@@ -304,6 +310,83 @@ op_07: .byte $07
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)         // C      V     N
     print_sbc8_mem_mem(op8_80, op_01, $7F,   true,  true, false)
+
+    wait_and_clear_at_row(row)
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_sbc8_mem_immed(init_row)
+{
+    .var row = init_row
+    
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_sbc8_mem_immed_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    // carry, overflow, negative flags
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)     // C      V      N
+    print_sbc8_mem_immed(op_01, $00, $01, true, false, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)      // C      V      N
+    print_sbc8_mem_immed(op_00, $01, $FF, false, false, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)      // C      V      N
+    print_sbc8_mem_immed(op_02, $FF, $03, false, false, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)      // C      V      N
+    print_sbc8_mem_immed(op_02, $0F, $F3, false, false, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)      // C      V      N
+    print_sbc8_mem_immed(op8_80, $01, $7F, true, true, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)      // C      V      N
+    print_sbc8_mem_immed(op8_80, $7F, $01, true, true, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)      // C      V     N
+    print_sbc8_mem_immed(op_00, $00, $00, true, false, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)        // C      V     N
+    print_sbc8_mem_immed(op_00, $FF, $01, false, false, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)        // C      V     N
+    print_sbc8_mem_immed(op_00, $7F, $81, false, false, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)        // C      V     N
+    print_sbc8_mem_immed(op_00, $FE, $02, false, false, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)        // C      V     N
+    print_sbc8_mem_immed(op8_FE, $01, $FD, true, false, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)        // C      V     N
+    print_sbc8_mem_immed(op8_FF, $7F, $80, true, false, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)        // C      V     N
+    print_sbc8_mem_immed(op_02, $01, $01,   true,  false, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)        // C      V     N
+    print_sbc8_mem_immed(op_01, $02, $FF,   false,  false, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)         // C      V     N
+    print_sbc8_mem_immed(op8_80, $01, $7F,   true,  true, false)
 
     wait_and_clear_at_row(row)
 }
@@ -501,7 +584,38 @@ ResultGood:
     
     jsr PrintPassed
 }
-result_byte: .byte 0
+
+
+//////////////////////////////////////////////////////////////////////////////
+.macro print_sbc8_mem_immed(addr1, num, expected_result, expect_carry_set, 
+                          expect_overflow_set, expect_neg_set)
+{
+    lda #1
+    sta passed
+    lda addr1 
+    jsr PrintHexByteAccum 
+    nv_screen_print_str(minus_str)
+    lda #num   
+    jsr PrintHexByteAccum
+    nv_screen_print_str(equal_str)
+    nv_sbc8x_mem_immed(addr1, num, result_byte)
+    php
+    lda result_byte
+    nv_beq8_immed_a(expected_result, ResultGood)
+    lda #0 
+    sta passed
+
+ResultGood:
+    lda result_byte
+    jsr PrintHexByteAccum
+
+    plp
+    pass_or_fail_status_flags(expect_carry_set, expect_overflow_set, 
+                             expect_neg_set)
+    
+    jsr PrintPassed
+}
+
 
 //////////////////////////////////////////////////////////////////////////////
 .macro pass_or_fail_status_flags(expect_carry_set, expect_overflow_set, 
