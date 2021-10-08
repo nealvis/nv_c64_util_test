@@ -55,9 +55,6 @@ title_adc16_immediate_str: .text @"TEST ADC16 IMMED\$00"
 title_lsr16_str: .text @"TEST LSR16 \$00"
 title_sbc16_str: .text @"TEST SBC16 \$00"
 
-word_to_print: .word $DEAD
-another_word:  .word $BEEF
-
 counter: .byte 0
 
 op16_FFFF:

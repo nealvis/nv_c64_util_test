@@ -32,17 +32,7 @@
 
 .const dollar_sign = $24
 
-space_str: .text @" \$00"
-passed_str: .text @" PASSED\$00"
-failed_str: .text @" FAILED\$00"
-
-fail_control_str: nv_screen_lite_red_fg_str()
-pass_control_str: nv_screen_green_fg_str()
-normal_control_str: nv_screen_white_fg_str()
-
-passed: .byte 0
 temp_byte: .byte 0
-
 
 // program variables
 bit_str: .text @" BIT \$00"
@@ -50,10 +40,6 @@ negated_str: .text @" NEGATED \$00"
 equal_str: .text@" = \$00"
 minus_str: .text@" - \$00"
 transform_str: .text@" -> \$00"
-
-bad_carry_str: .text@" C\$00"
-bad_overflow_str: .text@" V\$00"
-bad_neg_str: .text@" N\$00"
 
 title_str: .text @"MATH8\$00"          // null terminated string to print
                                         // via the BASIC routine
@@ -64,13 +50,6 @@ title_sbc8_mem_immed_str: .text @"TEST SBC8 MEM IMMED\$00"
 
 title_twos_comp_a_str: .text @"TEST TWOS COMP A\$00"
 title_twos_comp_mem_str: .text @"TEST TWOS COMP MEM\$00"
-
-hit_anykey_str: .text @"HIT ANY KEY ...\$00"
-
-word_to_print: .word $DEAD
-another_word:  .word $BEEF
-
-counter: .byte 0
 
 op1: .word $FFFF
 op2: .word $FFFF
@@ -182,7 +161,7 @@ result_byte: .byte 0
     print_twos_comp_mem(op8_80, $80)
 
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 
 }
 
@@ -233,7 +212,7 @@ result_byte: .byte 0
     print_twos_comp_a(op8_80, $80)
 
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 
 }
 
@@ -311,7 +290,7 @@ result_byte: .byte 0
     nv_screen_plot_cursor(row++, 0)         // C      V     N
     print_sbc8_mem_mem(op8_80, op_01, $7F,   true,  true, false)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -388,7 +367,7 @@ result_byte: .byte 0
     nv_screen_plot_cursor(row++, 0)         // C      V     N
     print_sbc8_mem_immed(op8_80, $01, $7F,   true,  true, false)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -435,7 +414,7 @@ result_byte: .byte 0
     nv_screen_plot_cursor(row++, 0)
     print_mask_from_bit_num_mem(op_07, $80)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -482,26 +461,7 @@ result_byte: .byte 0
     nv_screen_plot_cursor(row++, 0)
     print_mask_from_bit_num_a(op_07, $80, ~$80)
 
-    wait_and_clear_at_row(row)
-}
-
-
-
-/////////////////////////////////////////////////////////////////////////////
-// wait for key then clear screen when its detected
-.macro wait_and_clear_at_row(init_row)
-{
-    .var row = init_row
-    .eval row++
-    nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(hit_anykey_str)
-
-    nv_key_wait_any_key()
-
-    nv_screen_clear()
-    .eval row=0
-    nv_screen_plot_cursor(row++, 33)
-    nv_screen_print_str(title_str)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
@@ -618,64 +578,6 @@ ResultGood:
 
 
 //////////////////////////////////////////////////////////////////////////////
-.macro pass_or_fail_status_flags(expect_carry_set, expect_overflow_set, 
-                                 expect_neg_set)
-{
-    php
-    nv_screen_print_str(fail_control_str)
-    plp
-    .if (expect_carry_set)
-    {
-        bcs CarryGood
-    }
-    else 
-    {
-        bcc CarryGood
-    }
-    php
-    nv_screen_print_str(bad_carry_str)
-    plp
-    lda #0 
-    sta passed
-
-CarryGood: 
-    .if (expect_overflow_set)
-    {
-        bvs OverflowGood
-    }
-    else 
-    {
-        bvc OverflowGood
-    }
-    php
-    nv_screen_print_str(bad_overflow_str)
-    plp
-    lda #0 
-    sta passed
-
-OverflowGood:
-    .if (expect_neg_set)
-    {
-        bmi NegGood
-    }
-    else 
-    {
-        bpl NegGood
-    }
-    php
-    nv_screen_print_str(bad_neg_str)
-    plp
-    lda #0 
-    sta passed
-    
-NegGood:
-    nv_screen_print_str(normal_control_str)
-
-}
-
-
-
-//////////////////////////////////////////////////////////////////////////////
 // inline macro to print the specified mask from bit number operation
 // at the current cursor location
 // nv_mask_from_bit_num is used to do the operation.  
@@ -749,29 +651,5 @@ NegMaskGood:
     jsr PrintPassed
 }
 
-///////////////////////////////////////////////////////////////////////
-PrintHexByteAccum:
-{
-    nv_screen_print_hex_byte_a(true)
-    rts
-}
 
-///////////////////////////////////////////////////////////////////////
-PrintPassed:
-{
-    nv_screen_print_str(space_str)
-    lda passed
-    bne PrintPassed
-PrintFailed:
-    nv_screen_print_str(fail_control_str)
-    nv_screen_print_str(failed_str)
-    jmp Done
-
-PrintPassed:
-    nv_screen_print_str(pass_control_str)
-    nv_screen_print_str(passed_str)
-
-Done:
-    nv_screen_print_str(normal_control_str)
-    rts
-}
+#import "../test_util/test_util_code.asm"
