@@ -179,8 +179,8 @@ sprite_collision_reg_value: .byte 0 // updated each frame with sprite coll
         
 MainLoop:
 
-        nv_adc16_immed(frame_counter, 1, frame_counter)
-        nv_adc16_immed(second_partial_counter, 1, second_partial_counter)
+        nv_adc16x_mem_immed(frame_counter, 1, frame_counter)
+        nv_adc16x_mem_immed(second_partial_counter, 1, second_partial_counter)
         nv_ble16_immed(second_partial_counter, FPS, PartialSecond1)
         jmp FullSecond
 PartialSecond1:
@@ -189,13 +189,13 @@ FullSecond:
         lda #0 
         sta second_partial_counter
         sta second_partial_counter+1
-        nv_adc16_immed(second_counter, 1, second_counter)
+        nv_adc16x_mem_immed(second_counter, 1, second_counter)
         lda #$03
         and second_counter  //set flag every 4 secs when bits 0 and 1 clear
         bne NoSetFlag
         lda #1
         sta change_up_flag
-        nv_adc16_immed(change_up_counter, 1, change_up_counter)
+        nv_adc16x_mem_immed(change_up_counter, 1, change_up_counter)
         .if (showFrameCounters)
         {
             nv_screen_poke_hex_word_mem(0, 14, change_up_counter, true)

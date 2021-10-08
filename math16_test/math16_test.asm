@@ -34,6 +34,9 @@
 
 .const dollar_sign = $24
 
+result_byte: .byte 0
+
+
 // program variables
 carry_str: .text @"(C) \$00"
 carry_and_overflow_str:  .text @"(CV) \$00"
@@ -52,13 +55,12 @@ title_adc16_immediate_str: .text @"TEST ADC16 IMMED\$00"
 title_lsr16_str: .text @"TEST LSR16 \$00"
 title_sbc16_str: .text @"TEST SBC16 \$00"
 
-hit_anykey_str: .text @"HIT ANY KEY ...\$00"
-
 word_to_print: .word $DEAD
 another_word:  .word $BEEF
 
 counter: .byte 0
 
+op16_FFFF:
 op1: .word $FFFF
 op2: .word $FFFF
 result: .word $0000
@@ -71,12 +73,21 @@ op2Beef: .word $beef
 
 opZero: .word $0000
 opMax: .word $ffff
+op16_0001:
 opOne: .word $0001
+op16_0002:
 opTwo: .word $0002
 
+op16_557F: .word $557F
+op16_2201: .word $2201
+op16_007F: .word $007F
+op16_FF00:
 opHighOnes: .word $FF00
+op16_00FF:
 opLowOnes: .word $00FF
+op16_7FFF:
 op_7FFF: .word $7FFF
+op16_FFFE: 
 op_FFFE: .word $FFFE
 op_0080: .word $0080 // 128
 op_0081: .word $0081 // 129
@@ -123,6 +134,7 @@ op_FE: .byte $FE
 
 .var row = 0
 
+    nv_screen_print_str(normal_control_str)
     nv_screen_clear()
     nv_screen_plot_cursor(row++, 33)
     nv_screen_print_str(title_str)
@@ -149,58 +161,68 @@ op_FE: .byte $FE
     .eval row++
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16(op1, op2, result)
+    nv_screen_plot_cursor(row++, 0) //            C      V      N
+    print_adc16(opMax, op16_FFFF, result, $FFFE, true, false, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16(opOne, opTwo, result)
+    nv_screen_plot_cursor(row++, 0) //                 C      V      N
+    print_adc16(op16_0001, op16_0002, result, $0003, false, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16(opOne, opMax, result)
+    nv_screen_plot_cursor(row++, 0) //                 C      V      N
+    print_adc16(op16_7FFF, op16_0002, result, $8001, false, true, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16(opMax, opZero, result)
+    nv_screen_plot_cursor(row++, 0) //                C      V      N
+    print_adc16(op16_0001, op16_FFFF, result, $0000, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16(opOne, opMax, result)
+    nv_screen_plot_cursor(row++, 0) //          C      V      N
+    print_adc16(opMax, opZero, result, $FFFF, false, false, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16(opLowOnes, opOne, result)
+    nv_screen_plot_cursor(row++, 0) //               C      V      N
+    print_adc16(op16_00FF, op16_0001, result, $0100, false, false, false)
+
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16(opLowOnes, opHighOnes, result)
+    nv_screen_plot_cursor(row++, 0) //                 C      V      N
+    print_adc16(op16_00FF, op16_FF00, result, $FFFF, false, false, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16(opHighOnes, opLowOnes, result)
+    nv_screen_plot_cursor(row++, 0) //                 C      V      N
+    print_adc16(op16_FF00, op16_00FF, result, $FFFF, false, false, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16(op_7FFF, opMax, result)
+    nv_screen_plot_cursor(row++, 0) //              C      V      N
+    print_adc16(op_7FFF, op16_FFFF, result, $7FFE, true, false, false)
+
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16(op_7FFF, opOne, result)
+    nv_screen_plot_cursor(row++, 0) //                C      V      N
+    print_adc16(op16_7FFF, op16_0001, result, $8000, false, true, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16(op_7FFF, opTwo, result)
+    nv_screen_plot_cursor(row++, 0) //              C      V      N
+    print_adc16(op_7FFF, op16_0002, result, $8001, false, true, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16(op_FFFE, opTwo, result)
+    nv_screen_plot_cursor(row++, 0) //              C      V      N
+    print_adc16(op_FFFE, op16_0002, result, $0000, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16(op_FFFE, opOne, result)
+    nv_screen_plot_cursor(row++, 0) //              C      V      N
+    print_adc16(op_FFFE, op16_0001, result, $FFFF, false, false, true)
 
-    wait_and_clear_at_row(row)
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                C      V      N
+    print_adc16(op16_007F, op16_0001, result, $0080, false, false, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                C      V      N
+    print_adc16(op16_557F, op16_2201, result, $7780, false, false, false)
+
+    wait_and_clear_at_row(row, title_str)
 }
 
 
@@ -288,7 +310,7 @@ op_FE: .byte $FE
     nv_screen_plot_cursor(row++, 0)
     print_adc16_8u(op_FFFE, opOne, result)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
@@ -384,7 +406,7 @@ op_FE: .byte $FE
     nv_screen_plot_cursor(row++, 0)
     print_adc16_8s(op_FFFE, opOne, result)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
@@ -401,58 +423,55 @@ op_FE: .byte $FE
     .eval row++
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16_immediate(op1, $36B1, result)
+    nv_screen_plot_cursor(row++, 0) //                      C      V      N
+    print_adc16_immediate(op16_FFFF, $36B1, result, $36B0, true, false, false)
+
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16_immediate(opOne, $0002, result)
+    nv_screen_plot_cursor(row++, 0) //                      C      V      N
+    print_adc16_immediate(op16_0001, $0002, result, $0003, false, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16_immediate(opOne, $FFFF, result)
+    nv_screen_plot_cursor(row++, 0) //                      C      V      N
+    print_adc16_immediate(op16_0001, $FFFF, result, $0000, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16_immediate(opMax, $0000, result)
+    nv_screen_plot_cursor(row++, 0) //                      C      V      N
+    print_adc16_immediate(op16_FFFF, $0000, result, $FFFF, false, false, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16_immediate(opOne, $FFFF, result)
+    nv_screen_plot_cursor(row++, 0) //                      C      V      N
+    print_adc16_immediate(op16_00FF, $0001, result, $0100, false, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16_immediate(opLowOnes, $0001, result)
+    nv_screen_plot_cursor(row++, 0) //                      C      V      N
+    print_adc16_immediate(op16_00FF, $FF00, result, $FFFF, false, false, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16_immediate(opLowOnes, $FF00, result)
+    nv_screen_plot_cursor(row++, 0) //                      C      V      N
+    print_adc16_immediate(op16_FF00, $00FF, result, $FFFF, false, false, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16_immediate(opHighOnes, $00FF, result)
+    nv_screen_plot_cursor(row++, 0) //                      C      V      N
+    print_adc16_immediate(op16_7FFF, $FFFF, result, $7FFE, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16_immediate(op_7FFF, $FFFF, result)
+    nv_screen_plot_cursor(row++, 0) //                      C      V      N
+    print_adc16_immediate(op16_7FFF, $0001, result, $8000, false, true, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16_immediate(op_7FFF, $0001, result)
+    nv_screen_plot_cursor(row++, 0) //                      C      V      N
+    print_adc16_immediate(op16_7FFF, $0002, result, $8001, false, true, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16_immediate(op_7FFF, $0002, result)
+    nv_screen_plot_cursor(row++, 0) //                      C      V      N
+    print_adc16_immediate(op16_FFFE, $0002, result, $0000, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16_immediate(op_FFFE, $0002, result)
+    nv_screen_plot_cursor(row++, 0) //                      C      V      N
+    print_adc16_immediate(op16_FFFE, $0001, result, $FFFF, false, false, true)
 
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_adc16_immediate(op_FFFE, $0001, result)
-
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -549,48 +568,37 @@ op_FE: .byte $FE
 }
 
 
-
-/////////////////////////////////////////////////////////////////////////////
-// wait for key then clear screen when its detected
-.macro wait_and_clear_at_row(init_row)
-{
-    .var row = init_row
-    .eval row++
-    nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(hit_anykey_str)
-
-    nv_key_wait_any_key()
-
-    nv_screen_clear()
-    .eval row=0
-    nv_screen_plot_cursor(row++, 33)
-    nv_screen_print_str(title_str)
-}
-
-
 //////////////////////////////////////////////////////////////////////////////
 //                          Print macros 
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
 // inline macro to print the specified addition at the current curor location
-// nv_adc16 us used to do the addition.  
-// it will look like this with no carry:
-//    $2222 + $3333 = $5555
-// or look like this if there is a carry:
-//    $FFFF + $0001 = (C) $0000
-.macro print_adc16(op1, op2, result)
+// nv_adc16x is used to do the addition.  
+.macro print_adc16(op1, op2, result, expected_result, 
+                   expect_carry_set, expect_overflow_set, expect_neg_set)
 {
+    lda #1
+    sta passed
+
     nv_screen_print_hex_word_mem(op1, true)
     nv_screen_print_str(plus_str)
     nv_screen_print_hex_word_mem(op2, true)
     nv_screen_print_str(equal_str)
 
-    nv_adc16(op1, op2, result)
-    bcc NoCarry
-    nv_screen_print_str(carry_str)
-NoCarry:
+    nv_adc16x(op1, op2, result)
+    php
+    nv_beq16_immed(result, expected_result, ResultGood)
+    lda #0 
+    sta passed
+
+ResultGood:
     nv_screen_print_hex_word_mem(result, true)
+    plp
+    pass_or_fail_status_flags(expect_carry_set, expect_overflow_set, 
+                              expect_neg_set)
+
+    jsr PrintPassed
 }
 
 
@@ -641,23 +649,33 @@ NoCarry:
 
 //////////////////////////////////////////////////////////////////////////////
 // inline macro to print the specified addition at the current curor location
-// nv_adc16_immed us used to do the addition.  
+// nv_adc16x_mem_immed us used to do the addition.  
 // it will look like this with no carry:
 //    $2222 + $3333 = $5555
 // or look like this if there is a carry:
 //    $FFFF + $0001 = (C) $0000
-.macro print_adc16_immediate(op1, num, result)
+.macro print_adc16_immediate(op1, num, result, expected_result, 
+                             expect_carry_set, expect_overflow_set, 
+                             expect_neg_set)
 {
     nv_screen_print_hex_word_mem(op1, true)
     nv_screen_print_str(plus_str)
     nv_screen_print_hex_word_immed(num, true)
     nv_screen_print_str(equal_str)
 
-    nv_adc16_immed(op1, num, result)
-    bcc NoCarry
-    nv_screen_print_str(carry_str)
-NoCarry:
+    nv_adc16x_mem_immed(op1, num, result)
+    php
+    nv_beq16_immed(result, expected_result, ResultGood)
+    lda #0 
+    sta passed
+
+ResultGood:
     nv_screen_print_hex_word_mem(result, true)
+    plp
+    pass_or_fail_status_flags(expect_carry_set, expect_overflow_set, 
+                              expect_neg_set)
+
+    jsr PrintPassed
 }
 
 
@@ -684,3 +702,6 @@ NoCarry:
 }
 
 temp_lsr16: .word 0
+
+
+#import "../test_util/test_util_code.asm"
