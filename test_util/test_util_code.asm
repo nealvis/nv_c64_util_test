@@ -44,7 +44,7 @@ hit_anykey_str: .text @"HIT ANY KEY ...\$00"
 
     nv_screen_clear()
     .eval row=0
-    nv_screen_plot_cursor(row++, 25)
+    nv_screen_plot_cursor(row++, 23)
     nv_screen_print_str(title_str)
 }
 
