@@ -32,15 +32,6 @@
 
 .const dollar_sign = $24
 
-space_str: .text @" \$00"
-passed_str: .text @" PASSED\$00"
-failed_str: .text @" FAILED\$00"
-
-fail_control_str: nv_screen_lite_red_fg_str()
-pass_control_str: nv_screen_green_fg_str()
-normal_control_str: nv_screen_white_fg_str()
-
-passed: .byte 0
 temp_byte: .byte 0
 result16: .word $0000
 
@@ -50,11 +41,6 @@ times_str: .text @" * \$00"
 equal_str: .text@" = \$00"
 minus_str: .text@" - \$00"
 transform_str: .text@" -> \$00"
-
-bad_carry_str: .text@" C\$00"
-overflow_set_str: .text@" V=1\$00"
-overflow_clear_str: .text@" V=0\$00"
-bad_neg_str: .text@" N\$00"
 
 title_str: .text @"MUL16\$00"          // null terminated string to print
                                         // via the BASIC routine
@@ -68,9 +54,6 @@ title_mul16_x_3_str: .text @"TEST MUL16 X 3\$00"
 title_mul16_y_3_str: .text @"TEST MUL16 Y 3\$00"
 
 title_mul16_immed_1_str: .text @"TEST MUL16 IMMED 1\$00"
-
-hit_anykey_str: .text @"HIT ANY KEY ...\$00"
-
 
 op1: .word $FFFF
 op2: .word $FFFF
@@ -234,7 +217,7 @@ op8_40: .byte $40
     nv_screen_plot_cursor(row++, 0)
     print_mul16(use_x_reg, op16_01DD, op8_AA, $3CC2, true)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
@@ -332,7 +315,7 @@ op8_40: .byte $40
     print_mul16(use_x_reg, op16_00FF, op8_FF, $FE01, false)
 
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 
 }
 
@@ -428,7 +411,7 @@ op8_40: .byte $40
     print_mul8_mem_mem(op8_99, op8_10, $0990)
 
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 
 }
 
@@ -517,34 +500,11 @@ op8_40: .byte $40
     print_mul8_mem_mem(op8_FF, op8_FF, $FE01)
 
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 
 }
 */
 
-/////////////////////////////////////////////////////////////////////////////
-// wait for key then clear screen when its detected
-.macro wait_and_clear_at_row(init_row)
-{
-    .var row = init_row
-    .eval row++
-    nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(hit_anykey_str)
-
-    jsr WaitAnyKey
-
-    nv_screen_clear()
-    .eval row=0
-    nv_screen_plot_cursor(row++, 33)
-    nv_screen_print_str(title_str)
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-//
-WaitAnyKey:
-    nv_key_wait_any_key()
-    rts
 
 //////////////////////////////////////////////////////////////////////////////
 //                          Print macros 
@@ -607,135 +567,4 @@ GoodResult:
     jsr PrintPassed
 }
 
-
-//////////////////////////////////////////////////////////////////////////////
-/*
-.macro pass_or_fail_status_flags(expect_carry_set, expect_overflow_set, 
-                                 expect_neg_set)
-{
-    php
-    nv_screen_print_str(fail_control_str)
-    plp
-    .if (expect_carry_set)
-    {
-        bcs CarryGood
-    }
-    else 
-    {
-        bcc CarryGood
-    }
-    php
-    nv_screen_print_str(bad_carry_str)
-    plp
-    lda #0 
-    sta passed
-
-CarryGood: 
-    .if (expect_overflow_set)
-    {
-        bvs OverflowGood
-    }
-    else 
-    {
-        bvc OverflowGood
-    }
-    php
-    nv_screen_print_str(bad_overflow_str)
-    plp
-    lda #0 
-    sta passed
-
-OverflowGood:
-    .if (expect_neg_set)
-    {
-        bmi NegGood
-    }
-    else 
-    {
-        bpl NegGood
-    }
-    php
-    nv_screen_print_str(bad_neg_str)
-    plp
-    lda #0 
-    sta passed
-    
-NegGood:
-    nv_screen_print_str(normal_control_str)
-
-}
-*/
-
-
-//////////////////////////////////////////////////////////////////////////////
-.macro pass_or_fail_overflow(expect_overflow_set)
-{
-    php
-    .if (expect_overflow_set)
-    {
-        bvs OverflowGood
-    }
-    else 
-    {
-        bvc OverflowGood
-    }
-    nv_screen_print_str(fail_control_str)
-    lda #0 
-    sta passed
-    jmp PrintOverflowState
-
-OverflowGood:
-    nv_screen_print_str(pass_control_str)
-
-PrintOverflowState:    
-    plp
-    php
-    bvs OverflowSet 
-OverflowClear:
-    nv_screen_print_str(overflow_clear_str)
-    jmp Done
-OverflowSet:   
-    nv_screen_print_str(overflow_set_str)
-
-Done:
-    nv_screen_print_str(normal_control_str)
-    plp
-}
-
-
-///////////////////////////////////////////////////////////////////////
-PrintHexByteAccum:
-{
-    nv_screen_print_hex_byte_a(true)
-    rts
-}
-
-
-///////////////////////////////////////////////////////////////////////
-PrintHexWord:
-{
-    nv_screen_print_hex_word_mem(word_to_print, true)
-    rts
-}
-word_to_print: .word 0
-
-
-///////////////////////////////////////////////////////////////////////
-PrintPassed:
-{
-    nv_screen_print_str(space_str)
-    lda passed
-    bne PrintPass
-PrintFail:
-    nv_screen_print_str(fail_control_str)
-    nv_screen_print_str(failed_str)
-    jmp Done
-
-PrintPass:
-    nv_screen_print_str(pass_control_str)
-    nv_screen_print_str(passed_str)
-
-Done:
-    nv_screen_print_str(normal_control_str)
-    rts
-}
+#import "../test_util/test_util_code.asm"

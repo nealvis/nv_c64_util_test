@@ -23,6 +23,9 @@ passed: .byte 0
 bad_carry_str: .text@" C\$00"
 bad_overflow_str: .text@" V\$00"
 bad_neg_str: .text@" N\$00"
+overflow_set_str: .text@" V=1\$00"
+overflow_clear_str: .text@" V=0\$00"
+
 
 hit_anykey_str: .text @"HIT ANY KEY ...\$00"
 
@@ -108,6 +111,50 @@ NegGood:
     plp
 
 }
+
+//////////////////////////////////////////////////////////////////////////////
+.macro pass_or_fail_overflow(expect_overflow_set)
+{
+    php
+    .if (expect_overflow_set)
+    {
+        bvs OverflowGood
+    }
+    else 
+    {
+        bvc OverflowGood
+    }
+    nv_screen_print_str(fail_control_str)
+    lda #0 
+    sta passed
+    jmp PrintOverflowState
+
+OverflowGood:
+    nv_screen_print_str(pass_control_str)
+
+PrintOverflowState:    
+    plp
+    php
+    bvs OverflowSet 
+OverflowClear:
+    nv_screen_print_str(overflow_clear_str)
+    jmp Done
+OverflowSet:   
+    nv_screen_print_str(overflow_set_str)
+
+Done:
+    nv_screen_print_str(normal_control_str)
+    plp
+}
+
+///////////////////////////////////////////////////////////////////////
+PrintHexWord:
+{
+    nv_screen_print_hex_word_mem(word_to_print, true)
+    rts
+}
+word_to_print: .word 0
+
 
 
 ///////////////////////////////////////////////////////////////////////
