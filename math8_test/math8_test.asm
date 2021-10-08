@@ -281,6 +281,29 @@ op_07: .byte $07
     nv_screen_plot_cursor(row++, 0)        // C      V     N
     print_sbc8_mem_mem(op_00, op8_7F, $81, false, false, true)
 
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)        // C      V     N
+    print_sbc8_mem_mem(op_00, op8_FE, $02, false, false, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)        // C      V     N
+    print_sbc8_mem_mem(op8_FE, op_01, $FD, true, false, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)        // C      V     N
+    print_sbc8_mem_mem(op8_FF, op8_7F, $80, true, false, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)        // C      V     N
+    print_sbc8_mem_mem(op_02, op_01, $01,   true,  false, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)        // C      V     N
+    print_sbc8_mem_mem(op_01, op_02, $FF,   false,  false, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)         // C      V     N
+    print_sbc8_mem_mem(op8_80, op_01, $7F,   true,  true, false)
 
     wait_and_clear_at_row(row)
 }
@@ -458,10 +481,10 @@ GoodResult:
     lda addr1 
     jsr PrintHexByteAccum 
     nv_screen_print_str(minus_str)
-    lda addr2
+    lda addr2   
     jsr PrintHexByteAccum
     nv_screen_print_str(equal_str)
-    nv_sbc8s(addr1, addr2, result_byte)
+    nv_sbc8x(addr1, addr2, result_byte)
     php
     lda result_byte
     nv_beq8_immed_a(expected_result, ResultGood)
