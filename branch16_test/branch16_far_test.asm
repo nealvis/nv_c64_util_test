@@ -8,18 +8,7 @@
 
 // import all nv_c64_util macros and data.  The data
 // will go in default place
-//#import "../../nv_c64_util/nv_c64_util_macs_and_data.asm"
-
-// move nv_c64_util_data closer to end of basic than the default so can
-// fit more tests
-*=$9E34
-#import "../../nv_c64_util/nv_c64_util_data.asm"
-
-// import the nv_c64_util macros 
-#import "../../nv_c64_util/nv_c64_util_macs.asm"
-
-//#import "../../nv_c64_util/nv_screen_macs.asm"
-//#import "../../nv_c64_util/nv_keyboard_macs.asm"
+#import "../../nv_c64_util/nv_c64_util_macs_and_data.asm"
 
 *=$0800 "BASIC Start"
 .byte 0 // first byte should be 0
@@ -49,20 +38,6 @@
 
 
 // program variables
-space_str: .text @" \$00"
-passed_str: .text @" PASSED\$00"
-failed_str: .text @" FAILED\$00"
-
-fail_control_str: nv_screen_red_fg_str()
-pass_control_str: nv_screen_green_fg_str()
-normal_control_str: nv_screen_white_fg_str()
-
-// byte that gets set to 0 for fail or non zero for pass during every test
-passed: .byte 0
-
-
-
-// program variables
 equal_str: .text@" = \$00"
 not_equal_str: .text@" != \$00"
 greater_equal_str: .text@" >= \$00" 
@@ -78,13 +53,6 @@ title_blt16_str: .text @"TEST BLT16 FAR \$00"
 title_ble16_str: .text @"TEST BLE16 FAR \$00"
 title_bgt16_str: .text @"TEST BGT16 FAR \$00"
 title_bge16_str: .text @"TEST BGE16 FAR \$00"
-
-hit_anykey_str: .text @"HIT ANY KEY ...\$00"
-
-word_to_print: .word $DEAD
-another_word:  .word $BEEF
-
-counter: .byte 0
 
 op1: .word $FFFF
 op2: .word $FFFF
@@ -102,8 +70,6 @@ opOne: .word $0001
 opTwo: .word $0002
 opHighOnes: .word $FF00
 opLowOnes: .word $00FF
-
-
 
 
 *=$0900 "Main Start"
@@ -149,14 +115,6 @@ opLowOnes: .word $00FF
     nv_screen_plot_cursor(row++, 0)
     print_beq16(opBig, opSmall, false)
 
-    /////////////////////////////
-    //nv_screen_plot_cursor(row++, 0)
-    //print_beq16(opSmall, opSmall, true)
-
-    //////////////////////////////
-    //nv_screen_plot_cursor(row++, 0)
-    //print_beq16(opTwo, opOne, false)
-
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
     print_beq16(opOne, opZero, false)
@@ -168,10 +126,6 @@ opLowOnes: .word $00FF
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
     print_beq16(opZero, opMax, false)
-
-    ////////////////////////////
-    //nv_screen_plot_cursor(row++, 0)
-    //print_beq16(opZero, opOne, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
@@ -209,7 +163,7 @@ opLowOnes: .word $00FF
     nv_screen_plot_cursor(row++, 0)
     print_beq16(opLowOnes, opLowOnes, true)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -240,11 +194,6 @@ opLowOnes: .word $00FF
     nv_screen_plot_cursor(row++, 0)
     print_bne16(opSmall, opSmall, false)
 
-
-    ////////////////////////////
-    //nv_screen_plot_cursor(row++, 0)
-    //print_bne16(opTwo, opOne, true)
-
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
     print_bne16(opOne, opZero, true)
@@ -265,41 +214,7 @@ opLowOnes: .word $00FF
     nv_screen_plot_cursor(row++, 0)
     print_bne16(opLowOnes, opHighOnes, true)
 
-/*
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne16(opZero, opOne, true)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne16(opMax, opOne, true)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne16(opMax, opZero, true)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne16(opMax, opMax, false)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne16(opOne, opOne, false)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne16(opZero, opZero, false)
-
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne16(opHighOnes, opHighOnes, false)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne16(opLowOnes, opLowOnes, false)
-*/
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
@@ -388,7 +303,7 @@ opLowOnes: .word $00FF
     nv_screen_plot_cursor(row++, 0)
     print_blt16(opLowOnes, opLowOnes, false)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
@@ -478,7 +393,7 @@ opLowOnes: .word $00FF
     nv_screen_plot_cursor(row++, 0)
     print_ble16(opLowOnes, opLowOnes, true)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
@@ -566,7 +481,7 @@ opLowOnes: .word $00FF
     nv_screen_plot_cursor(row++, 0)
     print_bgt16(opLowOnes, opLowOnes, false)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
@@ -654,37 +569,14 @@ opLowOnes: .word $00FF
     nv_screen_plot_cursor(row++, 0)
     print_bge16(opLowOnes, opLowOnes, true)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
-/////////////////////////////////////////////////////////////////////////////
-// wait for key then clear screen when its detected
-.macro wait_and_clear_at_row(init_row)
-{
-    .var row = init_row
-    .eval row++
-    nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(hit_anykey_str)
-
-    //nv_key_wait_any_key()
-    jsr WaitAnyKey
-
-    nv_screen_clear()
-    .eval row=0
-    nv_screen_plot_cursor(row++, 31)
-    nv_screen_print_str(title_str)
-}
-
-/////////////////////////////////////////////////////////////////////////////
-WaitAnyKey:
-    nv_key_wait_any_key()
-    rts
 
 //////////////////////////////////////////////////////////////////////////////
 //                          Print macros 
 //////////////////////////////////////////////////////////////////////////////
-
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -696,7 +588,10 @@ WaitAnyKey:
 {
     lda #1 
     sta passed
-    nv_screen_print_hex_word_mem(addr1, true)
+    //nv_screen_print_hex_word_mem(addr1, true)
+    nv_xfer16_mem_mem(addr1, word_to_print)
+    jsr PrintHexWord
+
     nv_beq16_far(addr1, addr2, BranchTarget)
     .if (expect_to_branch)
     {
@@ -717,7 +612,10 @@ BranchTarget:
     nv_screen_print_str(equal_str)
 
 Done:
-    nv_screen_print_hex_word_mem(addr2, true)
+    //nv_screen_print_hex_word_mem(addr2, true)
+    nv_xfer16_mem_mem(addr2, word_to_print)
+    jsr PrintHexWord
+    
     jsr PrintPassed
 }
 
@@ -731,7 +629,11 @@ Done:
 {
     lda #1 
     sta passed
-    nv_screen_print_hex_word_mem(addr1, true)
+    
+    //nv_screen_print_hex_word_mem(addr1, true)
+    nv_xfer16_mem_mem(addr1, word_to_print)
+    jsr PrintHexWord
+
     nv_bne16_far(addr1, addr2, BranchTarget)
     .if (expect_to_branch)
     {
@@ -752,7 +654,10 @@ BranchTarget:
     nv_screen_print_str(not_equal_str)
 
 Done:
-    nv_screen_print_hex_word_mem(addr2, true)
+    //nv_screen_print_hex_word_mem(addr2, true)
+    nv_xfer16_mem_mem(addr2, word_to_print)
+    jsr PrintHexWord
+
     jsr PrintPassed
 }
 
@@ -767,7 +672,10 @@ Done:
     lda #1 
     sta passed
 
-    nv_screen_print_hex_word_mem(addr1, true)
+    //nv_screen_print_hex_word_mem(addr1, true)
+    nv_xfer16_mem_mem(addr1, word_to_print)
+    jsr PrintHexWord
+
     nv_blt16_far(addr1, addr2, BranchTarget)
     .if (expect_to_branch)
     {
@@ -788,7 +696,10 @@ BranchTarget:
     nv_screen_print_str(less_than_str)
 
 Done:
-    nv_screen_print_hex_word_mem(addr2, true)
+    //nv_screen_print_hex_word_mem(addr2, true)
+    nv_xfer16_mem_mem(addr2, word_to_print)
+    jsr PrintHexWord
+    
     jsr PrintPassed
 }
 
@@ -804,7 +715,10 @@ Done:
     lda #1 
     sta passed
 
-    nv_screen_print_hex_word_mem(addr1, true)
+    //nv_screen_print_hex_word_mem(addr1, true)
+    nv_xfer16_mem_mem(addr1, word_to_print)
+    jsr PrintHexWord
+    
     nv_ble16_far(addr1, addr2, BranchTarget)
     .if (expect_to_branch)
     {
@@ -825,7 +739,10 @@ BranchTarget:
     nv_screen_print_str(less_equal_str)
 
 Done:
-    nv_screen_print_hex_word_mem(addr2, true)
+    //nv_screen_print_hex_word_mem(addr2, true)
+    nv_xfer16_mem_mem(addr2, word_to_print)
+    jsr PrintHexWord
+    
     jsr PrintPassed
 }
 
@@ -840,7 +757,10 @@ Done:
     lda #1
     sta passed
 
-    nv_screen_print_hex_word_mem(addr1, true)
+    //nv_screen_print_hex_word_mem(addr1, true)
+    nv_xfer16_mem_mem(addr1, word_to_print)
+    jsr PrintHexWord
+
     nv_bgt16_far(addr1, addr2, BranchTarget)
     .if (expect_to_branch)
     {
@@ -861,7 +781,10 @@ BranchTarget:
     nv_screen_print_str(greater_than_str)
 
 Done:
-    nv_screen_print_hex_word_mem(addr2, true)
+    //nv_screen_print_hex_word_mem(addr2, true)
+    nv_xfer16_mem_mem(addr2, word_to_print)
+    jsr PrintHexWord
+    
     jsr PrintPassed
 }
 
@@ -876,7 +799,10 @@ Done:
     lda #1 
     sta passed
 
-    nv_screen_print_hex_word_mem(addr1, true)
+    //nv_screen_print_hex_word_mem(addr1, true)
+    nv_xfer16_mem_mem(addr1, word_to_print)
+    jsr PrintHexWord
+
     nv_bge16_far(addr1, addr2, BranchTarget)
     .if (expect_to_branch)
     {
@@ -897,31 +823,13 @@ BranchTarget:
     nv_screen_print_str(greater_equal_str)
 
 Done:
-    nv_screen_print_hex_word_mem(addr2, true)
+    //nv_screen_print_hex_word_mem(addr2, true)
+    nv_xfer16_mem_mem(addr2, word_to_print)
+    jsr PrintHexWord
+
     jsr PrintPassed
 }
 
-
-
-//////////////////////////////////////////////////////////////////////////////
-// print pass/fail status at current cursor location
-PrintPassed:
-{
-    nv_screen_print_str(space_str)
-    lda passed
-    bne PrintPassed
-PrintFailed:
-    nv_screen_print_str(fail_control_str)
-    nv_screen_print_str(failed_str)
-    jmp Done
-
-PrintPassed:
-    nv_screen_print_str(pass_control_str)
-    nv_screen_print_str(passed_str)
-
-Done:
-    nv_screen_print_str(normal_control_str)
-    rts
-}
+#import "../test_util/test_util_code.asm"
 
 
