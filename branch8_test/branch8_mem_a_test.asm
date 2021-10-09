@@ -44,7 +44,7 @@ less_than_str: .text@" < \$00"
 greater_than_str: .text@" > \$00"
 less_equal_str: .text@" <= \$00" 
 
-title_str: .text @"BRANCH8 REGS ACCUM\$00"          // null terminated string to print
+title_str: .text @"BRANCH8 ACCUM\$00"          // null terminated string to print
                                         // via the BASIC routine
 title_beq8_a_str: .text @"TEST BEQ8 A\$00"
 title_beq8_a_far_str: .text @"TEST BEQ8 A FAR\$00"
