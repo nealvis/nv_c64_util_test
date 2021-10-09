@@ -65,20 +65,6 @@ title_bge8_far_str: .text @"TEST BGE8 FAR\$00"
 title_bne8_str: .text @"TEST BNE8\$00"
 title_bne8_far_str: .text @"TEST BNE8 FAR\$00"
 
-
-hit_anykey_str: .text @"HIT ANY KEY ...\$00"
-
-space_str: .text @" \$00"
-passed_str: .text @" PASSED\$00"
-failed_str: .text @" FAILED\$00"
-//passed_str: .text @" \$1EPASSED\$05\$00"
-//failed_str: .text @" \$1CFAILED\$05\$00"
-
-fail_control_str: nv_screen_red_fg_str()
-pass_control_str: nv_screen_green_fg_str()
-normal_control_str: nv_screen_white_fg_str()
-
-
 opSmall: .byte $05
 opBig:   .byte $58
 
@@ -91,9 +77,6 @@ opOne: .byte $01
 opTwo: .byte $02
 opHighOnes: .byte $F0
 opLowOnes: .byte $0F
-
-// byte that gets set to 0 for fail or non zero for pass during every test
-passed: .byte 0
 
 
 *=$1000 "Main Start"
@@ -227,7 +210,7 @@ passed: .byte 0
     nv_screen_plot_cursor(row++, 0)
     print_beq8(opLowOnes, opLowOnes, use_far, true)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -317,7 +300,7 @@ passed: .byte 0
     nv_screen_plot_cursor(row++, 0)
     print_bne8(opLowOnes, opLowOnes, use_far, false)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
@@ -411,7 +394,7 @@ passed: .byte 0
     nv_screen_plot_cursor(row++, 0)
     print_blt8(opLowOnes, opLowOnes, use_far, false)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
@@ -505,7 +488,7 @@ passed: .byte 0
     nv_screen_plot_cursor(row++, 0)
     print_ble8(opLowOnes, opLowOnes, use_far, true)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -598,7 +581,7 @@ passed: .byte 0
     nv_screen_plot_cursor(row++, 0)
     print_bgt8(opLowOnes, opLowOnes, use_far, false)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -691,33 +674,13 @@ passed: .byte 0
     nv_screen_plot_cursor(row++, 0)
     print_bge8(opLowOnes, opLowOnes, use_far, true)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
-
-
-/////////////////////////////////////////////////////////////////////////////
-// wait for key then clear screen when its detected
-.macro wait_and_clear_at_row(init_row)
-{
-    .var row = init_row
-    .eval row++
-    nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(hit_anykey_str)
-
-    nv_key_wait_any_key()
-
-    nv_screen_clear()
-    .eval row=0
-    nv_screen_plot_cursor(row++, 24)
-    nv_screen_print_str(title_str)
-}
 
 //////////////////////////////////////////////////////////////////////////////
 //                          Print macros 
 //////////////////////////////////////////////////////////////////////////////
-
-
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1162,29 +1125,5 @@ Done:
 */
 
 
-PrintHexByteAccum:
-{
-    nv_screen_print_hex_byte_a(true)
-    rts
-}
-
-
-PrintPassed:
-{
-    nv_screen_print_str(space_str)
-    lda passed
-    bne PrintPassed
-PrintFailed:
-    nv_screen_print_str(fail_control_str)
-    nv_screen_print_str(failed_str)
-    jmp Done
-
-PrintPassed:
-    nv_screen_print_str(pass_control_str)
-    nv_screen_print_str(passed_str)
-
-Done:
-    nv_screen_print_str(normal_control_str)
-    rts
-}
+#import "../test_util/test_util_code.asm"
 
