@@ -37,17 +37,6 @@
 
 
 // program variables
-space_str: .text @" \$00"
-passed_str: .text @" PASSED\$00"
-failed_str: .text @" FAILED\$00"
-
-fail_control_str: nv_screen_red_fg_str()
-pass_control_str: nv_screen_green_fg_str()
-normal_control_str: nv_screen_white_fg_str()
-
-// byte that gets set to 0 for fail or non zero for pass during every test
-passed: .byte 0
-
 
 equal_str: .text@" = \$00"
 not_equal_str: .text@" != \$00"
@@ -65,13 +54,6 @@ title_blt16_immediate_str: .text @"TEST BLT16 IMMED\$00"
 title_ble16_immediate_str: .text @"TEST BLE16 IMMED\$00"
 title_bgt16_immediate_str: .text @"TEST BGT16 IMMED\$00"
 title_bge16_immediate_str: .text @"TEST BGE16 IMMED\$00"
-
-hit_anykey_str: .text @"HIT ANY KEY ...\$00"
-
-word_to_print: .word $DEAD
-another_word:  .word $BEEF
-
-counter: .byte 0
 
 op1: .word $FFFF
 op2: .word $FFFF
@@ -190,7 +172,7 @@ opLowOnes: .word $00FF
     nv_screen_plot_cursor(row++, 0)
     print_cmp16_immed(opLowOnes, $FE, CMP_GREATER)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
@@ -279,7 +261,7 @@ opLowOnes: .word $00FF
     print_beq16_immed(opLowOnes, $FE, false)
 
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -367,7 +349,7 @@ opLowOnes: .word $00FF
     print_bne16_immed(opLowOnes, $FE, true)
 
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
@@ -457,7 +439,7 @@ opLowOnes: .word $00FF
     print_blt16_immed(opLowOnes, $FE, false)
 
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
@@ -546,7 +528,7 @@ opLowOnes: .word $00FF
     print_ble16_immed(opLowOnes, $FE, false)
 
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
@@ -634,7 +616,7 @@ opLowOnes: .word $00FF
     nv_screen_plot_cursor(row++, 0)
     print_bgt16_immed(opLowOnes, $FE, true)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
@@ -722,32 +704,8 @@ opLowOnes: .word $00FF
     nv_screen_plot_cursor(row++, 0)
     print_bge16_immed(opLowOnes, $FE, true)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
-
-
-/////////////////////////////////////////////////////////////////////////////
-// wait for key then clear screen when its detected
-.macro wait_and_clear_at_row(init_row)
-{
-    .var row = init_row
-    .eval row++
-    nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(hit_anykey_str)
-
-    //nv_key_wait_any_key()
-    jsr WaitAnyKey
-
-    nv_screen_clear()
-    .eval row=0
-    nv_screen_plot_cursor(row++, 25)
-    nv_screen_print_str(title_str)
-}
-
-//////////////////////////////////////////////////////////////////////////////
-WaitAnyKey:
-    nv_key_wait_any_key()
-    rts
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -982,24 +940,6 @@ Done:
     jsr PrintPassed
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// print pass/fail status at current cursor location
-PrintPassed:
-{
-    nv_screen_print_str(space_str)
-    lda passed
-    bne PrintPassed
-PrintFailed:
-    nv_screen_print_str(fail_control_str)
-    nv_screen_print_str(failed_str)
-    jmp Done
 
-PrintPassed:
-    nv_screen_print_str(pass_control_str)
-    nv_screen_print_str(passed_str)
-
-Done:
-    nv_screen_print_str(normal_control_str)
-    rts
-}
+#import "../test_util/test_util_code.asm"
 
