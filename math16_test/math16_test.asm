@@ -45,14 +45,18 @@ plus_str: .text @"+\$00"
 minus_str: .text @"-\$00"
 equal_str: .text@"=\$00"
 lsr_str: .text@">>\$00"
+asl_str: .text@"<<\$00"
 
 title_str: .text @"MATH16\$00"          // null terminated string to print
                                         // via the BASIC routine
 title_adc16_str: .text @"TEST ADC16 \$00"
-title_adc16_8u_str: .text @"TEST ADC16 8U \$00"
+title_adc16_mem8u_str: .text @"TEST ADC16 MEM8U \$00"
+title_adc16_a8u_str: .text @"TEST ADC16 A8U \$00"
+
 title_adc16_8s_str: .text @"TEST ADC16 8S \$00"
 title_adc16_immediate_str: .text @"TEST ADC16 IMMED\$00"
 title_lsr16_str: .text @"TEST LSR16 \$00"
+title_asl16_str: .text @"TEST ASL16 \$00"
 title_sbc16_str: .text @"TEST SBC16 \$00"
 
 #import "../test_util/test_util_op16_data.asm"
@@ -69,9 +73,11 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
 
     test_adc16(0)
     test_adc16_immediate(0)
-    test_adc16_8u(0)
+    test_adc16_8u(false, 0)
+    test_adc16_8u(true, 0)
     test_adc16_8s(0)
     test_lsr16(0)
+    test_asl16(0)
 
     rts
 
@@ -155,83 +161,90 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
 
 //////////////////////////////////////////////////////////////////////////////
 //
-.macro test_adc16_8u(init_row)
+.macro test_adc16_8u(use_a, init_row)
 {
     .var row = init_row
     
     //////////////////////////////////////////////////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_adc16_8u_str)
+    .if (use_a)
+    {
+        nv_screen_print_str(title_adc16_a8u_str)
+    }
+    else
+    {
+        nv_screen_print_str(title_adc16_mem8u_str)
+    }
     //////////////////////////////////////////////////////////////////////////
     .eval row++
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                C     V      N
-    print_adc16_8u(op16_FFFF, op8_FF, result, $00FE, true, false, false)
+    nv_screen_plot_cursor(row++, 0) //                       C     V      N
+    print_adc16_8u(use_a, op16_FFFF, op8_FF, result, $00FE, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                C     V      N
-    print_adc16_8u(op16_0001, op8_02, result, $0003, false, false, false)
+    nv_screen_plot_cursor(row++, 0) //                       C     V      N
+    print_adc16_8u(use_a, op16_0001, op8_02, result, $0003, false, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                C     V      N
-    print_adc16_8u(op16_0001, op8_FF, result, $0100, false, false, false)
+    nv_screen_plot_cursor(row++, 0) //                       C     V      N
+    print_adc16_8u(use_a, op16_0001, op8_FF, result, $0100, false, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                C     V      N
-    print_adc16_8u(op16_FFFF, op8_00, result, $FFFF, false, false, true)
+    nv_screen_plot_cursor(row++, 0) //                       C     V      N
+    print_adc16_8u(use_a, op16_FFFF, op8_00, result, $FFFF, false, false, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                C     V      N
-    print_adc16_8u(op16_00FF, op8_01, result, $0100, false, false, false)
+    nv_screen_plot_cursor(row++, 0) //                       C     V      N
+    print_adc16_8u(use_a, op16_00FF, op8_01, result, $0100, false, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                C     V      N
-    print_adc16_8u(op16_00FF, op8_7F, result, $017E, false, false, false)
+    nv_screen_plot_cursor(row++, 0) //                       C     V      N
+    print_adc16_8u(use_a, op16_00FF, op8_7F, result, $017E, false, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                C     V      N
-    print_adc16_8u(op16_FF00, op8_FF, result, $FFFF, false, false, true)
+    nv_screen_plot_cursor(row++, 0) //                       C     V      N
+    print_adc16_8u(use_a, op16_FF00, op8_FF, result, $FFFF, false, false, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                C     V      N
-    print_adc16_8u(op16_7FFF, op8_01, result, $8000, false, true, true)
+    nv_screen_plot_cursor(row++, 0) //                       C     V      N
+    print_adc16_8u(use_a, op16_7FFF, op8_01, result, $8000, false, true, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                C     V      N
-    print_adc16_8u(op16_BEEF, op8_0F, result, $BEFE, false, false, true)
+    nv_screen_plot_cursor(row++, 0) //                       C     V      N
+    print_adc16_8u(use_a, op16_BEEF, op8_0F, result, $BEFE, false, false, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                C     V      N
-    print_adc16_8u(op16_BEEF, op8_F0, result, $BFDF, false, false, true)
+    nv_screen_plot_cursor(row++, 0) //                       C     V      N
+    print_adc16_8u(use_a, op16_BEEF, op8_F0, result, $BFDF, false, false, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                C     V      N
-    print_adc16_8u(op16_FFFF, op8_F0, result, $00EF, true, false, false)
+    nv_screen_plot_cursor(row++, 0) //                       C     V      N
+    print_adc16_8u(use_a, op16_FFFF, op8_F0, result, $00EF, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                C     V      N
-    print_adc16_8u(op16_FFFF, op8_FF, result, $00FE, true, false, false)
+    nv_screen_plot_cursor(row++, 0) //                       C     V      N
+    print_adc16_8u(use_a, op16_FFFF, op8_FF, result, $00FE, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                C     V      N
-    print_adc16_8u(op16_7FFF, op8_FF, result, $80FE, false, true, true)
+    nv_screen_plot_cursor(row++, 0) //                       C     V      N
+    print_adc16_8u(use_a, op16_7FFF, op8_FF, result, $80FE, false, true, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                C     V      N
-    print_adc16_8u(op16_7FFF, op8_01, result, $8000, false, true, true)
+    nv_screen_plot_cursor(row++, 0) //                       C     V      N
+    print_adc16_8u(use_a, op16_7FFF, op8_01, result, $8000, false, true, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                C     V      N
-    print_adc16_8u(op16_7FFF, op8_02, result, $8001, false, true, true)
+    nv_screen_plot_cursor(row++, 0) //                       C     V      N
+    print_adc16_8u(use_a, op16_7FFF, op8_02, result, $8001, false, true, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                C     V      N
-    print_adc16_8u(op16_FFFE, op8_02, result, $0000, true, false, false)
+    nv_screen_plot_cursor(row++, 0) //                       C     V      N
+    print_adc16_8u(use_a, op16_FFFE, op8_02, result, $0000, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                C     V      N
-    print_adc16_8u(op16_FFFE, op8_01, result, $FFFF, false, false, true)
+    nv_screen_plot_cursor(row++, 0) //                       C     V      N
+    print_adc16_8u(use_a, op16_FFFE, op8_01, result, $FFFF, false, false, true)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -411,83 +424,187 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_8000, 0, $8000)
+    print_lsr16(op16_8000, 0, $8000, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_8000, 1, $4000)
+    print_lsr16(op16_8000, 1, $4000, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_8000, 2, $2000)
+    print_lsr16(op16_8000, 2, $2000, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_8000, 3, $1000)
+    print_lsr16(op16_8000, 3, $1000, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_8000, 4, $0800)
+    print_lsr16(op16_8000, 4, $0800, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_8000, 5, $0400)
+    print_lsr16(op16_8000, 5, $0400, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_8000, 6, $0200)
+    print_lsr16(op16_8000, 6, $0200, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_8000, 7, $0100)
+    print_lsr16(op16_8000, 7, $0100, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_8000, 8, $0080)
+    print_lsr16(op16_8000, 8, $0080, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_8000, 9, $0040)
+    print_lsr16(op16_8000, 9, $0040, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_8000, 10, $0020)
+    print_lsr16(op16_8000, 10, $0020, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_8000, 11, $0010)
+    print_lsr16(op16_8000, 11, $0010, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_8000, 12, $0008)
+    print_lsr16(op16_8000, 12, $0008, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_8000, 13, $0004)
+    print_lsr16(op16_8000, 13, $0004, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_8000, 14, $0002)
+    print_lsr16(op16_8000, 14, $0002, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_8000, 15, $0001)
+    print_lsr16(op16_8000, 15, $0001, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_8000, 16, $0000)
+    print_lsr16(op16_8000, 16, $0000, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_FFFF, 1, $7FFF)
+    print_lsr16(op16_FFFF, 1, $7FFF, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_FFFF, 2, $3FFF)
+    print_lsr16(op16_FFFF, 2, $3FFF, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_lsr16(op16_FFFF, 3, $1FFF)
+    print_lsr16(op16_FFFF, 3, $1FFF, true)
+
+    wait_and_clear_at_row(row, title_str)
+
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_asl16(init_row)
+{
+    .var row = init_row
+    
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_asl16_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_8000, 0, $8000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_8000, 1, $0000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_8000, 2, $0000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 0, $0001, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 1, $0002, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 2, $0004, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 3, $0008, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 4, $0010, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 5, $0020, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 6, $0040, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 7, $0080, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 8, $0100, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 9, $0200, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 10, $0400, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 11, $0800, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 12, $1000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 13, $2000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 14, $4000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 15, $8000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 16, $0000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_asl16(op16_0001, 17, $0000, false)
+
+    wait_and_clear_at_row(row, title_str)
+
 }
 
 
@@ -504,9 +621,15 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
     lda #1
     sta passed
 
-    nv_screen_print_hex_word_mem(op1, true)
+    //nv_screen_print_hex_word_mem(op1, true)
+    nv_xfer16_mem_mem(op1, word_to_print)
+    jsr PrintHexWord
+
     nv_screen_print_str(plus_str)
-    nv_screen_print_hex_word_mem(op2, true)
+    //nv_screen_print_hex_word_mem(op2, true)
+    nv_xfer16_mem_mem(op2, word_to_print)
+    jsr PrintHexWord
+        
     nv_screen_print_str(equal_str)
 
     nv_adc16x(op1, op2, result)
@@ -516,7 +639,10 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
     sta passed
 
 ResultGood:
-    nv_screen_print_hex_word_mem(result, true)
+    //nv_screen_print_hex_word_mem(result, true)
+    nv_xfer16_mem_mem(result, word_to_print)
+    jsr PrintHexWord
+    
     plp
     pass_or_fail_status_flags(expect_carry_set, expect_overflow_set, 
                               expect_neg_set)
@@ -527,12 +653,12 @@ ResultGood:
 
 //////////////////////////////////////////////////////////////////////////////
 // inline macro to print the specified addition at the current curor location
-// nv_adc16x_mem16x_mem8u is used to do the addition.  
+// nv_adc16x_mem16x_mem8u or nv_adc16x_mem16x_a8u is used to do the addition.  
 // it will look like this with no carry:
 //    $2222 + $33 = $2255
 // or look like this if there is a carry:
 //    $FFFF + $01 = (C) $0000
-.macro print_adc16_8u(op16, op8, result, expected_result, 
+.macro print_adc16_8u(use_a, op16, op8, result, expected_result, 
                       expect_carry_set, expect_overflow_set, expect_neg_set)
 {
     lda #1
@@ -549,8 +675,15 @@ ResultGood:
     jsr PrintHexByteAccum
     
     nv_screen_print_str(equal_str)
-
-    nv_adc16x_mem16x_mem8u(op16, op8, result)
+    .if (use_a)
+    {
+        lda op8
+        nv_adc16x_mem16x_a8u(op16, result)
+    }
+    else
+    {
+        nv_adc16x_mem16x_mem8u(op16, op8, result)
+    }
     php
     nv_beq16_immed(result, expected_result, ResultGood)
     lda #0 
@@ -663,7 +796,7 @@ ResultGood:
 //   $0001 >> 3 = $0004 
 // op1 is the address of the LSB of the 16 bit number to shift
 // num_rots is the number of rotations to do
-.macro print_lsr16(op1, num_rots, expected_result)
+.macro print_lsr16(op1, num_rots, expected_result, expect_carry_set)
 {
     lda #1 
     sta passed
@@ -697,6 +830,57 @@ ResultGood:
     jsr PrintHexWord
 
     plp
+    pass_or_fail_carry(expect_carry_set)
+
+    jsr PrintPassed
+
+}
+
+temp_lsr16: .word 0
+
+
+//////////////////////////////////////////////////////////////////////////////
+// inline macro to print the specifiied shift left at the current 
+// cursor position.  nv_asl16_xxxx will be used to do the operation.
+// it will look like this
+//   $0001 << 3 = $0008 PASSED
+// op1 is the address of the LSB of the 16 bit number to shift
+// num_rots is the number of rotations to do
+.macro print_asl16(op1, num_rots, expected_result, expect_carry_set)
+{
+    lda #1 
+    sta passed
+
+    lda op1
+    sta temp_asl16
+    lda op1+1
+    sta temp_asl16 + 1
+
+    //nv_screen_print_hex_word_mem(temp_asl16, true)
+    nv_xfer16_mem_mem(temp_asl16, word_to_print)
+    jsr PrintHexWord
+    
+    nv_screen_print_str(asl_str)
+    
+    //nv_screen_print_hex_word_immed(num_rots, true)
+    nv_store16_immed(word_to_print, num_rots)
+    jsr PrintHexWord
+
+    nv_screen_print_str(equal_str)
+
+    nv_asl16u_mem16u_immed8u(temp_asl16, num_rots)
+    php
+    nv_beq16_immed(temp_asl16, expected_result, ResultGood)
+    lda #0 
+    sta passed
+
+ResultGood:
+    //nv_screen_print_hex_word_mem(temp_asl16, true)
+    nv_xfer16_mem_mem(temp_asl16, word_to_print)
+    jsr PrintHexWord
+
+    plp
+    pass_or_fail_carry(expect_carry_set)
     //pass_or_fail_status_flags(expect_carry_set, expect_overflow_set, 
     //                          expect_neg_set)
 
@@ -704,7 +888,7 @@ ResultGood:
 
 }
 
-temp_lsr16: .word 0
+temp_asl16: .word 0
 
 
 #import "../test_util/test_util_code.asm"

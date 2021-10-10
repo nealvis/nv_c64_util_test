@@ -112,6 +112,33 @@ NegGood:
 
 }
 
+
+//////////////////////////////////////////////////////////////////////////////
+.macro pass_or_fail_carry(expect_carry_set)
+{
+    php
+    nv_screen_print_str(fail_control_str)
+    plp
+    .if (expect_carry_set)
+    {
+        bcs CarryGood
+    }
+    else 
+    {
+        bcc CarryGood
+    }
+    php
+    nv_screen_print_str(bad_carry_str)
+    lda #0 
+    sta passed
+    plp
+
+CarryGood: 
+
+}
+
+
+
 //////////////////////////////////////////////////////////////////////////////
 .macro pass_or_fail_overflow(expect_overflow_set)
 {

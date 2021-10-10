@@ -534,12 +534,12 @@ op8_40: .byte $40
     .if (use_x_reg)
     {
         ldx addr2
-        nv_mul16_x(addr1, result16, NV_PROCSTAT_OVERFLOW)
+        nv_mul16u_mem16u_x8u(addr1, result16, NV_PROCSTAT_OVERFLOW)
     }
     else 
     {
         ldy addr2
-        nv_mul16_y(addr1, result16, NV_PROCSTAT_OVERFLOW)
+        nv_mul16u_mem16u_y8u(addr1, result16, NV_PROCSTAT_OVERFLOW)
     }
     php // save status register
     
