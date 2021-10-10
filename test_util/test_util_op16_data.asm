@@ -55,8 +55,13 @@ op_FFFE: .word $FFFE
 
 op16_0080:
 op_0080: .word $0080 // 128
+
+op16_0081: 
 op_0081: .word $0081 // 129
+
+op16_8000:
 op_8000: .word $8000 // high bit only set
+
 op_8001: .word $8001 // high bit only set
 op_FFFF: .word $FFFF // all bits
 op_0000: .word $0000 // all bits
