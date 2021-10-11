@@ -45,13 +45,8 @@ title_str: .text @"MATH16\$00"          // null terminated string to print
                                         // via the BASIC routine
 title_sbc16_str: .text @"TEST SBC16 \$00"
 
-hit_anykey_str: .text @"HIT ANY KEY ...\$00"
-
-word_to_print: .word $DEAD
-another_word:  .word $BEEF
-
-counter: .byte 0
-
+#import "../test_util/test_util_op16_data.asm"
+/*
 op1: .word $FFFF
 op2: .word $FFFF
 result: .word $0000
@@ -110,11 +105,13 @@ op_FD: .byte $FD
 op_33: .byte $33
 op_22: .byte $22
 op_FE: .byte $FE
-
+*/
 
 *=$1000 "Main Start"
 
 .var row = 0
+
+    nv_screen_print_str(normal_control_str)
 
     nv_screen_clear()
     nv_screen_plot_cursor(row++, 33)
@@ -137,107 +134,90 @@ op_FE: .byte $FE
     .eval row++
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_0000, op_0001, op_00, op_01, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_0002, op16_0001, result, $0001, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_0001, op_0000, op_01, op_00, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_0001, op16_0000, result, $0001, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_0081, op_0080, op_09, op_08, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_0081, op16_0080, result, $0001, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(opTwo, opOne, op_02, op_01, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_0001, op16_0002, result, $FFFF, false, false, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_8000, op_8000, op_80, op_80, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_8000, op16_8000, result, $0000, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_8000, op_8001, op_80, op_81, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_8000, op16_8001, result, $FFFF, false, false, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_8000, op_7FFF, op_80, op_7F, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_8000, op16_7FFF, result, $0001, true, true, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_8000, op_0001, op_80, op_01, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_8000, op16_0001, result, $7FFF, true, true, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_0001, op_7FFF, op_01, op_7F, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_0001, op16_7FFF, result, $8002, false, false, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_7FFF, op_7FFF, op_7F, op_7F, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_7FFF, op16_7FFF, result, $0000, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_7FFF, op_0001, op_7F, op_01, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_7FFF, op16_0001, result, $7FFE, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_7FFF, op_0002, op_7F, op_02, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_7FFF, op16_0002, result, $7FFD, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_FFFF, op_FFFF, op_FF, op_FF, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_FFFF, op16_FFFF, result, $0000, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_0100, op_00FF, op_10, op_0F, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_0100, op16_00FF, result, $0001, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_0002, op_FFFD, op_02, op_FD, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_0002, op16_FFFD, result, $0005, false, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_0002, op_8000, op_02, op_80, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_0002, op16_8000, result, $8002, false, true, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_3333, op_2222, op_33, op_22, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_3333, op16_2222, result, $1111, true, false, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_0000, op_7FFF, op_00, op_7F, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_0000, op16_7FFF, result, $8001, false, false, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_FFFE, op_7FFF, op_FE, op_7F, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_FFFE, op16_7FFF, result, $7FFF, true, true, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_sbc16_and_sbc8(op_7FFF, op_8000, op_7F, op_80, result)
+    nv_screen_plot_cursor(row++, 0) //                C     V      N
+    print_sbc16(op16_7FFF, op16_8000, result, $FFFF, false, true, true)
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
 
-
-/////////////////////////////////////////////////////////////////////////////
-// wait for key then clear screen when its detected
-.macro wait_and_clear_at_row(init_row)
-{
-    .var row = init_row
-    .eval row++
-    nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(hit_anykey_str)
-
-    nv_key_wait_any_key()
-
-    nv_screen_clear()
-    .eval row=0
-    nv_screen_plot_cursor(row++, 33)
-    nv_screen_print_str(title_str)
-}
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -256,55 +236,80 @@ op_FE: .byte $FE
 //    $8000 - $0001 = (CV)$7FFF
 // with borrow needed it will look like this
 //    $7FFF - $8000 = (V) $FFFF
-.macro print_sbc16(op1, op2, result)
+.macro print_sbc16(op1, op2, result, expected_result, expect_carry_set, 
+                   expect_overflow_set, expect_neg_set)
 {
-    nv_screen_print_hex_word_mem(op1, true)
+    lda #1 
+    sta passed
+
+    //nv_screen_print_hex_word_mem(op1, true)
+    nv_xfer16_mem_mem(op1, word_to_print)
+    jsr PrintHexWord
+    
     nv_screen_print_str(minus_str)
-    nv_screen_print_hex_word_mem(op2, true)
+
+    //nv_screen_print_hex_word_mem(op2, true)
+    nv_xfer16_mem_mem(op2, word_to_print)
+    jsr PrintHexWord
+
     nv_screen_print_str(equal_str)
 
     nv_sbc16(op1, op2, result)
-    bcc NoCarry
-Carry:
-    bvs CarryAndOverflow 
-CarryNoOverflow:
-    nv_screen_print_str(carry_str)
-    jmp PrintResult
-CarryAndOverflow:
-    nv_screen_print_str(carry_and_overflow_str)
-    jmp PrintResult
-NoCarry: 
-    bvc NoCarryNoOverflow
-NoCarryButOverflow:
-    nv_screen_print_str(overflow_str)
-    jmp PrintResult
-NoCarryNoOverflow:
-    // print nothing here
+    php
+    nv_beq16_immed(result, expected_result, ResultGood)
+    lda #0 
+    sta passed
 
-PrintResult:
-    nv_screen_print_hex_word_mem(result, true)
+ResultGood:
+    //nv_screen_print_hex_word_mem(result, true)
+    nv_xfer16_mem_mem(result, word_to_print)
+    jsr PrintHexWord
+    
+    plp
+    pass_or_fail_status_flags(expect_carry_set, expect_overflow_set, 
+                              expect_neg_set)
+
+    jsr PrintPassed
 }
 
 //////////////////////////////////////////////////////////////////////////////
 //
+/*
 .macro print_sbc16_and_sbc8(op16a, op16b, op8a, op8b, result)
 {
-    nv_screen_print_hex_word_mem(op16a, true)
+    //nv_screen_print_hex_word_mem(op16a, true)
+    nv_xfer16_mem_mem(op16a, word_to_print)
+    jsr PrintHexWord
+    
     nv_screen_print_str(minus_str)
-    nv_screen_print_hex_word_mem(op16b, true)
+
+    //nv_screen_print_hex_word_mem(op16b, true)
+    nv_xfer16_mem_mem(op16b, word_to_print)
+    jsr PrintHexWord
+
     nv_screen_print_str(equal_str)
 
     nv_sbc16(op16a, op16b, result)
     PrintCarryAndOverflow()
 
 PrintResult16:
-    nv_screen_print_hex_word_mem(result, true)
+    //nv_screen_print_hex_word_mem(result, true)
+    nv_xfer16_mem_mem(result, word_to_print)
+    jsr PrintHexWord
 
 // now 8 bit
     nv_screen_plot_cursor_col(24)
-    nv_screen_print_hex_byte_mem(op8a, true)
+    
+    //nv_screen_print_hex_byte_mem(op8a, true)
+    lda op8a
+    jsr PrintHexByteAccum
+
     nv_screen_print_str(minus_str)
-    nv_screen_print_hex_byte_mem(op8b, true)
+
+    //nv_screen_print_hex_byte_mem(op8b, true)
+    lda op8b
+    jsr PrintHexByteAccum
+
     nv_screen_print_str(equal_str)
     lda op8a
     sec
@@ -315,25 +320,7 @@ PrintResult8:
     nv_screen_print_hex_byte_mem(scratch_byte, true)
 
 }
+*/
 
-/////////////////////////////////////////////////////////////////
-//
-.macro PrintCarryAndOverflow()
-{
-    bcc NoCarry
-Carry:
-    bvs CarryAndOverflow 
-CarryNoOverflow:
-    nv_screen_print_str(carry_str)
-    jmp Done
-CarryAndOverflow:
-    nv_screen_print_str(carry_and_overflow_str)
-    jmp Done
-NoCarry: 
-    bvc NoCarryNoOverflow
-NoCarryButOverflow:
-    nv_screen_print_str(overflow_str)
-    jmp Done
-NoCarryNoOverflow:
-Done:
-}
+#import "../test_util/test_util_code.asm"
+

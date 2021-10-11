@@ -62,15 +62,19 @@ op_0081: .word $0081 // 129
 op16_8000:
 op_8000: .word $8000 // high bit only set
 
+op16_8001:
 op_8001: .word $8001 // high bit only set
 op_FFFF: .word $FFFF // all bits
 op_0000: .word $0000 // all bits
 op_0001: .word $0001 // all bits
 op_0002: .word $0002 // all bits
 op_00FF: .word $00FF 
+op16_0100:
 op_0100: .word $0100
 op_0200: .word $0200
 op_0300: .word $0300
-op_3333: .word $3333
-op_2222: .word $2222
+op16_3333: .word $3333
+op16_2222: .word $2222
+
+op16_FFFD:
 op_FFFD: .word $FFFD // -3
