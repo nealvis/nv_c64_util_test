@@ -46,66 +46,6 @@ title_str: .text @"MATH16\$00"          // null terminated string to print
 title_sbc16_str: .text @"TEST SBC16 \$00"
 
 #import "../test_util/test_util_op16_data.asm"
-/*
-op1: .word $FFFF
-op2: .word $FFFF
-result: .word $0000
-
-opSmall: .word $0005
-opBig:   .word $747E
-
-op1Beef: .word $beef
-op2Beef: .word $beef
-
-opZero: .word $0000
-opMax: .word $ffff
-opOne: .word $0001
-opTwo: .word $0002
-
-opHighOnes: .word $FF00
-opLowOnes: .word $00FF
-op_7FFF: .word $7FFF
-op_FFFE: .word $FFFE
-op_0080: .word $0080 // 128
-op_0081: .word $0081 // 129
-op_8000: .word $8000 // high bit only set
-op_8001: .word $8001 // high bit only set
-op_FFFF: .word $FFFF // all bits
-op_0000: .word $0000 // all bits
-op_0001: .word $0001 // all bits
-op_0002: .word $0002 // all bits
-op_00FF: .word $00FF 
-op_0100: .word $0100
-op_0200: .word $0200
-op_0300: .word $0300
-op_3333: .word $3333
-op_2222: .word $2222
-op_FFFD: .word $FFFD // -3
-
-op_00: .byte $00
-op_01: .byte $01
-
-op8_7F: .byte $7F
-op8_FF: .byte $FF
-op8_0F: .byte $0F
-op8_F0: .byte $F0
-op8_80: .byte $80  // -128
-op8_81: .byte $81  // -127
-
-op_02: .byte $02
-op_08: .byte $08
-op_09: .byte $09
-op_80: .byte $80
-op_81: .byte $81
-op_7F: .byte $7F
-op_FF: .byte $FF
-op_10: .byte $10
-op_0F: .byte $0F
-op_FD: .byte $FD
-op_33: .byte $33
-op_22: .byte $22
-op_FE: .byte $FE
-*/
 
 *=$1000 "Main Start"
 
@@ -272,55 +212,6 @@ ResultGood:
     jsr PrintPassed
 }
 
-//////////////////////////////////////////////////////////////////////////////
-//
-/*
-.macro print_sbc16_and_sbc8(op16a, op16b, op8a, op8b, result)
-{
-    //nv_screen_print_hex_word_mem(op16a, true)
-    nv_xfer16_mem_mem(op16a, word_to_print)
-    jsr PrintHexWord
-    
-    nv_screen_print_str(minus_str)
-
-    //nv_screen_print_hex_word_mem(op16b, true)
-    nv_xfer16_mem_mem(op16b, word_to_print)
-    jsr PrintHexWord
-
-    nv_screen_print_str(equal_str)
-
-    nv_sbc16(op16a, op16b, result)
-    PrintCarryAndOverflow()
-
-PrintResult16:
-    //nv_screen_print_hex_word_mem(result, true)
-    nv_xfer16_mem_mem(result, word_to_print)
-    jsr PrintHexWord
-
-// now 8 bit
-    nv_screen_plot_cursor_col(24)
-    
-    //nv_screen_print_hex_byte_mem(op8a, true)
-    lda op8a
-    jsr PrintHexByteAccum
-
-    nv_screen_print_str(minus_str)
-
-    //nv_screen_print_hex_byte_mem(op8b, true)
-    lda op8b
-    jsr PrintHexByteAccum
-
-    nv_screen_print_str(equal_str)
-    lda op8a
-    sec
-    sbc op8b
-    sta scratch_byte
-    PrintCarryAndOverflow()
-PrintResult8:
-    nv_screen_print_hex_byte_mem(scratch_byte, true)
-
-}
-*/
 
 #import "../test_util/test_util_code.asm"
 
