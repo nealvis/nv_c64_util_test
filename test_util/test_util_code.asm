@@ -23,6 +23,7 @@ passed: .byte 0
 bad_carry_str: .text@" C\$00"
 bad_overflow_str: .text@" V\$00"
 bad_neg_str: .text@" N\$00"
+bad_zero_str: .text@" Z\$00"
 overflow_set_str: .text@" V=1\$00"
 overflow_clear_str: .text@" V=0\$00"
 
@@ -137,6 +138,29 @@ CarryGood:
 
 }
 
+//////////////////////////////////////////////////////////////////////////////
+.macro pass_or_fail_zero(expect_zero_set)
+{
+    php
+    nv_screen_print_str(fail_control_str)
+    plp
+    .if (expect_zero_set)
+    {
+        beq CarryGood
+    }
+    else 
+    {
+        bne CarryGood
+    }
+    php
+    nv_screen_print_str(bad_zero_str)
+    lda #0 
+    sta passed
+    plp
+
+CarryGood: 
+
+}
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -214,6 +238,7 @@ Done:
 
 /////////////////////////////////////////////////////////////////
 //
+/*
 .macro PrintCarryAndOverflow()
 {
     php
@@ -235,3 +260,4 @@ NoCarryNoOverflow:
 Done:
     plp
 }
+*/

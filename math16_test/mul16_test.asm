@@ -162,60 +162,60 @@ op8_40: .byte $40
     .eval row++
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_0001, op8_01, $0001, false)
+    nv_screen_plot_cursor(row++, 0) //                 C     Z
+    print_mul16(use_x_reg, op16_0001, op8_01, $0001, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_0001, op8_02, $0002, false)
+    print_mul16(use_x_reg, op16_0001, op8_02, $0002, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_0002, op8_02, $0004, false)
+    print_mul16(use_x_reg, op16_0002, op8_02, $0004, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_0007, op8_00, $0000, false)
+    print_mul16(use_x_reg, op16_0007, op8_00, $0000, false, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_0000, op8_04, $0000, false)
+    print_mul16(use_x_reg, op16_0000, op8_04, $0000, false, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_0000, op8_00, $0000, false)
+    print_mul16(use_x_reg, op16_0000, op8_00, $0000, false, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_0000, op8_00, $0000, false)
+    print_mul16(use_x_reg, op16_0000, op8_00, $0000, false, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_0001, op8_03, $0003, false)
+    print_mul16(use_x_reg, op16_0001, op8_03, $0003, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_00FF, op8_FF, $FE01, false)
+    print_mul16(use_x_reg, op16_00FF, op8_FF, $FE01, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_FFFF, op8_01, $FFFF, false)
+    print_mul16(use_x_reg, op16_FFFF, op8_01, $FFFF, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_FFFF, op8_02, $FFFE, true)
+    print_mul16(use_x_reg, op16_FFFF, op8_02, $FFFE, true, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_FFFF, op8_03, $FFFD, true)
+    print_mul16(use_x_reg, op16_FFFF, op8_03, $FFFD, true, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_FFFF, op8_FF, $FF01, true)
+    print_mul16(use_x_reg, op16_FFFF, op8_FF, $FF01, true, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_01DD, op8_AA, $3CC2, true)
+    print_mul16(use_x_reg, op16_01DD, op8_AA, $3CC2, true, false)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -243,76 +243,76 @@ op8_40: .byte $40
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_0001, op8_3F, $003F, false)
+    print_mul16(use_x_reg, op16_0001, op8_3F, $003F, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_0002, op8_3F, $007E, false)
+    print_mul16(use_x_reg, op16_0002, op8_3F, $007E, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_0003, op8_3F, $00BD, false)
+    print_mul16(use_x_reg, op16_0003, op8_3F, $00BD, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_0004, op8_3F, $00FC, false)
+    print_mul16(use_x_reg, op16_0004, op8_3F, $00FC, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_0005, op8_3F, $013B, false)
+    print_mul16(use_x_reg, op16_0005, op8_3F, $013B, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_0006, op8_3F, $017A, false)
+    print_mul16(use_x_reg, op16_0006, op8_3F, $017A, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_003F, op8_01, $003F, false)
+    print_mul16(use_x_reg, op16_003F, op8_01, $003F, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_003F, op8_02, $007E, false)
+    print_mul16(use_x_reg, op16_003F, op8_02, $007E, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_003F, op8_03, $00BD, false)
+    print_mul16(use_x_reg, op16_003F, op8_03, $00BD, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_003F, op8_04, $00FC, false)
+    print_mul16(use_x_reg, op16_003F, op8_04, $00FC, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_003F, op8_05, $013B, false)
+    print_mul16(use_x_reg, op16_003F, op8_05, $013B, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_003F, op8_06, $017A, false)
+    print_mul16(use_x_reg, op16_003F, op8_06, $017A, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_003F, op8_3F, $0F81, false)
+    print_mul16(use_x_reg, op16_003F, op8_3F, $0F81, false, false)
 
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_007D, op8_02, $00FA, false)
+    print_mul16(use_x_reg, op16_007D, op8_02, $00FA, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_007D, op8_7D, $3D09, false)
+    print_mul16(use_x_reg, op16_007D, op8_7D, $3D09, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_007D, op8_FF, $7C83, false)
+    print_mul16(use_x_reg, op16_007D, op8_FF, $7C83, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_00FF, op8_7D, $7C83, false)
+    print_mul16(use_x_reg, op16_00FF, op8_7D, $7C83, false, false)
   
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul16(use_x_reg, op16_00FF, op8_FF, $FE01, false)
+    print_mul16(use_x_reg, op16_00FF, op8_FF, $FE01, false, false)
 
 
     wait_and_clear_at_row(row, title_str)
@@ -514,7 +514,8 @@ op8_40: .byte $40
 // addr1: address of word in memory thats op1 for multiplication
 // addr2: address of byte in memory thats op2 for multipliection
 // expected_result: is 16 bit immediate value that is the expected result
-.macro print_mul16(use_x_reg, addr1, addr2, expected_result, expect_overflow_set)
+.macro print_mul16(use_x_reg, addr1, addr2, expected_result, expect_carry_set,
+                   expect_zero_set)
 {
     // set passed to true until evidence of a fail below
     lda #1
@@ -534,12 +535,12 @@ op8_40: .byte $40
     .if (use_x_reg)
     {
         ldx addr2
-        nv_mul16u_mem16u_x8u(addr1, result16, NV_PROCSTAT_OVERFLOW)
+        nv_mul16u_mem16u_x8u(addr1, result16, NV_PROCSTAT_CARRY|NV_PROCSTAT_ZERO)
     }
     else 
     {
         ldy addr2
-        nv_mul16u_mem16u_y8u(addr1, result16, NV_PROCSTAT_OVERFLOW)
+        nv_mul16u_mem16u_y8u(addr1, result16, NV_PROCSTAT_CARRY|NV_PROCSTAT_ZERO)
     }
     php // save status register
     
@@ -561,7 +562,8 @@ GoodResult:
     jsr PrintHexWord 
 
     plp // pull saved status reg
-    pass_or_fail_overflow(expect_overflow_set)
+    pass_or_fail_carry(expect_carry_set)
+    pass_or_fail_zero(expect_zero_set)
 
     // print if passed or failed
     jsr PrintPassed
