@@ -43,145 +43,79 @@ lsr_str: .text@">>\$00"
 
 title_str: .text @"MATH16 BCD\$00"      // null terminated string to print
                                         // via the BASIC routine
-title_bcd_adc16_str: .text @"TEST BCD ADC16 \$00"
-title_bcd_adc16_immediate_str: .text @"TEST BCD ADC16 IMMED\$00"
+title_bcd_adc16_str: .text @"TEST BCD ADC16\$00"
+title_bcd_sbc16_str: .text @"TEST BCD SBC16\$00"
+title_bcd_sbc16_immed_str: .text @"TEST BCD SBC16 IMMED\$00"
+title_bcd_adc16_immed_str: .text @"TEST BCD ADC16 IMMED\$00"
 
-hit_anykey_str: .text @"HIT ANY KEY ...\$00"
-
-counter: .byte 0
-
-op1: .word $FFFF
-op2: .word $FFFF
-result: .word $0000
-
-opSmall: .word $0005
-opBig:   .word $747E
-
-op1Beef: .word $beef
-op2Beef: .word $beef
-
-opZero: .word $0000
-opMax: .word $ffff
-opOne: .word $0001
-opTwo: .word $0002
-
-opHighOnes: .word $FF00
-opLowOnes: .word $00FF
-op_7FFF: .word $7FFF
-op_FFFE: .word $FFFE
-op_0080: .word $0080 // 128
-op_0081: .word $0081 // 129
-op_8000: .word $8000 // high bit only set
-op_8001: .word $8001 // high bit only set
-op_FFFF: .word $FFFF // all bits
-op_0000: .word $0000 // all bits
-op_0001: .word $0001 // all bits
-op_0002: .word $0002 // all bits
-op_0009: .word $0009
-op_00FF: .word $00FF 
-op_0100: .word $0100
-op_0200: .word $0200
-op_0300: .word $0300
-op_9999: .word $9999
-op_9000: .word $9000
-op_0090: .word $0090
-op_0099: .word $0099
-op_0020: .word $0020
-op_0999: .word $0999
-
-
-op_2222: .word $2222
-op_FFFD: .word $FFFD // -3
-
-op_00: .byte $00
-op_01: .byte $01
-
-op8_7F: .byte $7F
-op8_FF: .byte $FF
-op8_0F: .byte $0F
-op8_F0: .byte $F0
-op8_80: .byte $80  // -128
-op8_81: .byte $81  // -127
-
-op_02: .byte $02
-op_08: .byte $08
-op_09: .byte $09
-op_80: .byte $80
-op_81: .byte $81
-op_7F: .byte $7F
-op_FF: .byte $FF
-op_10: .byte $10
-op_0F: .byte $0F
-op_FD: .byte $FD
-op_33: .byte $33
-op_22: .byte $22
-op_FE: .byte $FE
-
+#import "../test_util/test_util_op16_data.asm"
 
 *=$1000 "Main Start"
 
 .var row = 0
 
+    nv_screen_print_str(normal_control_str)
     nv_screen_clear()
     nv_screen_plot_cursor(row++, 30)
     nv_screen_print_str(title_str)
 
-    test_bcd_adc16_immediate(0)
+    test_bcd_sbc16(0)
+    test_bcd_sbc16_immed(0)
     test_bcd_adc16(0)
+    test_bcd_adc16_immed(0)
 
     rts
 
 //////////////////////////////////////////////////////////////////////////////
 //
-.macro test_bcd_adc16_immediate(init_row)
+.macro test_bcd_adc16_immed(init_row)
 {
     .var row = init_row
     
     //////////////////////////////////////////////////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_bcd_adc16_immediate_str)
+    nv_screen_print_str(title_bcd_adc16_immed_str)
     //////////////////////////////////////////////////////////////////////////
     .eval row++
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16_immediate(op_0000, $0001, result)
-
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16_immediate(op_0009, $0001, result)
+    nv_screen_plot_cursor(row++, 0) //                          c
+    print_bcd_adc16_immed(op16_0000, $0001, result, $0001, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16_immediate(op_0009, $0020, result)
+    nv_screen_plot_cursor(row++, 0) //                          c
+    print_bcd_adc16_immed(op16_0009, $0001, result, $0010, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16_immediate(op_0099, $0001, result)
+    nv_screen_plot_cursor(row++, 0) //                          c
+    print_bcd_adc16_immed(op16_0009, $0020, result, $0029, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16_immediate(op_0099, $0002, result)
+    nv_screen_plot_cursor(row++, 0) //                          c
+    print_bcd_adc16_immed(op16_0099, $0001, result, $0100, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16_immediate(op_0999, $9000, result)
+    nv_screen_plot_cursor(row++, 0) //                          c
+    print_bcd_adc16_immed(op16_0099, $0002, result, $0101, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16_immediate(op_9999, $0001, result)
+    nv_screen_plot_cursor(row++, 0) //                          c
+    print_bcd_adc16_immed(op16_0999, $9000, result, $9999, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16_immediate(op_9999, $0099, result)
+    nv_screen_plot_cursor(row++, 0) //                          c
+    print_bcd_adc16_immed(op16_9999, $0001, result, $0000, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16_immediate(op_9999, $9999, result)
+    nv_screen_plot_cursor(row++, 0) //                          c
+    print_bcd_adc16_immed(op16_9999, $0099, result, $0098, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                          c
+    print_bcd_adc16_immed(op16_9999, $9999, result, $9998, true)
 
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
 }
 
 
@@ -198,62 +132,137 @@ op_FE: .byte $FE
     .eval row++
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16(op_0000, op_0001, result)
-
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16(op_0009, op_0001, result)
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_adc16(op16_9999, op16_0001, result, $0000, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16(op_0009, op_0020, result)
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_adc16(op16_0000, op16_0001, result, $0001, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16(op_0099, op_0001, result)
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_adc16(op16_0009, op16_0001, result, $0010, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16(op_0099, op_0002, result)
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_adc16(op16_0009, op16_0020, result, $0029, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16(op_0999, op_9000, result)
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_adc16(op16_0099, op16_0001, result, $0100, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16(op_9999, op_0001, result)
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_adc16(op16_0099, op16_0002, result, $0101, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16(op_9999, op_0099, result)
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_adc16(op16_0999, op16_9000, result, $9999, false)
 
     /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_adc16(op16_9999, op16_0001, result, $0000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_adc16(op16_9999, op16_0099, result, $0098, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_adc16(op16_9999, op16_9999, result, $9998, true)
+
+    wait_and_clear_at_row(row, title_str)
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_bcd_sbc16(init_row)
+{
+    .var row = init_row
+    
+    //////////////////////////////////////////////////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bcd_adc16(op_9999, op_9999, result)
+    nv_screen_print_str(title_bcd_sbc16_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_sbc16(op16_0002, op16_0001, result, $0001, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_sbc16(op16_0001, op16_0002, result, $9999, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_sbc16(op16_9999, op16_9999, result, $0000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_sbc16(op16_9998, op16_9999, result, $9999, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_sbc16(op16_0000, op16_9999, result, $0001, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_sbc16(op16_0100, op16_0002, result, $0098, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_sbc16(op16_9000, op16_0999, result, $8001, true)
 
 
-    wait_and_clear_at_row(row)
+    wait_and_clear_at_row(row, title_str)
+
 }
 
 
-/////////////////////////////////////////////////////////////////////////////
-// wait for key then clear screen when its detected
-.macro wait_and_clear_at_row(init_row)
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_bcd_sbc16_immed(init_row)
 {
     .var row = init_row
-    .eval row++
+    
+    //////////////////////////////////////////////////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(hit_anykey_str)
+    nv_screen_print_str(title_bcd_sbc16_immed_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
 
-    nv_key_wait_any_key()
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_sbc16_immed(op16_0002, $0001, result, $0001, true)
 
-    nv_screen_clear()
-    .eval row=0
-    nv_screen_plot_cursor(row++, 30)
-    nv_screen_print_str(title_str)
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_sbc16_immed(op16_0001, $0002, result, $9999, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_sbc16_immed(op16_9999, $9999, result, $0000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_sbc16_immed(op16_9998, $9999, result, $9999, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_sbc16_immed(op16_0000, $9999, result, $0001, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_sbc16_immed(op16_0100, $0002, result, $0098, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                    C  
+    print_bcd_sbc16_immed(op16_9000, $0999, result, $8001, true)
+
+
+    wait_and_clear_at_row(row, title_str)
+
 }
 
 
@@ -271,18 +280,39 @@ op_FE: .byte $FE
 //    9999 + 0001 = (C) 0000
 // Will look like this when no carry and no overflow
 //    0001 - 0002 = 0003
-.macro print_bcd_adc16(op1, op2, result)
+.macro print_bcd_adc16(op1, op2, result, expected_result, expect_carry_set)
 {
-    nv_screen_print_bcd_word_mem(op1)
+    lda #1
+    sta passed 
+
+    //nv_screen_print_bcd_word_mem(op1)
+    nv_xfer16_mem_mem(op1, word_to_print)
+    jsr PrintHexWord
+
     nv_screen_print_str(plus_str)
-    nv_screen_print_bcd_word_mem(op2)
+
+    //nv_screen_print_bcd_word_mem(op2)
+    nv_xfer16_mem_mem(op2, word_to_print)
+    jsr PrintHexWord
+
     nv_screen_print_str(equal_str)
 
     nv_bcd_adc16(op1, op2, result)
-    PrintCarryAndOverflow()
+    php
+    nv_beq16_immed(result, expected_result, ResultGood)
+    lda #0 
+    sta passed
 
-    nv_screen_print_bcd_word_mem(result)
+ResultGood:
+    //nv_screen_print_bcd_word_mem(result)
+    nv_xfer16_mem_mem(result, word_to_print)
+    jsr PrintHexWord
+    plp
+    pass_or_fail_carry(expect_carry_set)
+    jsr PrintPassed
 }
+
+
 
 //////////////////////////////////////////////////////////////////////////////
 // inline macro to print the specified addition at the current curor location
@@ -293,40 +323,106 @@ op_FE: .byte $FE
 //    9999 + 0001 = (C) 0000
 // Will look like this when no carry and no overflow
 //    0001 - 0002 = 0003
-.macro print_bcd_adc16_immediate(op1, num, result)
+.macro print_bcd_adc16_immed(op1, num, result, expected_result, 
+                                 expect_carry_set)
 {
-    nv_screen_print_bcd_word_mem(op1)
+    //nv_screen_print_bcd_word_mem(op1)
+    nv_xfer16_mem_mem(op1, word_to_print)
+    jsr PrintHexWord
+    
     nv_screen_print_str(plus_str)
-    nv_screen_print_bcd_word_immed(num)
+    
+    //nv_screen_print_bcd_word_immed(num)
+    nv_store16_immed(word_to_print, num)
+    jsr PrintHexWord
+
     nv_screen_print_str(equal_str)
 
-    nv_bcd_adc16_immed(op1, num, result)
-    PrintCarryAndOverflow()
+    nv_bcd_adc16_mem_immed(op1, num, result)
+    php
+    nv_beq16_immed(result, expected_result, ResultGood)
+    lda #0 
+    sta passed
 
-PrintResult:
-    nv_screen_print_bcd_word_mem(result)
+ResultGood:
+    //nv_screen_print_bcd_word_mem(result)
+    nv_xfer16_mem_mem(result, word_to_print)
+    jsr PrintHexWord
+    plp
+    pass_or_fail_carry(expect_carry_set)
+    jsr PrintPassed
 }
 
-
-
-/////////////////////////////////////////////////////////////////
-//
-.macro PrintCarryAndOverflow()
+//////////////////////////////////////////////////////////////////////////////
+// inline macro to print the specified subtraction at the current curor
+// location nv_bcd_sbc16 is used to do the subtraction.
+.macro print_bcd_sbc16(op1, op2, result, expected_result, expect_carry_set)
 {
-    bcc NoCarry
-Carry:
-    bvs CarryAndOverflow 
-CarryNoOverflow:
-    nv_screen_print_str(carry_str)
-    jmp Done
-CarryAndOverflow:
-    nv_screen_print_str(carry_and_overflow_str)
-    jmp Done
-NoCarry: 
-    bvc NoCarryNoOverflow
-NoCarryButOverflow:
-    nv_screen_print_str(overflow_str)
-    jmp Done
-NoCarryNoOverflow:
-Done:
+    lda #1
+    sta passed 
+
+    //nv_screen_print_bcd_word_mem(op1)
+    nv_xfer16_mem_mem(op1, word_to_print)
+    jsr PrintHexWord
+
+    nv_screen_print_str(minus_str)
+
+    //nv_screen_print_bcd_word_mem(op2)
+    nv_xfer16_mem_mem(op2, word_to_print)
+    jsr PrintHexWord
+
+    nv_screen_print_str(equal_str)
+
+    nv_bcd_sbc16(op1, op2, result)
+    php
+    nv_beq16_immed(result, expected_result, ResultGood)
+    lda #0 
+    sta passed
+
+ResultGood:
+    //nv_screen_print_bcd_word_mem(result)
+    nv_xfer16_mem_mem(result, word_to_print)
+    jsr PrintHexWord
+    plp
+    pass_or_fail_carry(expect_carry_set)
+    jsr PrintPassed
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// inline macro to print the specified subtraction at the current curor
+// location nv_bcd_sbc16_mem_immed is used to do the subtraction.
+.macro print_bcd_sbc16_immed(op1, num, result, expected_result, 
+                             expect_carry_set)
+{
+    lda #1
+    sta passed 
+
+    //nv_screen_print_bcd_word_mem(op1)
+    nv_xfer16_mem_mem(op1, word_to_print)
+    jsr PrintHexWord
+
+    nv_screen_print_str(minus_str)
+
+    nv_store16_immed(word_to_print, num)
+    jsr PrintHexWord
+
+    nv_screen_print_str(equal_str)
+
+    nv_bcd_sbc16_mem_immed(op1, num, result)
+    php
+    nv_beq16_immed(result, expected_result, ResultGood)
+    lda #0 
+    sta passed
+
+ResultGood:
+    //nv_screen_print_bcd_word_mem(result)
+    nv_xfer16_mem_mem(result, word_to_print)
+    jsr PrintHexWord
+    plp
+    pass_or_fail_carry(expect_carry_set)
+    jsr PrintPassed
+}
+
+
+
+#import "../test_util/test_util_code.asm"

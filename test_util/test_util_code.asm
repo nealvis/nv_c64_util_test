@@ -210,3 +210,28 @@ Done:
     nv_screen_print_str(normal_control_str)
     rts
 }
+
+
+/////////////////////////////////////////////////////////////////
+//
+.macro PrintCarryAndOverflow()
+{
+    php
+    bcc NoCarry
+Carry:
+    bvs CarryAndOverflow 
+CarryNoOverflow:
+    nv_screen_print_str(carry_str)
+    jmp Done
+CarryAndOverflow:
+    nv_screen_print_str(carry_and_overflow_str)
+    jmp Done
+NoCarry: 
+    bvc NoCarryNoOverflow
+NoCarryButOverflow:
+    nv_screen_print_str(overflow_str)
+    jmp Done
+NoCarryNoOverflow:
+Done:
+    plp
+}
