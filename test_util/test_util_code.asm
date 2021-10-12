@@ -146,11 +146,11 @@ CarryGood:
     plp
     .if (expect_zero_set)
     {
-        beq CarryGood
+        beq Good
     }
     else 
     {
-        bne CarryGood
+        bne Good
     }
     php
     nv_screen_print_str(bad_zero_str)
@@ -158,7 +158,7 @@ CarryGood:
     sta passed
     plp
 
-CarryGood: 
+Good: 
 
 }
 
