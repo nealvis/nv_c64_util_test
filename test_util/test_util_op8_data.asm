@@ -32,6 +32,7 @@ op8_7F: .byte $7F
 op8_80: .byte $80  // -128
 op8_81: .byte $81  // -127
 op8_99: .byte $99
+op8_AA: .byte $AA
 op8_F0: .byte $F0
 op8_FD: .byte $FD
 op8_FE: .byte $FE

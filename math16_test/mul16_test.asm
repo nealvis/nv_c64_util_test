@@ -55,6 +55,10 @@ title_mul16_y_3_str: .text @"TEST MUL16 Y 3\$00"
 
 title_mul16_immed_1_str: .text @"TEST MUL16 IMMED 1\$00"
 
+#import "../test_util/test_util_op16_data.asm"
+#import "../test_util/test_util_op8_data.asm"
+
+/*
 op1: .word $FFFF
 op2: .word $FFFF
 result: .word $0000
@@ -121,7 +125,7 @@ op8_08: .byte $08
 op8_10: .byte $10
 op8_20: .byte $20
 op8_40: .byte $40
-
+*/
 
 *=$1000 "Main Start"
 

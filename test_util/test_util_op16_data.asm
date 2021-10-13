@@ -15,14 +15,22 @@ result: .word $0000
 op16_0000: .word $0000
 op16_0001: .word $0001
 op16_0002: .word $0002
+op16_0003: .word $0003
+op16_0004: .word $0004
+op16_0005: .word $0005
+op16_0006: .word $0006
+op16_0007: .word $0007
 op16_0009: .word $0009
 op16_0020: .word $0020
+op16_003F: .word $003F
+op16_007D: .word $007D
 op16_007F: .word $007F
 op16_0080: .word $0080 // 128
 op16_0081: .word $0081 // 129
 op16_0099: .word $0099
 op16_00FF: .word $00FF
 op16_0100: .word $0100
+op16_01DD: .word $01DD
 op16_0200: .word $0200
 op16_0300: .word $0300
 op16_0999: .word $0999
