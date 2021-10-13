@@ -52,55 +52,7 @@ title_mul8_mem_mem_3_str: .text @"TEST MUL8 MEM MEM 3\$00"
 
 title_mul8_immed_a_1_str: .text @"TEST MUL8 IMMED A 1\$00"
 
-op1: .word $FFFF
-op2: .word $FFFF
-result: .word $0000
-
-opSmall: .word $0005
-opBig:   .word $747E
-
-op1Beef: .word $beef
-op2Beef: .word $beef
-
-opZero: .word $0000
-opMax: .word $ffff
-opOne: .word $0001
-opTwo: .word $0002
-
-opHighOnes: .word $FF00
-opLowOnes: .word $00FF
-op16_7FFF: .word $7FFF
-op16_FFFE: .word $FFFE
-op16_0080: .word $0080 // 128
-op16_0081: .word $0081 // 129
-op16_8000: .word $8000 // high bit only set
-op16_FFFF: .word $FFFF // all bits
-
-op8_7F: .byte $7F
-op8_FF: .byte $FF
-op8_0F: .byte $0F
-op8_F0: .byte $F0
-op8_80: .byte $80  // -128
-op8_81: .byte $81  // -127
-op8_FE: .byte $FE
-
-op8_99: .byte $99
-op8_3F: .byte $3F  // 63
-op8_7D: .byte $7D  // 125
-
-op8_00: .byte $00
-op8_01: .byte $01
-op8_02: .byte $02
-op8_03: .byte $03
-op8_04: .byte $04
-op8_05: .byte $05
-op8_06: .byte $06
-op8_07: .byte $07
-op8_08: .byte $08
-op8_10: .byte $10
-op8_20: .byte $20
-op8_40: .byte $40
-
+#import "../test_util/test_util_op8_data.asm"
 
 *=$1000 "Main Start"
 
@@ -111,11 +63,13 @@ op8_40: .byte $40
     nv_screen_plot_cursor(row++, 33)
     nv_screen_print_str(title_str)
 
-    test_mul8_immed_a_1(0)
-
     test_mul8_mem_mem_1(0)
     test_mul8_mem_mem_2(0)
     test_mul8_mem_mem_3(0)
+
+    test_mul8_immed_a_1(0)
+
+
 
     rts
 //////////////////////////////////////////////////////////////////////////////
@@ -134,40 +88,40 @@ op8_40: .byte $40
     .eval row++
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_mul8_immed_a($01, op8_01, $0001)
+    nv_screen_plot_cursor(row++, 0)   
+    print_mul8_immed_a($01, op8_01, $0001, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_immed_a($01, op8_02, $0002)
+    print_mul8_immed_a($01, op8_02, $0002, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_immed_a($02, op8_02, $0004)
+    print_mul8_immed_a($02, op8_02, $0004, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_immed_a($07, op8_00, $0000)
+    print_mul8_immed_a($07, op8_00, $0000, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_immed_a($00, op8_04, $0000)
+    print_mul8_immed_a($00, op8_04, $0000, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_immed_a($00, op8_00, $0000)
+    print_mul8_immed_a($00, op8_00, $0000, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_immed_a($00, op8_00, $0000)
+    print_mul8_immed_a($00, op8_00, $0000, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_immed_a($01, op8_03, $0003)
+    print_mul8_immed_a($01, op8_03, $0003, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_immed_a($FF, op8_FF, $FE01)
+    print_mul8_immed_a($FF, op8_FF, $FE01, false)
 
     wait_and_clear_at_row(row, title_str)
 
@@ -189,40 +143,40 @@ op8_40: .byte $40
     .eval row++
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_01, $0001)
+    nv_screen_plot_cursor(row++, 0) //         Z
+    print_mul8_mem_mem(op8_01, op8_01, $0001, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_02, $0002)
+    nv_screen_plot_cursor(row++, 0) //         Z
+    print_mul8_mem_mem(op8_01, op8_02, $0002, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_02, op8_02, $0004)
+    nv_screen_plot_cursor(row++, 0) //         Z
+    print_mul8_mem_mem(op8_02, op8_02, $0004, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_07, op8_00, $0000)
+    nv_screen_plot_cursor(row++, 0) //         Z
+    print_mul8_mem_mem(op8_07, op8_00, $0000, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_00, op8_04, $0000)
+    nv_screen_plot_cursor(row++, 0) //         Z
+    print_mul8_mem_mem(op8_00, op8_04, $0000, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_00, op8_00, $0000)
+    nv_screen_plot_cursor(row++, 0) //         Z
+    print_mul8_mem_mem(op8_00, op8_00, $0000, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_00, $0000)
+    nv_screen_plot_cursor(row++, 0) //         Z
+    print_mul8_mem_mem(op8_01, op8_00, $0000, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_03, $0003)
+    nv_screen_plot_cursor(row++, 0) //         Z
+    print_mul8_mem_mem(op8_01, op8_03, $0003, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_FF, op8_FF, $FE01)
+    nv_screen_plot_cursor(row++, 0) //         Z
+    print_mul8_mem_mem(op8_FF, op8_FF, $FE01, false)
 
     wait_and_clear_at_row(row, title_str)
 
@@ -242,80 +196,80 @@ op8_40: .byte $40
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_00, $0000) // 0
+    print_mul8_mem_mem(op8_01, op8_00, $0000, true) // 0
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_01, $0001) // 1
+    print_mul8_mem_mem(op8_01, op8_01, $0001, false) // 1
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_02, $0002) // 2
+    print_mul8_mem_mem(op8_01, op8_02, $0002, false) // 2
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_04, $0004) // 4
+    print_mul8_mem_mem(op8_01, op8_04, $0004, false) // 4
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_08, $0008) // 8
+    print_mul8_mem_mem(op8_01, op8_08, $0008, false) // 8
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_10, $0010) // 16
+    print_mul8_mem_mem(op8_01, op8_10, $0010, false) // 16
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_20, $0020) //32
+    print_mul8_mem_mem(op8_01, op8_20, $0020, false) //32
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_40, $0040) //64
+    print_mul8_mem_mem(op8_01, op8_40, $0040, false) //64
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_80, $0080) //128
+    print_mul8_mem_mem(op8_01, op8_80, $0080, false) //128
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_FF, op8_01, $00FF)
+    print_mul8_mem_mem(op8_FF, op8_01, $00FF, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_FF, op8_02, $01FE)
+    print_mul8_mem_mem(op8_FF, op8_02, $01FE, false)
 
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_04, $0004)
+    print_mul8_mem_mem(op8_01, op8_04, $0004, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_08, $0008)
+    print_mul8_mem_mem(op8_01, op8_08, $0008, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_10, $0010) // 16
+    print_mul8_mem_mem(op8_01, op8_10, $0010, false) // 16
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_20, $0020) //32
+    print_mul8_mem_mem(op8_01, op8_20, $0020, false) //32
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_40, $0040) //64
+    print_mul8_mem_mem(op8_01, op8_40, $0040, false) //64
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_80, $0080) //128
+    print_mul8_mem_mem(op8_01, op8_80, $0080, false) //128
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_FF, op8_80, $7F80)
+    print_mul8_mem_mem(op8_FF, op8_80, $7F80, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_99, op8_10, $0990)
+    print_mul8_mem_mem(op8_99, op8_10, $0990, false)
 
 
     wait_and_clear_at_row(row, title_str)
@@ -337,74 +291,74 @@ op8_40: .byte $40
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_01, op8_3F, $003F)
+    print_mul8_mem_mem(op8_01, op8_3F, $003F, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_02, op8_3F, $007E)
+    print_mul8_mem_mem(op8_02, op8_3F, $007E, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_03, op8_3F, $00BD)
+    print_mul8_mem_mem(op8_03, op8_3F, $00BD, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_04, op8_3F, $00FC)
+    print_mul8_mem_mem(op8_04, op8_3F, $00FC, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_05, op8_3F, $013B)
+    print_mul8_mem_mem(op8_05, op8_3F, $013B, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_06, op8_3F, $017A)
+    print_mul8_mem_mem(op8_06, op8_3F, $017A, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_3F, op8_01, $003F)
+    print_mul8_mem_mem(op8_3F, op8_01, $003F, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_3F, op8_02, $007E)
+    print_mul8_mem_mem(op8_3F, op8_02, $007E, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_3F, op8_03, $00BD)
+    print_mul8_mem_mem(op8_3F, op8_03, $00BD, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_3F, op8_04, $00FC)
+    print_mul8_mem_mem(op8_3F, op8_04, $00FC, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_3F, op8_05, $013B)
+    print_mul8_mem_mem(op8_3F, op8_05, $013B, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_3F, op8_06, $017A)
+    print_mul8_mem_mem(op8_3F, op8_06, $017A, false)
 
 
 
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_7D, op8_02, $00FA)
+    print_mul8_mem_mem(op8_7D, op8_02, $00FA, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_7D, op8_7D, $3D09)
+    print_mul8_mem_mem(op8_7D, op8_7D, $3D09, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_7D, op8_FF, $7C83)
+    print_mul8_mem_mem(op8_7D, op8_FF, $7C83, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_FF, op8_7D, $7C83)
+    print_mul8_mem_mem(op8_FF, op8_7D, $7C83, false)
   
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mul8_mem_mem(op8_FF, op8_FF, $FE01)
+    print_mul8_mem_mem(op8_FF, op8_FF, $FE01, false)
 
 
     wait_and_clear_at_row(row, title_str)
@@ -417,7 +371,8 @@ op8_40: .byte $40
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-.macro print_mul8_mem_mem(addr1, addr2, expected_result)
+.macro print_mul8_mem_mem(addr1, addr2, expected_result, 
+                          expect_zero_set)
 {
     // set passed to true until evidence of a fail below
     lda #1
@@ -433,15 +388,6 @@ op8_40: .byte $40
     // print multiplication operator *
     nv_screen_print_str(times_str)
 
-    // do multiplication
-    nv_mul8_mem_mem(addr1, addr2, result16)
-
-    // if match expected result then skip setting passed to false
-    nv_beq16_immed(result16, expected_result, GoodResult)
-    ldx #0
-    stx passed
-
-GoodResult:
     // print the second operand
     lda addr2
     jsr PrintHexByteAccum  // print result of operation in accum
@@ -450,15 +396,32 @@ GoodResult:
     nv_screen_print_str(equal_str)
 
 
+    // do multiplication
+    nv_mul8_mem_mem(addr1, addr2, result16, NV_PROCSTAT_ZERO)
+    php  // save proc status flags on stack
+
+    // if match expected result then skip setting passed to false
+    nv_beq16_immed(result16, expected_result, GoodResult)
+    ldx #0
+    stx passed
+
+GoodResult:
+
     // print the result
-    nv_screen_print_hex_word_mem(result16, true)
+    //nv_screen_print_hex_word_mem(result16, true)
+    nv_xfer16_mem_mem(result16, word_to_print)
+    jsr PrintHexWord
+
+    plp // pull processor status flags from stack back to register
+    pass_or_fail_zero(expect_zero_set)   // check zero is right
 
     // print if passed or failed
     jsr PrintPassed
 }
 
+
 //////////////////////////////////////////////////////////////////////////////
-.macro print_mul8_immed_a(num, addr2, expected_result)
+.macro print_mul8_immed_a(num, addr2, expected_result, expect_zero_set)
 {
     // set passed to true until evidence of a fail below
     lda #1
@@ -474,16 +437,6 @@ GoodResult:
     // print multiplication operator *
     nv_screen_print_str(times_str)
 
-    // do multiplication
-    lda addr2
-    nv_mul8_immed_a(num, result16)
-
-    // if match expected result then skip setting passed to false
-    nv_beq16_immed(result16, expected_result, GoodResult)
-    ldx #0
-    stx passed
-
-GoodResult:
     // print the second operand
     lda addr2
     jsr PrintHexByteAccum  // print result of operation in accum
@@ -491,8 +444,25 @@ GoodResult:
     // print = sign
     nv_screen_print_str(equal_str)
 
+    // do multiplication
+    lda addr2
+    nv_mul8_immed_a(num, result16, NV_PROCSTAT_ZERO)
+    php // push processor status flags to stack
+
+    // if match expected result then skip setting passed to false
+    nv_beq16_immed(result16, expected_result, GoodResult)
+    ldx #0
+    stx passed
+
+GoodResult:
+    
     // print the result
-    nv_screen_print_hex_word_mem(result16, true)
+    //nv_screen_print_hex_word_mem(result16, true)
+    nv_xfer16_mem_mem(result16, word_to_print)
+    jsr PrintHexWord
+
+    plp // pull processor status flags back off the stack
+    pass_or_fail_zero(expect_zero_set)   // check zero is right
 
     // print if passed or failed
     jsr PrintPassed
