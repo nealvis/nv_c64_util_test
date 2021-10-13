@@ -51,46 +51,8 @@ title_sbc8_mem_immed_str: .text @"TEST SBC8 MEM IMMED\$00"
 title_twos_comp_a_str: .text @"TEST TWOS COMP A\$00"
 title_twos_comp_mem_str: .text @"TEST TWOS COMP MEM\$00"
 
-op1: .word $FFFF
-op2: .word $FFFF
-result: .word $0000
+#import "../test_util/test_util_op8_data.asm"
 
-opSmall: .word $0005
-opBig:   .word $747E
-
-op1Beef: .word $beef
-op2Beef: .word $beef
-
-opZero: .word $0000
-opMax: .word $ffff
-opOne: .word $0001
-opTwo: .word $0002
-
-opHighOnes: .word $FF00
-opLowOnes: .word $00FF
-op_7FFF: .word $7FFF
-op_FFFE: .word $FFFE
-op_0080: .word $0080 // 128
-op_0081: .word $0081 // 129
-op_8000: .word $8000 // high bit only set
-op_FFFF: .word $FFFF // all bits
-
-op8_7F: .byte $7F
-op8_FF: .byte $FF
-op8_0F: .byte $0F
-op8_F0: .byte $F0
-op8_80: .byte $80  // -128
-op8_81: .byte $81  // -127
-op8_FE: .byte $FE
-
-op_00: .byte $00
-op_01: .byte $01
-op_02: .byte $02
-op_03: .byte $03
-op_04: .byte $04
-op_05: .byte $05
-op_06: .byte $06
-op_07: .byte $07
 
 result_byte: .byte 0
 
@@ -130,7 +92,7 @@ result_byte: .byte 0
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_twos_comp_mem(op_01, $FF)
+    print_twos_comp_mem(op8_01, $FF)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
@@ -138,11 +100,11 @@ result_byte: .byte 0
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_twos_comp_mem(op_00, $00)
+    print_twos_comp_mem(op8_00, $00)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_twos_comp_mem(op_02, $FE)
+    print_twos_comp_mem(op8_02, $FE)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
@@ -181,7 +143,7 @@ result_byte: .byte 0
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_twos_comp_a(op_01, $FF)
+    print_twos_comp_a(op8_01, $FF)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
@@ -189,11 +151,11 @@ result_byte: .byte 0
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_twos_comp_a(op_00, $00)
+    print_twos_comp_a(op8_00, $00)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_twos_comp_a(op_02, $FE)
+    print_twos_comp_a(op8_02, $FE)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
@@ -232,23 +194,23 @@ result_byte: .byte 0
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)     // C      V      N
-    print_sbc8_mem_mem(op_01, op_00, $01, true, false, false)
+    print_sbc8_mem_mem(op8_01, op8_00, $01, true, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)      // C      V      N
-    print_sbc8_mem_mem(op_00, op_01, $FF, false, false, true)
+    print_sbc8_mem_mem(op8_00, op8_01, $FF, false, false, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)      // C      V      N
-    print_sbc8_mem_mem(op_02, op8_FF, $03, false, false, false)
+    print_sbc8_mem_mem(op8_02, op8_FF, $03, false, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)      // C      V      N
-    print_sbc8_mem_mem(op_02, op8_0F, $F3, false, false, true)
+    print_sbc8_mem_mem(op8_02, op8_0F, $F3, false, false, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)      // C      V      N
-    print_sbc8_mem_mem(op8_80, op_01, $7F, true, true, false)
+    print_sbc8_mem_mem(op8_80, op8_01, $7F, true, true, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)      // C      V      N
@@ -256,23 +218,23 @@ result_byte: .byte 0
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)      // C      V     N
-    print_sbc8_mem_mem(op_00, op_00, $00, true, false, false)
+    print_sbc8_mem_mem(op8_00, op8_00, $00, true, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)        // C      V     N
-    print_sbc8_mem_mem(op_00, op8_FF, $01, false, false, false)
+    print_sbc8_mem_mem(op8_00, op8_FF, $01, false, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)        // C      V     N
-    print_sbc8_mem_mem(op_00, op8_7F, $81, false, false, true)
+    print_sbc8_mem_mem(op8_00, op8_7F, $81, false, false, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)        // C      V     N
-    print_sbc8_mem_mem(op_00, op8_FE, $02, false, false, false)
+    print_sbc8_mem_mem(op8_00, op8_FE, $02, false, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)        // C      V     N
-    print_sbc8_mem_mem(op8_FE, op_01, $FD, true, false, true)
+    print_sbc8_mem_mem(op8_FE, op8_01, $FD, true, false, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)        // C      V     N
@@ -280,15 +242,15 @@ result_byte: .byte 0
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)        // C      V     N
-    print_sbc8_mem_mem(op_02, op_01, $01,   true,  false, false)
+    print_sbc8_mem_mem(op8_02, op8_01, $01,   true,  false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)        // C      V     N
-    print_sbc8_mem_mem(op_01, op_02, $FF,   false,  false, true)
+    print_sbc8_mem_mem(op8_01, op8_02, $FF,   false,  false, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)         // C      V     N
-    print_sbc8_mem_mem(op8_80, op_01, $7F,   true,  true, false)
+    print_sbc8_mem_mem(op8_80, op8_01, $7F,   true,  true, false)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -309,19 +271,19 @@ result_byte: .byte 0
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)     // C      V      N
-    print_sbc8_mem_immed(op_01, $00, $01, true, false, false)
+    print_sbc8_mem_immed(op8_01, $00, $01, true, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)      // C      V      N
-    print_sbc8_mem_immed(op_00, $01, $FF, false, false, true)
+    print_sbc8_mem_immed(op8_00, $01, $FF, false, false, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)      // C      V      N
-    print_sbc8_mem_immed(op_02, $FF, $03, false, false, false)
+    print_sbc8_mem_immed(op8_02, $FF, $03, false, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)      // C      V      N
-    print_sbc8_mem_immed(op_02, $0F, $F3, false, false, true)
+    print_sbc8_mem_immed(op8_02, $0F, $F3, false, false, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)      // C      V      N
@@ -333,19 +295,19 @@ result_byte: .byte 0
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)      // C      V     N
-    print_sbc8_mem_immed(op_00, $00, $00, true, false, false)
+    print_sbc8_mem_immed(op8_00, $00, $00, true, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)        // C      V     N
-    print_sbc8_mem_immed(op_00, $FF, $01, false, false, false)
+    print_sbc8_mem_immed(op8_00, $FF, $01, false, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)        // C      V     N
-    print_sbc8_mem_immed(op_00, $7F, $81, false, false, true)
+    print_sbc8_mem_immed(op8_00, $7F, $81, false, false, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)        // C      V     N
-    print_sbc8_mem_immed(op_00, $FE, $02, false, false, false)
+    print_sbc8_mem_immed(op8_00, $FE, $02, false, false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)        // C      V     N
@@ -357,11 +319,11 @@ result_byte: .byte 0
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)        // C      V     N
-    print_sbc8_mem_immed(op_02, $01, $01,   true,  false, false)
+    print_sbc8_mem_immed(op8_02, $01, $01,   true,  false, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)        // C      V     N
-    print_sbc8_mem_immed(op_01, $02, $FF,   false,  false, true)
+    print_sbc8_mem_immed(op8_01, $02, $FF,   false,  false, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)         // C      V     N
@@ -384,35 +346,35 @@ result_byte: .byte 0
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_00, $01)
+    print_mask_from_bit_num_mem(op8_00, $01)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_01, $02)
+    print_mask_from_bit_num_mem(op8_01, $02)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_02, $04)
+    print_mask_from_bit_num_mem(op8_02, $04)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_03, $08)
+    print_mask_from_bit_num_mem(op8_03, $08)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_04, $10)
+    print_mask_from_bit_num_mem(op8_04, $10)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_05, $20)
+    print_mask_from_bit_num_mem(op8_05, $20)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_06, $40)
+    print_mask_from_bit_num_mem(op8_06, $40)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_mem(op_07, $80)
+    print_mask_from_bit_num_mem(op8_07, $80)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -431,35 +393,35 @@ result_byte: .byte 0
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_a(op_00, $01, $FE)
+    print_mask_from_bit_num_a(op8_00, $01, $FE)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_a(op_01, $02, $FD)
+    print_mask_from_bit_num_a(op8_01, $02, $FD)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_a(op_02, $04, ~$04)
+    print_mask_from_bit_num_a(op8_02, $04, ~$04)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_a(op_03, $08, ~$08)
+    print_mask_from_bit_num_a(op8_03, $08, ~$08)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_a(op_04, $10, ~$10)
+    print_mask_from_bit_num_a(op8_04, $10, ~$10)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_a(op_05, $20, ~$20)
+    print_mask_from_bit_num_a(op8_05, $20, ~$20)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_a(op_06, $40, ~$40)
+    print_mask_from_bit_num_a(op8_06, $40, ~$40)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_mask_from_bit_num_a(op_07, $80, ~$80)
+    print_mask_from_bit_num_a(op8_07, $80, ~$80)
 
     wait_and_clear_at_row(row, title_str)
 }
