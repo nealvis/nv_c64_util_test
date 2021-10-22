@@ -555,7 +555,7 @@ ResultGood:
     nv_screen_print_hex_byte_mem(op1, true)
     nv_screen_print_str(equal_str)
 
-    nv_mask_from_bit_num_mem(op1, false)
+    nv_create_bitmask8x_mem_a(op1, false)
     nv_beq8_immed_a(expected_mask, MaskGood)
     ldx #0 
     stx passed
@@ -563,7 +563,7 @@ ResultGood:
 MaskGood:    
     nv_screen_print_hex_byte_a(true)
     nv_screen_print_str(negated_str)
-    nv_mask_from_bit_num_mem(op1, true)
+    nv_create_bitmask8x_mem_a(op1, true)
     nv_beq8_immed_a(expected_neg_mask, NegMaskGood)
     ldx #0 
     stx passed
@@ -588,7 +588,7 @@ NegMaskGood:
     nv_screen_print_hex_byte_mem(op1, true)
     nv_screen_print_str(equal_str)
     lda op1
-    nv_mask_from_bit_num_a(false)
+    nv_create_bitmask8x_a(false)
     sta temp_byte
     nv_beq8_immed_a(expected_mask, MaskGood)
     lda #0
@@ -600,7 +600,7 @@ MaskGood:
 
     nv_screen_print_str(negated_str)
     lda op1
-    nv_mask_from_bit_num_a(true)
+    nv_create_bitmask8x_a(true)
     sta temp_byte
     nv_beq8_immed_a(expected_neg_mask, NegMaskGood)
     lda #0 
