@@ -206,7 +206,17 @@ PrintHexWord:
 }
 word_to_print: .word 0
 
+///////////////////////////////////////////////////////////////////////
+// subroutine to print a fixed point 12.4 number in hex
+// the printed number will look like this
+//   $F34.2
+PrintHexFP124:
+{
 
+    nv_screen_print_hex_fp124_mem(fp124_to_print, true)
+    rts
+}
+fp124_to_print: .word 0
 
 ///////////////////////////////////////////////////////////////////////
 PrintHexByteAccum:
