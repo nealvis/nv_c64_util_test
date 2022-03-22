@@ -11,9 +11,10 @@
 #import "../../nv_c64_util/nv_c64_util_macs_and_data.asm"
 
 result124: .word $0000
+result16: .word $0000
 
-// FP124 
-op124_FFF0: .word $FFF0  // -1.0
+// (signed)
+op124_FFF0: .word $FFF0  // -1.0    
 op124_FFF1: .word $FFF1  // -1.0625
 op124_FFF2: .word $FFF2  // -1.125
 op124_FFF4: .word $FFF4  // -1.25
@@ -35,3 +36,4 @@ op124_0038: .word $0038  // +3.5
 op124_003C: .word $003C  // +3.75
 op124_003E: .word $003E  // +3.875
 
+op124_FFF7: .word $FFF7 

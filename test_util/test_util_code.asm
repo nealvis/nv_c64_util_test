@@ -138,6 +138,31 @@ CarryGood:
 
 }
 
+
+//////////////////////////////////////////////////////////////////////////////
+.macro pass_or_fail_negative(expect_negative_set)
+{
+    php
+    nv_screen_print_str(fail_control_str)
+    plp
+    .if (expect_negative_set)
+    {
+        bmi NegativeGood
+    }
+    else 
+    {
+        bpl NegativeGood
+    }
+    php
+    nv_screen_print_str(bad_neg_str)
+    lda #0 
+    sta passed
+    plp
+
+NegativeGood: 
+
+}
+
 //////////////////////////////////////////////////////////////////////////////
 .macro pass_or_fail_zero(expect_zero_set)
 {
