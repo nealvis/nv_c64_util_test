@@ -36,4 +36,16 @@ op124_0038: .word $0038  // +3.5
 op124_003C: .word $003C  // +3.75
 op124_003E: .word $003E  // +3.875
 
+op124_7FF0: .word $7FF0  // 
+op124_7FF1: .word $7FF1  // 
+op124_7FF2: .word $7FF2  // 
+op124_7FF4: .word $7FF4  // 
+op124_7FF8: .word $7FF8  // 
+op124_7FFC: .word $7FFC  // 
+op124_7FFE: .word $7FFE  // 
+op124_7FFF: .word $7FFF  // largest positive number 
+
+op124_800F: .word $800F // largest magnatude neg number
+op124_8007: .word $8007 // largest magnatude neg number
+
 op124_FFF7: .word $FFF7 
