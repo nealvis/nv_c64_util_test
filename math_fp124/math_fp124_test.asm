@@ -51,8 +51,8 @@ rnd_str: .text@" RND \$00"
 title_str: .text @"MATH124\$00"          // null terminated string to print
                                         // via the BASIC routine
 title_adc124_str: .text @"TEST ADC124 \$00"
-title_rnd124u_str: .text @"TEST RND124U \$00"
-title_rnd124s_str: .text @"TEST RND124S \$00"
+title_conv124u_str: .text @"TEST CONV124U \$00"
+title_conv124s_str: .text @"TEST CONV124S \$00"
 
 /*
 title_adc16_mem8u_str: .text @"TEST ADC16 MEM8U \$00"
@@ -81,8 +81,8 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
     nv_screen_print_str(title_str)
 
     test_adc124(0)
-    test_rnd124u(0)
-    test_rnd124s(0)
+    test_conv124u(0)
+    test_conv124s(0)
 
 /*
     test_adc16_immediate(0)
@@ -108,25 +108,25 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
     .eval row++
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                   C       V      N
-    print_adc124(op124_FFF0, op124_0030, result124, $0020, true, false, false)
+    nv_screen_plot_cursor(row++, 0) //                       C  
+    print_adc124u(op124_FFF0, op124_0030, result124, $0020, true)
 
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                   C       V      N
-    print_adc124(op124_0010, op124_FFF8, result124, $0008, true, false, false)
+    nv_screen_plot_cursor(row++, 0) //                       C   
+    print_adc124u(op124_0010, op124_FFF8, result124, $0008, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                   C       V      N
-    print_adc124(op124_FFF0, op124_FFF0, result124, $FFE0, true, false, true)
+    nv_screen_plot_cursor(row++, 0) //                       C
+    print_adc124u(op124_FFF0, op124_FFF0, result124, $FFE0, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                   C       V      N
-    print_adc124(op124_FFF0, op124_0038, result124, $0028, true, false, false)
+    nv_screen_plot_cursor(row++, 0) //                       C  
+    print_adc124u(op124_FFF0, op124_0038, result124, $0028, true)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                   C       V      N
-    print_adc124(op124_FFF8, op124_0030, result124, $0028, true, false, false)
+    nv_screen_plot_cursor(row++, 0) //                       C 
+    print_adc124u(op124_FFF8, op124_0030, result124, $0028, true)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -135,86 +135,94 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
 
 //////////////////////////////////////////////////////////////////////////////
 //
-.macro test_rnd124u(init_row)
+.macro test_conv124u(init_row)
 {
     .var row = init_row
     
     //////////////////////////////////////////////////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_rnd124u_str)
+    nv_screen_print_str(title_conv124u_str)
     //////////////////////////////////////////////////////////////////////////
     .eval row++
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //         C    
-    print_rnd124u(op124_0030, result16, $0003, false)
+    nv_screen_plot_cursor(row++, 0) //            
+    print_conv124u(op124_0030, result16, $0003)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //         C     
-    print_rnd124u(op124_FFF7, result16, $0FFF, false)
+    nv_screen_plot_cursor(row++, 0) //             
+    print_conv124u(op124_FFF7, result16, $0FFF)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //         C   
-    print_rnd124u(op124_FFF8, result16, $0000, true)
+    nv_screen_plot_cursor(row++, 0) //           
+    print_conv124u(op124_FFF8, result16, $1000)
 
     wait_and_clear_at_row(row, title_str)
 }
 
 //////////////////////////////////////////////////////////////////////////////
 //
-.macro test_rnd124s(init_row)
+.macro test_conv124s(init_row)
 {
     .var row = init_row
     
     //////////////////////////////////////////////////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_rnd124s_str)
+    nv_screen_print_str(title_conv124s_str)
     //////////////////////////////////////////////////////////////////////////
     .eval row++
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //             
-    print_rnd124s(op124_0030, result16, $0003)
+    print_conv124s(op124_0030, result16, $0003)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //              
-    print_rnd124s(op124_FFF7, result16, $FFFF)
+    print_conv124s(op124_FFF7, result16, $F801)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_rnd124s(op124_FFF8, result16, $FFFE)
+    print_conv124s(op124_FFF8, result16, $F800)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_rnd124s(op124_FFFC, result16, $FFFE)
+    print_conv124s(op124_FFFC, result16, $F800)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_rnd124s(op124_FFF4, result16, $FFFF)
+    print_conv124s(op124_FFF4, result16, $F801)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_rnd124s(op124_0038, result16, $0004)
+    print_conv124s(op124_0038, result16, $0004)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_rnd124s(op124_0034, result16, $0003)
+    print_conv124s(op124_0034, result16, $0003)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_rnd124s(op124_003C, result16, $0004)
+    print_conv124s(op124_003C, result16, $0004)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_rnd124s(op124_7FFF, result16, $0800)
+    print_conv124s(op124_7FFF, result16, $0800)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_rnd124s(op124_800F, result16, $F7FF)
+    print_conv124s(op124_800F, result16, $FFFF)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_rnd124s(op124_8007, result16, $F800)
+    print_conv124s(op124_8007, result16, $0000)
+
+    ////////    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //            
+    print_conv124s(op124_8034, result16, $FFFD)
+
+    /////////////////////
+    nv_screen_plot_cursor(row++, 0) //            
+    print_conv124s(op124_8038, result16, $FFFC)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -677,9 +685,9 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
 
 //////////////////////////////////////////////////////////////////////////////
 // inline macro to print the specified addition at the current curor location
-// nv_adc124x is used to do the addition.  
-.macro print_adc124(op1, op2, result, expected_result, 
-                    expect_carry_set, expect_overflow_set, expect_neg_set)
+// nv_adc124u is used to do the addition.  
+.macro print_adc124u(op1, op2, result, expected_result, 
+                    expect_carry_set)
 {
     lda #1
     sta passed
@@ -694,7 +702,7 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
 
     nv_screen_print_str(equal_str)
 
-    nv_adc124x(op1, op2, result)
+    nv_adc124u(op1, op2, result)
 
     php
     nv_beq16_immed(result, expected_result, ResultGood)
@@ -707,41 +715,7 @@ ResultGood:
     jsr PrintHexFP124
 
     nv_screen_print_str(rnd_str)
-    nv_rnd124u_mem16u(result, word_to_print)
-    jsr PrintHexWord
-    
-    plp
-    pass_or_fail_status_flags(expect_carry_set, expect_overflow_set, 
-                              expect_neg_set)
-
-    jsr PrintPassed
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// inline macro to print the specified rounding operation at the current 
-// curor location.  nv_rnd124u_mem16u is used to do the rounding.  
-.macro print_rnd124u(op1, result, expected_result, 
-                    expect_carry_set)
-{
-    lda #1
-    sta passed
-
-    nv_screen_print_str(rnd_str)
-
-    nv_xfer16_mem_mem(op1, fp124_to_print)
-    jsr PrintHexFP124
-
-    nv_screen_print_str(equal_str)
-
-    nv_rnd124u_mem16u(op1, result)
-
-    php
-    nv_beq16_immed(result, expected_result, ResultGood)
-    lda #0 
-    sta passed
-
-ResultGood:
-    nv_xfer16_mem_mem(result, word_to_print)
+    nv_conv124u_mem16u(result, word_to_print)
     jsr PrintHexWord
     
     plp
@@ -752,8 +726,8 @@ ResultGood:
 
 //////////////////////////////////////////////////////////////////////////////
 // inline macro to print the specified rounding operation at the current 
-// curor location.  nv_rnd124s_mem16s is used to do the rounding.  
-.macro print_rnd124s(op1, result, expected_result)
+// curor location.  nv_rnd124u_mem16u is used to do the rounding.  
+.macro print_conv124u(op1, result, expected_result)
 {
     lda #1
     sta passed
@@ -765,7 +739,35 @@ ResultGood:
 
     nv_screen_print_str(equal_str)
 
-    nv_rnd124s_mem16s(op1, result)
+    nv_conv124u_mem16u(op1, result)
+
+    nv_beq16_immed(result, expected_result, ResultGood)
+    lda #0 
+    sta passed
+
+ResultGood:
+    nv_xfer16_mem_mem(result, word_to_print)
+    jsr PrintHexWord
+    
+    jsr PrintPassed
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// inline macro to print the specified rounding operation at the current 
+// curor location.  nv_conv124s_mem16s is used to do the rounding.  
+.macro print_conv124s(op1, result, expected_result)
+{
+    lda #1
+    sta passed
+
+    nv_screen_print_str(rnd_str)
+
+    nv_xfer16_mem_mem(op1, fp124_to_print)
+    jsr PrintHexFP124
+
+    nv_screen_print_str(equal_str)
+
+    nv_conv124s_mem16s(op1, result)
 
     //php
     nv_beq16_immed(result, expected_result, ResultGood)
