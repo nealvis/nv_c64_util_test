@@ -95,6 +95,10 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
     .eval row++
 
     /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                C      V      N
+    print_adc16(op16_8000, op16_8000, result, $0000, true, true, false)
+
+    /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            C      V      N
     print_adc16(op16_FFFF, op16_FFFF, result, $FFFE, true, false, true)
 

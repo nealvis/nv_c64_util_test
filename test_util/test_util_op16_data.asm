@@ -49,6 +49,7 @@ op16_FF00: .word $FF00
 op16_FFFD: .word $FFFD // -3
 op16_FFFE: .word $FFFE // -2
 op16_FFFF: .word $FFFF // -1
+op16_FFF0: .word $FFF0 //-16
 
 op16_Small: .word $0005
 op16_Big:   .word $747E

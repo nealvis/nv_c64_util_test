@@ -32,11 +32,6 @@
 
 *=$0820 "Vars"
 
-.const dollar_sign = $24
-
-result_byte: .byte 0
-
-
 // program variables
 carry_str: .text @"(C) \$00"
 carry_and_overflow_str:  .text @"(CV) \$00"
@@ -44,13 +39,12 @@ overflow_str:  .text @"(V) \$00"
 plus_str: .text @"+\$00"
 minus_str: .text @"-\$00"
 equal_str: .text@"=\$00"
-lsr_str: .text@">>\$00"
-asl_str: .text@"<<\$00"
 rnd_str: .text@" RND \$00"
 
 title_str: .text @"MATH124\$00"          // null terminated string to print
                                         // via the BASIC routine
-title_adc124_str: .text @"TEST ADC124 \$00"
+title_adc124u_str: .text @"TEST ADC124U \$00"
+title_adc124s_str: .text @"TEST ADC124S \$00"
 title_conv124u_str: .text @"TEST CONV124U \$00"
 title_conv124s_str: .text @"TEST CONV124S \$00"
 
@@ -80,9 +74,10 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
     nv_screen_plot_cursor(row++, 33)
     nv_screen_print_str(title_str)
 
-    test_adc124(0)
     test_conv124u(0)
     test_conv124s(0)
+    test_adc124u(0)
+    test_adc124s(0)
 
 /*
     test_adc16_immediate(0)
@@ -94,39 +89,88 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
 */
     rts
 
-
 //////////////////////////////////////////////////////////////////////////////
 //
-.macro test_adc124(init_row)
+.macro test_adc124s(init_row)
 {
     .var row = init_row
     
     //////////////////////////////////////////////////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_adc124_str)
+    nv_screen_print_str(title_adc124s_str)
     //////////////////////////////////////////////////////////////////////////
     .eval row++
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                       C  
-    print_adc124u(op124_FFF0, op124_0030, result124, $0020, true)
-
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                       C   
-    print_adc124u(op124_0010, op124_FFF8, result124, $0008, true)
+    nv_screen_plot_cursor(row++, 0) //                       V
+    print_adc124s(op124_0031, op124_0010, result124, $0041, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                       C
-    print_adc124u(op124_FFF0, op124_FFF0, result124, $FFE0, true)
+    nv_screen_plot_cursor(row++, 0) //                       V
+    print_adc124s(op124_0031, op124_8010, result124, $0021, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                       C  
-    print_adc124u(op124_FFF0, op124_0038, result124, $0028, true)
+    nv_screen_plot_cursor(row++, 0) //                       V
+    print_adc124s(op124_8010, op124_8010, result124, $8020, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                       C 
-    print_adc124u(op124_FFF8, op124_0030, result124, $0028, true)
+    nv_screen_plot_cursor(row++, 0) //                       V
+    print_adc124s(op124_7FFF, op124_0010, result124, $FFF1, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       V
+    print_adc124s(op124_8000, op124_8010, result124, $8010, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       V
+    print_adc124s(op124_FFFF, op124_8010, result124, $7FF1, true)
+
+    wait_and_clear_at_row(row, title_str)
+} 
+    
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_adc124u(init_row)
+{
+    .var row = init_row
+    
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_adc124u_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       C     V
+    print_adc124u(op124_7FFF, op124_0010, result124, $800F, false, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       C     V
+    print_adc124u(op124_8000, op124_8000, result124, $0000, true, true)
+    
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       C     V
+    print_adc124u(op124_FFF0, op124_0030, result124, $0020, true, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       C     V 
+    print_adc124u(op124_0010, op124_FFF8, result124, $0008, true, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       C     V
+    print_adc124u(op124_FFF0, op124_FFF0, result124, $FFE0, true, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       C     V  
+    print_adc124u(op124_FFF0, op124_0038, result124, $0028, true, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       C     V 
+    print_adc124u(op124_FFF8, op124_0030, result124, $0028, true, false)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -686,8 +730,47 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
 //////////////////////////////////////////////////////////////////////////////
 // inline macro to print the specified addition at the current curor location
 // nv_adc124u is used to do the addition.  
+.macro print_adc124s(op1, op2, result, expected_result, 
+                    expect_overflow_set)
+{
+    lda #1
+    sta passed
+
+    nv_xfer16_mem_mem(op1, fp124_to_print)
+    jsr PrintHexFP124
+
+    nv_screen_print_str(plus_str)
+
+    nv_xfer16_mem_mem(op2, fp124_to_print)
+    jsr PrintHexFP124
+
+    nv_screen_print_str(equal_str)
+
+    nv_adc124s(op1, op2, result)
+
+    php
+    nv_beq16_immed(result, expected_result, ResultGood)
+    lda #0 
+    sta passed
+
+ResultGood:
+    nv_xfer16_mem_mem(result, fp124_to_print)
+    jsr PrintHexFP124
+
+    plp
+    //pass_or_fail_carry(expect_carry_set)
+    pass_or_fail_overflow(expect_overflow_set)
+
+    jsr PrintPassed
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+// inline macro to print the specified addition at the current curor location
+// nv_adc124u is used to do the addition.  
 .macro print_adc124u(op1, op2, result, expected_result, 
-                    expect_carry_set)
+                    expect_carry_set, expect_overflow_set)
 {
     lda #1
     sta passed
@@ -710,16 +793,12 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
     sta passed
 
 ResultGood:
-    //nv_screen_print_hex_word_mem(result, true)
     nv_xfer16_mem_mem(result, fp124_to_print)
     jsr PrintHexFP124
 
-    nv_screen_print_str(rnd_str)
-    nv_conv124u_mem16u(result, word_to_print)
-    jsr PrintHexWord
-    
     plp
     pass_or_fail_carry(expect_carry_set)
+    pass_or_fail_overflow(expect_overflow_set)
 
     jsr PrintPassed
 }
