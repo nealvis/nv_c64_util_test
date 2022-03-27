@@ -314,48 +314,48 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
     .eval row++
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //           C        
+    nv_screen_plot_cursor(row++, 0) //           V        
     print_rnd124u(op124_0030, result124, $0030, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //           C        
+    nv_screen_plot_cursor(row++, 0) //           V        
     print_rnd124u(op124_0031, result124, $0030, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //           C        
+    nv_screen_plot_cursor(row++, 0) //           V        
     print_rnd124u(op124_0032, result124, $0030, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //           C        
+    nv_screen_plot_cursor(row++, 0) //           V        
     print_rnd124u(op124_0034, result124, $0030, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //           C        
+    nv_screen_plot_cursor(row++, 0) //           V        
     print_rnd124u(op124_0037, result124, $0030, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //           C        
+    nv_screen_plot_cursor(row++, 0) //           V        
     print_rnd124u(op124_0038, result124, $0040, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //           C        
+    nv_screen_plot_cursor(row++, 0) //           V        
     print_rnd124u(op124_003C, result124, $0040, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //           C        
+    nv_screen_plot_cursor(row++, 0) //           V        
     print_rnd124u(op124_003E, result124, $0040, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //           C        
+    nv_screen_plot_cursor(row++, 0) //           V        
     print_rnd124u(op124_003F, result124, $0040, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //           C  
+    nv_screen_plot_cursor(row++, 0) //           V  
     print_rnd124u(op124_FFF7, result124, $FFF0, false)
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //           C
-    print_rnd124u(op124_FFF8, result124, $0000, true)
+    nv_screen_plot_cursor(row++, 0) //           V
+    print_rnd124u(op124_FFF8, result124, $FFF0, true)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -1000,7 +1000,7 @@ ResultGood:
 //////////////////////////////////////////////////////////////////////////////
 // inline macro to print the specified rounding operation at the current 
 // curor location.  nv_rnd124u is used to do the rounding.  
-.macro print_rnd124u(op1, result, expected_result, expect_carry_set)
+.macro print_rnd124u(op1, result, expected_result, expect_overflow_set)
 {
     lda #1
     sta passed
@@ -1027,7 +1027,7 @@ ResultGood:
     jsr PrintHexFP124
     
     plp
-    pass_or_fail_carry(expect_carry_set)
+    pass_or_fail_overflow(expect_overflow_set)
 
     jsr PrintPassed
 }
