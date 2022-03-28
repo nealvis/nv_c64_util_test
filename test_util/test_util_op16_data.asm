@@ -51,6 +51,15 @@ op16_FFFE: .word $FFFE // -2
 op16_FFFF: .word $FFFF // -1
 op16_FFF0: .word $FFF0 //-16
 
+op16_FFF7: .word $FFF7 
+op16_FFF8: .word $FFF8 
+op16_0FFF: .word $0FFF 
+op16_1FFF: .word $1FFF 
+op16_2FFF: .word $2FFF 
+op16_4FFF: .word $4FFF 
+op16_8FFF: .word $8FFF 
+
+
 op16_Small: .word $0005
 op16_Big:   .word $747E
 op16_Max:   .word $FFFF
