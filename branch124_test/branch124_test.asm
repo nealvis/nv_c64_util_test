@@ -103,12 +103,12 @@ opLowOnes: .word $00FF
 
     // signed tests
     test_cmp124s(0)
-    //test_beq124s(0)
-    //test_bne124s(0)
-    //test_blt124s(0)
-    //test_ble124s(0)
-    //test_bgt124s(0)
-    //test_bge124s(0)
+    test_beq124s(0)
+    test_bne124s(0)
+    test_blt124s(0)
+    test_ble124s(0)
+    test_bgt124s(0)
+    test_bge124s(0)
 
     rts
 
@@ -127,79 +127,79 @@ opLowOnes: .word $00FF
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(op1Beef, op2Beef, CMP_EQUAL)
+    print_cmp124(false, op1Beef, op2Beef, CMP_EQUAL)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opSmall, opBig, CMP_LESS)
+    print_cmp124(false, opSmall, opBig, CMP_LESS)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opBig, opSmall, CMP_GREATER)
+    print_cmp124(false, opBig, opSmall, CMP_GREATER)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opSmall, opSmall, CMP_EQUAL)
+    print_cmp124(false, opSmall, opSmall, CMP_EQUAL)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opBig, opSmall, CMP_GREATER)
+    print_cmp124(false, opBig, opSmall, CMP_GREATER)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opTwo, opOne, CMP_GREATER)
+    print_cmp124(false, opTwo, opOne, CMP_GREATER)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opOne, opZero, CMP_GREATER)
+    print_cmp124(false, opOne, opZero, CMP_GREATER)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opOne, opMax, CMP_LESS)
+    print_cmp124(false, opOne, opMax, CMP_LESS)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opZero, opMax, CMP_LESS)
+    print_cmp124(false, opZero, opMax, CMP_LESS)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opZero, opOne, CMP_LESS)
+    print_cmp124(false, opZero, opOne, CMP_LESS)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opMax, opOne, CMP_GREATER)
+    print_cmp124(false, opMax, opOne, CMP_GREATER)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opMax, opZero, CMP_GREATER)
+    print_cmp124(false, opMax, opZero, CMP_GREATER)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opMax, opMax, CMP_EQUAL)
+    print_cmp124(false, opMax, opMax, CMP_EQUAL)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opOne, opOne, CMP_EQUAL)
+    print_cmp124(false, opOne, opOne, CMP_EQUAL)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opZero, opZero, CMP_EQUAL)
+    print_cmp124(false, opZero, opZero, CMP_EQUAL)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opHighOnes, opLowOnes, CMP_GREATER)
+    print_cmp124(false, opHighOnes, opLowOnes, CMP_GREATER)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opLowOnes, opHighOnes, CMP_LESS)
+    print_cmp124(false, opLowOnes, opHighOnes, CMP_LESS)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opHighOnes, opHighOnes, CMP_EQUAL)
+    print_cmp124(false, opHighOnes, opHighOnes, CMP_EQUAL)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124u(opLowOnes, opLowOnes, CMP_EQUAL)
+    print_cmp124(false, opLowOnes, opLowOnes, CMP_EQUAL)
 
 
     wait_and_clear_at_row(row, title_str)
@@ -207,7 +207,7 @@ opLowOnes: .word $00FF
 
 
 //////////////////////////////////////////////////////////////////////////////
-// Test the cmp_124 macro
+// Test the cmp124s macro
 .macro test_cmp124s(init_row)
 {
     .var row = init_row
@@ -220,7 +220,7 @@ opLowOnes: .word $00FF
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124s(op1Beef, op2Beef, CMP_EQUAL)
+    print_cmp124(true, op1Beef, op2Beef, CMP_EQUAL)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -240,79 +240,99 @@ opLowOnes: .word $00FF
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(op1Beef, op2Beef, true)
+    print_beq124(false,  op1Beef, op2Beef, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opSmall, opBig, false)
+    print_beq124(false,  opSmall, opBig, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opBig, opSmall, false)
+    print_beq124(false,  opBig, opSmall, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opSmall, opSmall, true)
+    print_beq124(false,  opSmall, opSmall, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opBig, opSmall, false)
+    print_beq124(false,  opBig, opSmall, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opTwo, opOne, false)
+    print_beq124(false,  opTwo, opOne, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opOne, opZero, false)
+    print_beq124(false,  opOne, opZero, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opOne, opMax, false)
+    print_beq124(false,  opOne, opMax, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opZero, opMax, false)
+    print_beq124(false,  opZero, opMax, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opZero, opOne, false)
+    print_beq124(false,  opZero, opOne, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opMax, opOne, false)
+    print_beq124(false,  opMax, opOne, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opMax, opZero, false)
+    print_beq124(false,  opMax, opZero, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opMax, opMax, true)
+    print_beq124(false,  opMax, opMax, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opOne, opOne, true)
+    print_beq124(false,  opOne, opOne, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opZero, opZero, true)
+    print_beq124(false,  opZero, opZero, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opHighOnes, opLowOnes, false)
+    print_beq124(false,  opHighOnes, opLowOnes, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opLowOnes, opHighOnes, false)
+    print_beq124(false,  opLowOnes, opHighOnes, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opHighOnes, opHighOnes, true)
+    print_beq124(false,  opHighOnes, opHighOnes, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_beq124u(opLowOnes, opLowOnes, true)
+    print_beq124(false,  opLowOnes, opLowOnes, true)
+
+    wait_and_clear_at_row(row, title_str)
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Test the beq124s macro
+.macro test_beq124s(init_row)
+{
+    .var row = init_row
+
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_beq124s_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124(true, op124_0000, op124_0000, true)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -332,79 +352,99 @@ opLowOnes: .word $00FF
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(op1Beef, op2Beef, false)
+    print_bne124(false, op1Beef, op2Beef, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opSmall, opBig, true)
+    print_bne124(false, opSmall, opBig, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opBig, opSmall, true)
+    print_bne124(false, opBig, opSmall, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opSmall, opSmall, false)
+    print_bne124(false, opSmall, opSmall, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opBig, opSmall, true)
+    print_bne124(false, opBig, opSmall, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opTwo, opOne, true)
+    print_bne124(false, opTwo, opOne, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opOne, opZero, true)
+    print_bne124(false, opOne, opZero, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opOne, opMax, true)
+    print_bne124(false, opOne, opMax, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opZero, opMax, true)
+    print_bne124(false, opZero, opMax, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opZero, opOne, true)
+    print_bne124(false, opZero, opOne, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opMax, opOne, true)
+    print_bne124(false, opMax, opOne, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opMax, opZero, true)
+    print_bne124(false, opMax, opZero, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opMax, opMax, false)
+    print_bne124(false, opMax, opMax, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opOne, opOne, false)
+    print_bne124(false, opOne, opOne, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opZero, opZero, false)
+    print_bne124(false, opZero, opZero, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opHighOnes, opLowOnes, true)
+    print_bne124(false, opHighOnes, opLowOnes, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opLowOnes, opHighOnes, true)
+    print_bne124(false, opLowOnes, opHighOnes, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opHighOnes, opHighOnes, false)
+    print_bne124(false, opHighOnes, opHighOnes, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bne124u(opLowOnes, opLowOnes, false)
+    print_bne124(false, opLowOnes, opLowOnes, false)
+
+    wait_and_clear_at_row(row, title_str)
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Test the bne124s macro
+.macro test_bne124s(init_row)
+{
+    .var row = init_row
+
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_bne124s_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne124(true, op124_0000, op124_0000, false)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -424,78 +464,99 @@ opLowOnes: .word $00FF
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(op1Beef, op2Beef, false)
+    print_blt124(false, op1Beef, op2Beef, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(opSmall, opBig, true)
+    print_blt124(false, opSmall, opBig, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(opBig, opSmall, false)
+    print_blt124(false, opBig, opSmall, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(opSmall, opSmall, false)
+    print_blt124(false, opSmall, opSmall, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(opTwo, opOne, false)
+    print_blt124(false, opTwo, opOne, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(opOne, opZero, false)
+    print_blt124(false, opOne, opZero, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(opOne, opMax, true)
+    print_blt124(false, opOne, opMax, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(opZero, opMax, true)
+    print_blt124(false, opZero, opMax, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(opZero, opOne, true)
+    print_blt124(false, opZero, opOne, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(opMax, opOne, false)
+    print_blt124(false, opMax, opOne, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(opMax, opZero, false)
+    print_blt124(false, opMax, opZero, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(opMax, opMax, false)
+    print_blt124(false, opMax, opMax, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(opOne, opOne, false)
+    print_blt124(false, opOne, opOne, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(opZero, opZero, false)
+    print_blt124(false, opZero, opZero, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(opHighOnes, opLowOnes, false)
+    print_blt124(false, opHighOnes, opLowOnes, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(opLowOnes, opHighOnes, true)
+    print_blt124(false, opLowOnes, opHighOnes, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(opHighOnes, opHighOnes, false)
+    print_blt124(false, opHighOnes, opHighOnes, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_blt124u(opLowOnes, opLowOnes, false)
+    print_blt124(false, opLowOnes, opLowOnes, false)
 
     wait_and_clear_at_row(row, title_str)
 }
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Test the blt124s macro
+.macro test_blt124s(init_row)
+{
+    .var row = init_row
+
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_blt124s_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_blt124(true, op124_0000, op124_0000, false)
+
+    wait_and_clear_at_row(row, title_str)
+}
+
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -511,84 +572,101 @@ opLowOnes: .word $00FF
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(op1Beef, op2Beef, true)
+    print_ble124(false, op1Beef, op2Beef, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opSmall, opBig, true)
+    print_ble124(false, opSmall, opBig, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opBig, opSmall, false)
+    print_ble124(false, opBig, opSmall, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opSmall, opSmall, true)
+    print_ble124(false, opSmall, opSmall, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opBig, opSmall, false)
+    print_ble124(false, opBig, opSmall, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opTwo, opOne, false)
+    print_ble124(false, opTwo, opOne, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opOne, opZero, false)
+    print_ble124(false, opOne, opZero, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opOne, opMax, true)
+    print_ble124(false, opOne, opMax, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opZero, opMax, true)
+    print_ble124(false, opZero, opMax, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opZero, opOne, true)
+    print_ble124(false, opZero, opOne, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opMax, opOne, false)
+    print_ble124(false, opMax, opOne, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opMax, opZero, false)
+    print_ble124(false, opMax, opZero, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opMax, opMax, true)
+    print_ble124(false, opMax, opMax, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opOne, opOne, true)
+    print_ble124(false, opOne, opOne, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opZero, opZero, true)
+    print_ble124(false, opZero, opZero, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opHighOnes, opLowOnes, false)
+    print_ble124(false, opHighOnes, opLowOnes, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opLowOnes, opHighOnes, true)
+    print_ble124(false, opLowOnes, opHighOnes, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opHighOnes, opHighOnes, true)
+    print_ble124(false, opHighOnes, opHighOnes, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_ble124u(opLowOnes, opLowOnes, true)
+    print_ble124(false, opLowOnes, opLowOnes, true)
 
     wait_and_clear_at_row(row, title_str)
 }
-//
+
 //////////////////////////////////////////////////////////////////////////////
+// Test the ble124s macro
+.macro test_ble124s(init_row)
+{
+    .var row = init_row
+
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_ble124s_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_ble124(true, op124_0000, op124_0000, true)
+
+    wait_and_clear_at_row(row, title_str)
+}
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -605,78 +683,100 @@ opLowOnes: .word $00FF
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(op1Beef, op2Beef, false)
+    print_bgt124(false, op1Beef, op2Beef, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(opSmall, opBig, false)
+    print_bgt124(false, opSmall, opBig, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(opBig, opSmall, true)
+    print_bgt124(false, opBig, opSmall, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(opSmall, opSmall, false)
+    print_bgt124(false, opSmall, opSmall, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(opTwo, opOne, true)
+    print_bgt124(false, opTwo, opOne, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(opOne, opZero, true)
+    print_bgt124(false, opOne, opZero, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(opOne, opMax, false)
+    print_bgt124(false, opOne, opMax, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(opZero, opMax, false)
+    print_bgt124(false, opZero, opMax, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(opZero, opOne, false)
+    print_bgt124(false, opZero, opOne, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(opMax, opOne, true)
+    print_bgt124(false, opMax, opOne, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(opMax, opZero, true)
+    print_bgt124(false, opMax, opZero, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(opMax, opMax, false)
+    print_bgt124(false, opMax, opMax, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(opOne, opOne, false)
+    print_bgt124(false, opOne, opOne, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(opZero, opZero, false)
+    print_bgt124(false, opZero, opZero, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(opHighOnes, opLowOnes, true)
+    print_bgt124(false, opHighOnes, opLowOnes, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(opLowOnes, opHighOnes, false)
+    print_bgt124(false, opLowOnes, opHighOnes, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(opHighOnes, opHighOnes, false)
+    print_bgt124(false, opHighOnes, opHighOnes, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bgt124u(opLowOnes, opLowOnes, false)
+    print_bgt124(false, opLowOnes, opLowOnes, false)
 
     wait_and_clear_at_row(row, title_str)
 }
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Test the bgt124s macro
+.macro test_bgt124s(init_row)
+{
+    .var row = init_row
+
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_bgt124s_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt124(true, op124_0000, op124_0000, false)
+
+    wait_and_clear_at_row(row, title_str)
+}
+
+
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -693,75 +793,95 @@ opLowOnes: .word $00FF
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(op1Beef, op2Beef, true)
+    print_bge124(false, op1Beef, op2Beef, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(opSmall, opBig, false)
+    print_bge124(false, opSmall, opBig, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(opBig, opSmall, true)
+    print_bge124(false, opBig, opSmall, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(opSmall, opSmall, true)
+    print_bge124(false, opSmall, opSmall, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(opTwo, opOne, true)
+    print_bge124(false, opTwo, opOne, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(opOne, opZero, true)
+    print_bge124(false, opOne, opZero, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(opOne, opMax, false)
+    print_bge124(false, opOne, opMax, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(opZero, opMax, false)
+    print_bge124(false, opZero, opMax, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(opZero, opOne, false)
+    print_bge124(false, opZero, opOne, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(opMax, opOne, true)
+    print_bge124(false, opMax, opOne, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(opMax, opZero,true)
+    print_bge124(false, opMax, opZero,true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(opMax, opMax, true)
+    print_bge124(false, opMax, opMax, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(opOne, opOne, true)
+    print_bge124(false, opOne, opOne, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(opZero, opZero, true)
+    print_bge124(false, opZero, opZero, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(opHighOnes, opLowOnes, true)
+    print_bge124(false, opHighOnes, opLowOnes, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(opLowOnes, opHighOnes, false)
+    print_bge124(false, opLowOnes, opHighOnes, false)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(opHighOnes, opHighOnes, true)
+    print_bge124(false, opHighOnes, opHighOnes, true)
 
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124u(opLowOnes, opLowOnes, true)
+    print_bge124(false, opLowOnes, opLowOnes, true)
+
+    wait_and_clear_at_row(row, title_str)
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Test the bge124s macro
+.macro test_bge124s(init_row)
+{
+    .var row = init_row
+
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_bge124s_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge124(true, op124_0000, op124_0000, false)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -832,23 +952,13 @@ PrintOp2:
     jsr PrintPassed
 }
 
-//////////////////////////////////////////////////////////////////////////////
-.macro print_cmp124u(addr1, addr2, expected_cmp)
-{
-    print_cmp124(false, addr1, addr2, expected_cmp)
-}
-//////////////////////////////////////////////////////////////////////////////
-.macro print_cmp124s(addr1, addr2, expected_cmp)
-{
-    print_cmp124(true, addr1, addr2, expected_cmp)
-}
 
 //////////////////////////////////////////////////////////////////////////////
 // Print to current screen location the expression (either = or != ) 
 // for the relationship of the two word in memorys.  Use beq124u to do it.
 //   addr1: is the address of LSB of one fp124u (addr1+1 is MSB)
 //   addr2: is the address of LSB of the other fp124u (addr2+1 is MSB)
-.macro print_beq124u(addr1, addr2, expect_to_branch)
+.macro print_beq124(signed, addr1, addr2, expect_to_branch)
 {
     lda #1 
     sta passed
@@ -856,7 +966,15 @@ PrintOp2:
     nv_xfer124_mem_mem(addr1, fp124_to_print)
     jsr PrintHexFP124
    
-    nv_beq124u(addr1, addr2, BranchTarget)
+    .if (signed)
+    {
+        lda #0 
+        sta passed
+    }
+    else
+    {
+        nv_beq124u(addr1, addr2, BranchTarget)
+    }
     .if (expect_to_branch)
     {
         lda #0 
@@ -885,15 +1003,22 @@ Done:
 // for the relationship of the two word in memorys.  Use bne124u to do it.
 //   addr1: is the address of LSB of one fp124u (addr1+1 is MSB)
 //   addr2: is the address of LSB of the other fp124u (addr2+1 is MSB)
-.macro print_bne124u(addr1, addr2, expect_to_branch)
+.macro print_bne124(signed, addr1, addr2, expect_to_branch)
 {
     lda #1 
     sta passed
 
     nv_xfer124_mem_mem(addr1, fp124_to_print)
     jsr PrintHexFP124
-       
-    nv_bne124u(addr1, addr2, BranchTarget)
+    .if (signed)   
+    {
+        lda #0
+        sta passed
+    }
+    else
+    {
+        nv_bne124u(addr1, addr2, BranchTarget)
+    }
     .if (expect_to_branch)
     {
         lda #0 
@@ -922,7 +1047,7 @@ Done:
 // for the relationship of the two word in memorys.  Use blt124u to do it.
 //   addr1: is the address of LSB of fp124u (addr1+1 is MSB)
 //   addr2: is the address of LSB of other fp124u (addr2+1 is MSB)
-.macro print_blt124u(addr1, addr2, expect_to_branch)
+.macro print_blt124(signed, addr1, addr2, expect_to_branch)
 {
     lda #1 
     sta passed
@@ -930,8 +1055,15 @@ Done:
     nv_xfer124_mem_mem(addr1, fp124_to_print)
     jsr PrintHexFP124
        
-    nv_blt124u(addr1, addr2, BranchTarget)
-    
+    .if (signed)   
+    {
+        lda #0
+        sta passed
+    }
+    else
+    {
+        nv_blt124u(addr1, addr2, BranchTarget)
+    }
     .if (expect_to_branch)
     {
         lda #0 
@@ -960,7 +1092,7 @@ Done:
 // for the relationship of the two word in memorys.  Use ble124u to do it.
 //   addr1: is the address of LSB of fp124u (addr1+1 is MSB)
 //   addr2: is the address of LSB of another fp124u (addr2+1 is MSB)
-.macro print_ble124u(addr1, addr2, expect_to_branch)
+.macro print_ble124(signed, addr1, addr2, expect_to_branch)
 {
     lda #1 
     sta passed
@@ -968,8 +1100,15 @@ Done:
     nv_xfer124_mem_mem(addr1, fp124_to_print)
     jsr PrintHexFP124
     
-    nv_ble124u(addr1, addr2, BranchTarget)
-    
+    .if (signed)   
+    {
+        lda #0
+        sta passed
+    }
+    else
+    {
+        nv_ble124u(addr1, addr2, BranchTarget)
+    }
     .if (expect_to_branch)
     {
         lda #0 
@@ -999,7 +1138,7 @@ Done:
 // for the relationship of the two word in memorys.  Use bgt124u to do it.
 //   addr1: is the address of LSB of fp124u (addr1+1 is MSB
 //   addr2: is the address of LSB of another fp124u (addr2+1 is MSB)
-.macro print_bgt124u(addr1, addr2, expect_to_branch)
+.macro print_bgt124(signed, addr1, addr2, expect_to_branch)
 {
     lda #1
     sta passed
@@ -1007,8 +1146,15 @@ Done:
     nv_xfer124_mem_mem(addr1, fp124_to_print)
     jsr PrintHexFP124
 
-    nv_bgt124u(addr1, addr2, BranchTarget)
-
+    .if (signed)   
+    {
+        lda #0
+        sta passed
+    }
+    else
+    {
+        nv_bgt124u(addr1, addr2, BranchTarget)
+    }
     .if (expect_to_branch)
     {
         lda #0 
@@ -1037,7 +1183,7 @@ Done:
 // for the relationship of the two word in memorys.  Use bge124u to do it.
 //   addr1: is the address of LSB of fp124u (addr1+1 is MSB)
 //   addr2: is the address of LSB of another fp124u (addr2+1 is MSB)
-.macro print_bge124u(addr1, addr2, expect_to_branch)
+.macro print_bge124(signed, addr1, addr2, expect_to_branch)
 {
     lda #1 
     sta passed
@@ -1045,7 +1191,15 @@ Done:
     nv_xfer124_mem_mem(addr1, fp124_to_print)
     jsr PrintHexFP124
    
-    nv_bge124u(addr1, addr2, BranchTarget)
+    .if (signed)   
+    {
+        lda #0
+        sta passed
+    }
+    else
+    {
+        nv_bge124u(addr1, addr2, BranchTarget)
+    }
 
     .if (expect_to_branch)
     {
