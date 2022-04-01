@@ -147,19 +147,19 @@ CarryGood:
     plp
     .if (expect_negative_set)
     {
-        bmi NegativeGood
+        bcs Good
     }
     else 
     {
-        bpl NegativeGood
+        bcc Good
     }
     php
-    nv_screen_print_str(bad_neg_str)
+    nv_screen_print_str(bad_carry_str)
     lda #0 
     sta passed
     plp
 
-NegativeGood: 
+Good: 
 
 }
 
