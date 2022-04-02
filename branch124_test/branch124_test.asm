@@ -93,14 +93,6 @@ opLowOnes: .word $00FF
     nv_screen_plot_cursor(row++, 31)
     nv_screen_print_str(title_str)
 
-    test_cmp124u(0)
-    test_beq124u(0)
-    test_bne124u(0)
-    test_blt124u(0)
-    test_ble124u(0)
-    test_bgt124u(0)
-    test_bge124u(0)
-
     // signed tests
     test_cmp124s(0)
     test_beq124s(0)
@@ -109,6 +101,15 @@ opLowOnes: .word $00FF
     test_ble124s(0)
     test_bgt124s(0)
     test_bge124s(0)
+
+    // unsigned tests
+    test_cmp124u(0)
+    test_beq124u(0)
+    test_bne124u(0)
+    test_blt124u(0)
+    test_ble124u(0)
+    test_bgt124u(0)
+    test_bge124u(0)
 
     rts
 
@@ -221,6 +222,78 @@ opLowOnes: .word $00FF
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
     print_cmp124(true, op1Beef, op2Beef, CMP_EQUAL)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_0000, op124_0000, CMP_EQUAL)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_0000, op124_0001, CMP_LESS)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_0001, op124_0000, CMP_GREATER)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_8000, op124_0000, CMP_EQUAL)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_0000, op124_8000, CMP_EQUAL)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_0000, op124_0000, CMP_EQUAL)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_8002, op124_0002, CMP_LESS)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op1Beef, op124_0002, CMP_LESS)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_003E, op2Beef, CMP_GREATER)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_8000, op2Beef, CMP_GREATER)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_803E, op2Beef, CMP_GREATER)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_0034, op124_0010, CMP_GREATER)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_0010, op124_0034, CMP_LESS)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_8010, op124_8034, CMP_GREATER)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_8034, op124_8010, CMP_LESS)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_8034, op124_0034, CMP_LESS)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_FE00, op124_7E00, CMP_LESS)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_7E00, op124_FE00, CMP_GREATER)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -905,8 +978,7 @@ opLowOnes: .word $00FF
 
     .if (signed)
     {
-        lda #0
-        sta passed
+        nv_cmp124s(addr1, addr2)
     }
     else
     {
