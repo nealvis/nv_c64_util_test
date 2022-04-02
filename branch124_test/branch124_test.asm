@@ -245,7 +245,7 @@ opLowOnes: .word $00FF
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_cmp124(true, op124_0000, op124_0000, CMP_EQUAL)
+    print_cmp124(true, op124_8000, op124_8000, CMP_EQUAL)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
@@ -406,6 +406,58 @@ opLowOnes: .word $00FF
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
     print_beq124(true, op124_0000, op124_0000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124(true, op124_0000, op124_8000, true)
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124(true, op124_8000, op124_0000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124(true, op124_8000, op124_8000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124(true, op124_8030, op124_0030, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124(true, op124_0030, op124_8030, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124(true, op124_0038, op124_0038, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124(true, op124_FE00, op124_7E00, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124(true, op124_FE00, op124_FE00, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124(true, op124_7E00, op124_7E00, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124(true, op124_8034, op124_0034, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124(true, op124_0034, op124_8034, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124(true, op124_0034, op124_0034, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124(true, op124_8034, op124_8034, true)
+
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -1040,8 +1092,7 @@ PrintOp2:
    
     .if (signed)
     {
-        lda #0 
-        sta passed
+        nv_beq124s(addr1, addr2, BranchTarget)
     }
     else
     {
