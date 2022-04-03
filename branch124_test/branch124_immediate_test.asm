@@ -414,6 +414,57 @@ opLowOnes: .word $00FF
     nv_screen_plot_cursor(row++, 0)
     print_beq124_immed(true, op124_0000, $0000, true)
 
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124_immed(true, op124_0000, $8000, true)
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124_immed(true, op124_8000, $0000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124_immed(true, op124_8000, $8000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124_immed(true, op124_8030, $0030, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124_immed(true, op124_0030, $8030, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124_immed(true, op124_0038, $0038, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124_immed(true, op124_FE00, $7E00, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124_immed(true, op124_FE00, $FE00, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124_immed(true, op124_7E00, $7E00, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124_immed(true, op124_8034, $0034, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124_immed(true, op124_0034, $8034, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124_immed(true, op124_0034, $0034, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_beq124_immed(true, op124_8034, $8034, true)
+
     wait_and_clear_at_row(row, title_str)
 }
 
@@ -526,6 +577,54 @@ opLowOnes: .word $00FF
     nv_screen_plot_cursor(row++, 0)
     print_bne124_immed(true, op124_0000, $0000, false)
 
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne124_immed(true, op124_0000, $8000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne124_immed(true, op124_8000, $0000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne124_immed(true, op124_8000, $8000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne124_immed(true, op124_8030, $0030, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne124_immed(true, op124_0030, $8030, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne124_immed(true, op124_0030, $0031, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne124_immed(true, op124_8030, $8031, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne124_immed(true, op124_FFFF, $FFF7, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne124_immed(true, op124_FFF7, $FFF7, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne124_immed(true, op124_FE00, $7E00, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne124_immed(true, op124_7E00, $7F00, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bne124_immed(true, op124_7E00, $7E00, false)
+
     wait_and_clear_at_row(row, title_str)
 }
 
@@ -633,6 +732,54 @@ opLowOnes: .word $00FF
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
     print_blt124_immed(true, op124_0000, $0000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_blt124_immed(true, op124_0000, $8000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_blt124_immed(true, op124_8000, $0000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_blt124_immed(true, op124_8000, $8000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_blt124_immed(true, op124_8030, $0030, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_blt124_immed(true, op124_0030, $8030, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_blt124_immed(true, op124_0030, $0031, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_blt124_immed(true, op124_8030, $8031, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_blt124_immed(true, op124_FFFF, $FFF7, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_blt124_immed(true, op124_FFF7, $FFF7, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_blt124_immed(true, op124_FE00, $7E00, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_blt124_immed(true, op124_7E00, $7F00, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_blt124_immed(true, op124_7E00, $7E00, false)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -745,6 +892,54 @@ opLowOnes: .word $00FF
     nv_screen_plot_cursor(row++, 0)
     print_ble124_immed(true, op124_0000, $0000, true)
 
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_ble124_immed(true, op124_0000, $8000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_ble124_immed(true, op124_8000, $0000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_ble124_immed(true, op124_8000, $8000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_ble124_immed(true, op124_8030, $0030, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_ble124_immed(true, op124_0030, $8030, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_ble124_immed(true, op124_0030, $0031, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_ble124_immed(true, op124_8030, $8031, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_ble124_immed(true, op124_FFFF, $FFF7, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_ble124_immed(true, op124_FFF7, $FFF7, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_ble124_immed(true, op124_FE00, $7E00, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_ble124_immed(true, op124_7E00, $7F00, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_ble124_immed(true, op124_7E00, $7E00, true)
+
     wait_and_clear_at_row(row, title_str)
 }
 
@@ -852,6 +1047,54 @@ opLowOnes: .word $00FF
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
     print_bgt124_immed(true, op124_0000, $0000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt124_immed(true, op124_0000, $8000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt124_immed(true, op124_8000, $0000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt124_immed(true, op124_8000, $8000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt124_immed(true, op124_8030, $0030, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt124_immed(true, op124_0030, $8030, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt124_immed(true, op124_0030, $0031, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt124_immed(true, op124_8030, $8031, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt124_immed(true, op124_FFFF, $FFF7, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt124_immed(true, op124_FFF7, $FFF7, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt124_immed(true, op124_FE00, $7E00, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt124_immed(true, op124_7E00, $7F00, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bgt124_immed(true, op124_7E00, $7E00, false)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -961,7 +1204,55 @@ opLowOnes: .word $00FF
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_bge124_immed(true, op124_0000, $0000, false)
+    print_bge124_immed(true, op124_0000, $0000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge124_immed(true, op124_0000, $8000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge124_immed(true, op124_8000, $0000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge124_immed(true, op124_8000, $8000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge124_immed(true, op124_8030, $0030, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge124_immed(true, op124_0030, $8030, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge124_immed(true, op124_0030, $0031, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge124_immed(true, op124_8030, $8031, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge124_immed(true, op124_FFFF, $FFF7, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge124_immed(true, op124_FFF7, $FFF7, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge124_immed(true, op124_FE00, $7E00, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge124_immed(true, op124_7E00, $7F00, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bge124_immed(true, op124_7E00, $7E00, true)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -1049,8 +1340,7 @@ PrintOp2:
    
     .if (signed)
     {
-        lda #0 
-        sta passed
+        nv_beq124s_immed(addr1, num, BranchTarget)
     }
     else
     {
@@ -1094,8 +1384,7 @@ Done:
     jsr PrintHexFP124
     .if (signed)   
     {
-        lda #0
-        sta passed
+        nv_bne124s_immed(addr1, num, BranchTarget)
     }
     else
     {
@@ -1141,8 +1430,7 @@ Done:
        
     .if (signed)   
     {
-        lda #0
-        sta passed
+        nv_blt124s_immed(addr1, num, BranchTarget)
     }
     else
     {
@@ -1187,8 +1475,7 @@ Done:
     
     .if (signed)   
     {
-        lda #0
-        sta passed
+        nv_ble124s_immed(addr1, num, BranchTarget)
     }
     else
     {
@@ -1234,8 +1521,7 @@ Done:
 
     .if (signed)   
     {
-        lda #0
-        sta passed
+        nv_bgt124s_immed(addr1, num, BranchTarget)
     }
     else
     {
@@ -1280,8 +1566,7 @@ Done:
    
     .if (signed)   
     {
-        lda #0
-        sta passed
+        nv_bge124s_immed(addr1, num, BranchTarget)
     }
     else
     {
