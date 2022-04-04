@@ -47,7 +47,7 @@ less_than_str: .text@" < \$00"
 greater_than_str: .text@" > \$00"
 less_equal_str: .text@" <= \$00" 
 
-title_str: .text @"BR124 IMMED FAR\$00"          // null terminated string to print
+title_str: .text @"BR124U IMMED FAR\$00"          // null terminated string to print
                                                  // via the BASIC routine
 title_cmp124u_str: .text @"CMP124U IMMED FAR \$00"
 title_beq124u_str: .text @"BEQ124U IMMED FAR \$00"
@@ -56,14 +56,6 @@ title_blt124u_str: .text @"BLT124U IMMED FAR \$00"
 title_ble124u_str: .text @"BLE124U IMMED FAR \$00"
 title_bgt124u_str: .text @"BGT124U IMMED FAR \$00"
 title_bge124u_str: .text @"BGE124U IMMED FAR \$00"
-
-title_cmp124s_str: .text @"CMP124S IMMED FAR \$00"
-title_beq124s_str: .text @"BEQ124S IMMED FAR \$00"
-title_bne124s_str: .text @"BNE124S IMMED FAR \$00"
-title_blt124s_str: .text @"BLT124S IMMED FAR \$00"
-title_ble124s_str: .text @"BLE124S IMMED FAR \$00"
-title_bgt124s_str: .text @"BGT124S IMMED FAR \$00"
-title_bge124s_str: .text @"BGE124S IMMED FAR \$00"
 
 result: .word $0000
 
@@ -89,33 +81,16 @@ opLowOnes: .word $00FF
 
     nv_screen_print_str(normal_control_str)
     nv_screen_clear()
-    nv_screen_plot_cursor(row++, 25)
+    nv_screen_plot_cursor(row++, 23)
     nv_screen_print_str(title_str)
 
-    .var do_signed = true
-    //.var do_signed = false
-
-    .if (do_signed)
-    {
-        // signed tests
-        //test_cmp124s(0)
-        test_beq124s(0)
-        test_bne124s(0)
-        test_blt124s(0)
-        test_ble124s(0)
-        test_bgt124s(0)
-        test_bge124s(0)
-    }
-    else
-    {
-        //test_cmp124u(0)
-        test_beq124u(0)
-        test_bne124u(0)
-        test_blt124u(0)
-        test_ble124u(0)
-        test_bgt124u(0)
-        test_bge124u(0)
-    }
+    //test_cmp124u(0)
+    test_beq124u(0)
+    test_bne124u(0)
+    test_blt124u(0)
+    test_ble124u(0)
+    test_bgt124u(0)
+    test_bge124u(0)
 
     rts
 
@@ -214,26 +189,6 @@ opLowOnes: .word $00FF
 
 
 //////////////////////////////////////////////////////////////////////////////
-// Test the cmp124s macro
-.macro test_cmp124s(init_row)
-{
-    .var row = init_row
-
-    //////////////////////////////////////////////////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_cmp124s_str)
-    //////////////////////////////////////////////////////////////////////////
-    .eval row++
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_cmp124_immed( true, op1Beef, $FFFF, CMP_EQUAL)
-
-    wait_and_clear_at_row(row, title_str)
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
 //
 .macro test_beq124u(init_row)
 {
@@ -244,102 +199,6 @@ opLowOnes: .word $00FF
     nv_screen_print_str(title_beq124u_str)
     //////////////////////////////////////////////////////////////////////////
     .eval row++
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  op1Beef, $BEEF, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opSmall, $747E, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opBig, $0005, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opSmall, $0005, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opBig, $0005, false)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opTwo, $0001, false)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opOne, $0000, false)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opOne, $FFFF, false)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opZero, $FFFF, false)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opZero, $0001, false)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opMax, $0001, false)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opMax, $0000, false)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opMax, $FFFF, true)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opOne, $0001, true)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opZero, $0000, true)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opHighOnes, $00FF, false)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opLowOnes, $FF00, false)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opHighOnes, $FF00, true)
-
-    ////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(false,  opLowOnes, $00FF, true)
-
-    wait_and_clear_at_row(row, title_str)
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-// Test the beq124s macro
-.macro test_beq124s(init_row)
-{
-    .var row = init_row
-
-    //////////////////////////////////////////////////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_beq124s_str)
-    //////////////////////////////////////////////////////////////////////////
-    .eval row++
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_beq124_immed(true, op124_0000, $0000, true)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
@@ -514,74 +373,6 @@ opLowOnes: .word $00FF
 
 
 //////////////////////////////////////////////////////////////////////////////
-// Test the bne124s macro
-.macro test_bne124s(init_row)
-{
-    .var row = init_row
-
-    //////////////////////////////////////////////////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_bne124s_str)
-    //////////////////////////////////////////////////////////////////////////
-    .eval row++
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne124_immed(true, op124_0000, $0000, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne124_immed(true, op124_0000, $8000, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne124_immed(true, op124_8000, $0000, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne124_immed(true, op124_8000, $8000, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne124_immed(true, op124_8030, $0030, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne124_immed(true, op124_0030, $8030, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne124_immed(true, op124_0030, $0031, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne124_immed(true, op124_8030, $8031, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne124_immed(true, op124_FFFF, $FFF7, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne124_immed(true, op124_FFF7, $FFF7, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne124_immed(true, op124_FE00, $7E00, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne124_immed(true, op124_7E00, $7F00, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bne124_immed(true, op124_7E00, $7E00, false)
-
-    wait_and_clear_at_row(row, title_str)
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
 //
 .macro test_blt124u(init_row)
 {
@@ -664,74 +455,6 @@ opLowOnes: .word $00FF
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
     print_blt124_immed(false, opLowOnes, $00FF, false)
-
-    wait_and_clear_at_row(row, title_str)
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-// Test the blt124s macro
-.macro test_blt124s(init_row)
-{
-    .var row = init_row
-
-    //////////////////////////////////////////////////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_blt124s_str)
-    //////////////////////////////////////////////////////////////////////////
-    .eval row++
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_blt124_immed(true, op124_0000, $0000, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_blt124_immed(true, op124_0000, $8000, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_blt124_immed(true, op124_8000, $0000, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_blt124_immed(true, op124_8000, $8000, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_blt124_immed(true, op124_8030, $0030, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_blt124_immed(true, op124_0030, $8030, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_blt124_immed(true, op124_0030, $0031, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_blt124_immed(true, op124_8030, $8031, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_blt124_immed(true, op124_FFFF, $FFF7, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_blt124_immed(true, op124_FFF7, $FFF7, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_blt124_immed(true, op124_FE00, $7E00, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_blt124_immed(true, op124_7E00, $7F00, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_blt124_immed(true, op124_7E00, $7E00, false)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -828,73 +551,6 @@ opLowOnes: .word $00FF
     wait_and_clear_at_row(row, title_str)
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// Test the ble124s macro
-.macro test_ble124s(init_row)
-{
-    .var row = init_row
-
-    //////////////////////////////////////////////////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_ble124s_str)
-    //////////////////////////////////////////////////////////////////////////
-    .eval row++
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble124_immed(true, op124_0000, $0000, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble124_immed(true, op124_0000, $8000, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble124_immed(true, op124_8000, $0000, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble124_immed(true, op124_8000, $8000, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble124_immed(true, op124_8030, $0030, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble124_immed(true, op124_0030, $8030, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble124_immed(true, op124_0030, $0031, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble124_immed(true, op124_8030, $8031, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble124_immed(true, op124_FFFF, $FFF7, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble124_immed(true, op124_FFF7, $FFF7, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble124_immed(true, op124_FE00, $7E00, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble124_immed(true, op124_7E00, $7F00, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_ble124_immed(true, op124_7E00, $7E00, true)
-
-    wait_and_clear_at_row(row, title_str)
-}
-
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -985,76 +641,6 @@ opLowOnes: .word $00FF
 
 
 //////////////////////////////////////////////////////////////////////////////
-// Test the bgt124s macro
-.macro test_bgt124s(init_row)
-{
-    .var row = init_row
-
-    //////////////////////////////////////////////////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_bgt124s_str)
-    //////////////////////////////////////////////////////////////////////////
-    .eval row++
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt124_immed(true, op124_0000, $0000, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt124_immed(true, op124_0000, $8000, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt124_immed(true, op124_8000, $0000, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt124_immed(true, op124_8000, $8000, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt124_immed(true, op124_8030, $0030, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt124_immed(true, op124_0030, $8030, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt124_immed(true, op124_0030, $0031, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt124_immed(true, op124_8030, $8031, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt124_immed(true, op124_FFFF, $FFF7, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt124_immed(true, op124_FFF7, $FFF7, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt124_immed(true, op124_FE00, $7E00, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt124_immed(true, op124_7E00, $7F00, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bgt124_immed(true, op124_7E00, $7E00, false)
-
-    wait_and_clear_at_row(row, title_str)
-}
-
-
-
-
-//////////////////////////////////////////////////////////////////////////////
 //
 .macro test_bge124u(init_row)
 {
@@ -1137,74 +723,6 @@ opLowOnes: .word $00FF
     ////////////////////////////
     nv_screen_plot_cursor(row++, 0)
     print_bge124_immed(false, opLowOnes, $00FF, true)
-
-    wait_and_clear_at_row(row, title_str)
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-// Test the bge124s macro
-.macro test_bge124s(init_row)
-{
-    .var row = init_row
-
-    //////////////////////////////////////////////////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_bge124s_str)
-    //////////////////////////////////////////////////////////////////////////
-    .eval row++
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge124_immed(true, op124_0000, $0000, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge124_immed(true, op124_0000, $8000, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge124_immed(true, op124_8000, $0000, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge124_immed(true, op124_8000, $8000, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge124_immed(true, op124_8030, $0030, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge124_immed(true, op124_0030, $8030, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge124_immed(true, op124_0030, $0031, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge124_immed(true, op124_8030, $8031, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge124_immed(true, op124_FFFF, $FFF7, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge124_immed(true, op124_FFF7, $FFF7, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge124_immed(true, op124_FE00, $7E00, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge124_immed(true, op124_7E00, $7F00, false)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
-    print_bge124_immed(true, op124_7E00, $7E00, true)
 
     wait_and_clear_at_row(row, title_str)
 }
