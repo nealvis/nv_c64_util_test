@@ -229,7 +229,15 @@ PrintHexWord:
     nv_screen_print_hex_word_mem(word_to_print, true)
     rts
 }
+byte_to_print:
 word_to_print: .word 0
+
+///////////////////////////////////////////////////////////////////////
+PrintHexByte:
+{
+    nv_screen_print_hex_byte_mem(byte_to_print, true)
+    rts
+}
 
 ///////////////////////////////////////////////////////////////////////
 // subroutine to print a fixed point 12.4 number in hex

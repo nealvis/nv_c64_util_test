@@ -39,6 +39,7 @@ overflow_str:  .text @"(V) \$00"
 plus_str: .text @"+\$00"
 minus_str: .text @"-\$00"
 equal_str: .text@"=\$00"
+dot_str: .text@".\$00"
 conv124s_str: .text@" CONV S \$00"
 conv124u_str: .text@" CONV U \$00"
 conv16u_124u_str: .text@"16UTO124U \$00"
@@ -60,6 +61,8 @@ title_conv16uTo124u_str: .text @"16U 2 124U \$00"
 
 title_abs124s_str: .text @"TEST ABS124S \$00"
 title_ops124s_str: .text @"TEST OPS124S \$00"
+title_create124u_str: .text @"TEST CREATE124U \$00"
+title_create124s_str: .text @"TEST CREATE124S \$00"
 
 #import "../test_util/test_util_op124_data.asm"
 #import "../test_util/test_util_op16_data.asm"
@@ -73,8 +76,11 @@ title_ops124s_str: .text @"TEST OPS124S \$00"
 
     nv_screen_print_str(normal_control_str)
     nv_screen_clear()
-    nv_screen_plot_cursor(row++, 33)
+    nv_screen_plot_cursor(row++, 32)
     nv_screen_print_str(title_str)
+
+    test_create124u(0)
+    test_create124s(0)
 
     test_conv16uTo124u(0)
     test_abs124s(0)
@@ -559,6 +565,107 @@ title_ops124s_str: .text @"TEST OPS124S \$00"
 
 
 //////////////////////////////////////////////////////////////////////////////
+//
+.macro test_create124u(init_row)
+{
+    .var row = init_row
+    
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_create124u_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_create124(false, 0, $000, $0, $0000)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_create124(false, 0, $FFF, $F, $FFFF)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_create124(false, 0, $0FF, $F, $0FFF)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_create124(false, 0, $0F, $7, $00F7)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_create124(false, 0, $00, $6, $0006)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_create124(false, 0, $123, $0, $1230)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_create124(false, 0, $123, $4, $1234)
+
+    wait_and_clear_at_row(row, title_str)
+}
+//
+//////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_create124s(init_row)
+{
+    .var row = init_row
+    
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_create124s_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_create124(true, 0, $000, $0, $0000)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_create124(true, 0, $7FF, $F, $7FFF)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_create124(true, 1, $0FF, $F, $8FFF)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_create124(true, 0, $0F, $7, $00F7)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_create124(true, 0, $00, $6, $0006)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_create124(true, 1, $00, $6, $8006)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_create124(true, 0, $123, $0, $1230)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_create124(true, 0, $123, $4, $1234)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_create124(true, 1, $123, $4, $9234)
+
+    wait_and_clear_at_row(row, title_str)
+}
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////
 //                          Print macros 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -871,6 +978,76 @@ ResultGood:
 
     jsr PrintPassed
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// inline macro to print the specified create fp124 operation at the current 
+// curor location.  nv_create124s/u is used to do the creation. 
+// macro params
+//  create_signed: if true then create an fp124s else create fp124u
+//  sign: if creating fp124s then this is the sign to use, a 0 or 1
+//        if creating an fp124u then this is ignored
+//  left: is the left of point
+//  right: is the right of point.
+//  expected_result: is the expected bits for the created fp124s/u
+.macro print_create124(create_signed, sign, left, right, expected_result)
+{
+    lda #1
+    sta passed
+
+    .if (create_signed)
+    {
+        .if (sign == 1)
+        {   
+            nv_screen_print_str(minus_str)
+
+        }
+        .if (sign == 0)
+        {
+            nv_screen_print_str(plus_str)
+        }
+    }
+
+    nv_store16_immed(word_to_print, left)
+    jsr PrintHexWord
+
+    nv_screen_print_str(dot_str)
+
+    nv_store16_immed(byte_to_print, right)
+    jsr PrintHexByte
+
+    nv_screen_print_str(equal_str)
+
+    .if (create_signed)
+    {
+        nv_create124s(sign, left, right, result124)
+    }
+    else
+    {
+        nv_create124u(left, right, result124)
+    }   
+
+    php
+    .if (create_signed)
+    {
+        nv_beq124s_immed(result124, expected_result, ResultGood)
+    }
+    else
+    {
+        nv_beq124u_immed(result124, expected_result, ResultGood)
+    }
+    lda #0 
+    sta passed
+
+ResultGood:
+    nv_xfer124_mem_mem(result124, fp124_to_print)
+    jsr PrintHexFP124
+    
+    plp
+    //pass_or_fail_overflow(expect_overflow_set)
+
+    jsr PrintPassed
+}
+
 
 
 #import "../test_util/test_util_code.asm"
