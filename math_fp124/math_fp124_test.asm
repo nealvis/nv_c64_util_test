@@ -64,6 +64,11 @@ title_ops124s_str: .text @"TEST OPS124S \$00"
 title_create124u_str: .text @"TEST CREATE124U \$00"
 title_create124s_str: .text @"TEST CREATE124S \$00"
 
+title_closest124u_str: .text @"TEST CLOSEST124U \$00"
+title_closest124s_str: .text @"TEST CLOSEST124S \$00"
+
+closest124_str: .text @"????.?\$00"
+
 #import "../test_util/test_util_op124_data.asm"
 #import "../test_util/test_util_op16_data.asm"
 //#import "../test_util/test_util_op8_data.asm"
@@ -78,6 +83,9 @@ title_create124s_str: .text @"TEST CREATE124S \$00"
     nv_screen_clear()
     nv_screen_plot_cursor(row++, 32)
     nv_screen_print_str(title_str)
+
+    test_closest124s(0)
+    test_closest124u(0)
 
     test_create124u(0)
     test_create124s(0)
@@ -662,6 +670,192 @@ title_create124s_str: .text @"TEST CREATE124S \$00"
 //
 //////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_closest124s(init_row)
+{
+    .var row = init_row
+    
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_closest124s_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(true, 0.0, $0000)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(true, 1.0, $0010)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(true, 1.5, $0018)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(true, -1.0, $8010)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(true, -1.5, $8018)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(true, -2047.9375, $FFFF)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(true, 2047.9375, $7FFF)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(true, 1.25, $0014)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(true, -1.25, $8014)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(true, 3.0625, $0031)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(true, 3.0625, $0031)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(true, 3.125, $0032)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(true, 3.4325, $0037)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(true, 3.4, $0036)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(true, 3.3, $0035)
+
+
+
+/*
+op124_0030: .word $0030  // +3.0
+op124_0031: .word $0031  // +3.0625
+op124_0032: .word $0032  // +3.125
+op124_0034: .word $0034  // +3.25
+op124_0034: .word $0035  // +3.3125
+op124_0036: .word $0036  // +3.375
+op124_0037: .word $0037  // +3.4375
+op124_0038: .word $0038  // +3.5
+op124_003C: .word $003C  // +3.75
+op124_003E: .word $003E  // +3.875
+op124_003F: .word $003F  // +3.9375
+*/
+
+    wait_and_clear_at_row(row, title_str)
+}
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_closest124u(init_row)
+{
+    .var row = init_row
+    
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_closest124u_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(false, 0.0, $0000)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(false, 1.0, $0010)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(false, 1.5, $0018)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(false, 2047.0, $7FF0)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(false, 2047.5, $7FF8)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(false, 2048.0, $8000)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(false, 1.25, $0014)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(false, 4095.25, $FFF4)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(false, 4095.9375, $FFFF)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(false, 3.0625, $0031)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(false, 3.0625, $0031)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(false, 3.125, $0032)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(false, 3.4325, $0037)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(false, 3.4, $0036)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_closest124(false, 3.3, $0035)
+
+/*
+op124_0030: .word $0030  // +3.0
+op124_0031: .word $0031  // +3.0625
+op124_0032: .word $0032  // +3.125
+op124_0034: .word $0034  // +3.25
+op124_0034: .word $0035  // +3.3125
+op124_0036: .word $0036  // +3.375
+op124_0037: .word $0037  // +3.4375
+op124_0038: .word $0038  // +3.5
+op124_003C: .word $003C  // +3.75
+op124_003E: .word $003E  // +3.875
+op124_003F: .word $003F  // +3.9375
+*/
+
+    wait_and_clear_at_row(row, title_str)
+}
+//
+//////////////////////////////////////////////////////////////////////////////
+
 
 
 
@@ -1048,6 +1242,69 @@ ResultGood:
     jsr PrintPassed
 }
 
+//////////////////////////////////////////////////////////////////////////////
+// inline macro to create and print the closest specified fp124 at
+// the current cursor location.  nv_closest124(s|u)_immedflot is used 
+// to do the operation. 
+// macro params
+//  create_signed: if true then create an fp124s else create fp124u
+//  flt_num: is a regular floating point number like 325.4 for which
+//           the closest fp124 value will be created.
+//  expected_result: is the expected bits for the created fp124s/u
+.macro print_closest124(create_signed, flt_num, expected_result)
+{
+    lda #1
+    sta passed
+
+    .var sign = 0
+
+    .if (create_signed)
+    {
+        .if (sign == 1)
+        {   
+            nv_screen_print_str(minus_str)
+
+        }
+        .if (sign == 0)
+        {
+            nv_screen_print_str(plus_str)
+        }
+    }
+    nv_screen_print_str(closest124_str)
+
+    nv_screen_print_str(equal_str)
+
+    .if (create_signed)
+    {
+        nv_closest124s_immedflt(flt_num, result124)
+        
+    }
+    else
+    {
+        nv_closest124u_immedflt(flt_num, result124)
+    }   
+
+    php
+    .if (create_signed)
+    {
+        nv_beq124s_immed(result124, expected_result, ResultGood)
+    }
+    else
+    {
+        nv_beq124u_immed(result124, expected_result, ResultGood)
+    }
+    lda #0 
+    sta passed
+
+ResultGood:
+    nv_xfer124_mem_mem(result124, fp124_to_print)
+    jsr PrintHexFP124
+    
+    plp
+    //pass_or_fail_overflow(expect_overflow_set)
+
+    jsr PrintPassed
+}
 
 
 #import "../test_util/test_util_code.asm"
