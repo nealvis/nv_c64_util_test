@@ -742,22 +742,6 @@ closest124_str: .text @"????.?\$00"
     nv_screen_plot_cursor(row++, 0)
     print_closest124(true, 3.3, $0035)
 
-
-
-/*
-op124_0030: .word $0030  // +3.0
-op124_0031: .word $0031  // +3.0625
-op124_0032: .word $0032  // +3.125
-op124_0034: .word $0034  // +3.25
-op124_0034: .word $0035  // +3.3125
-op124_0036: .word $0036  // +3.375
-op124_0037: .word $0037  // +3.4375
-op124_0038: .word $0038  // +3.5
-op124_003C: .word $003C  // +3.75
-op124_003E: .word $003E  // +3.875
-op124_003F: .word $003F  // +3.9375
-*/
-
     wait_and_clear_at_row(row, title_str)
 }
 //
@@ -819,10 +803,6 @@ op124_003F: .word $003F  // +3.9375
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_closest124(false, 3.0625, $0031)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
     print_closest124(false, 3.125, $0032)
 
     /////////////////////////////
@@ -836,20 +816,6 @@ op124_003F: .word $003F  // +3.9375
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
     print_closest124(false, 3.3, $0035)
-
-/*
-op124_0030: .word $0030  // +3.0
-op124_0031: .word $0031  // +3.0625
-op124_0032: .word $0032  // +3.125
-op124_0034: .word $0034  // +3.25
-op124_0034: .word $0035  // +3.3125
-op124_0036: .word $0036  // +3.375
-op124_0037: .word $0037  // +3.4375
-op124_0038: .word $0038  // +3.5
-op124_003C: .word $003C  // +3.75
-op124_003E: .word $003E  // +3.875
-op124_003F: .word $003F  // +3.9375
-*/
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -1297,9 +1263,18 @@ ResultGood:
     sta passed
 
 ResultGood:
-    nv_xfer124_mem_mem(result124, fp124_to_print)
-    jsr PrintHexFP124
-    
+    .if (create_signed)
+    {
+        nv_xfer124_mem_mem(result124, fp124s_to_print)
+        //jsr PrintHexFP124
+        jsr PrintDecFP124s
+    }
+    else
+    {
+        nv_xfer124_mem_mem(result124, fp124u_to_print)
+        //jsr PrintHexFP124
+        jsr PrintDecFP124u
+    }
     plp
     //pass_or_fail_overflow(expect_overflow_set)
 

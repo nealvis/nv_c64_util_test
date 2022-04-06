@@ -252,6 +252,27 @@ PrintHexFP124:
 fp124_to_print: .word 0
 
 ///////////////////////////////////////////////////////////////////////
+// subroutine to print a fixed point 12.4 number in decimal
+PrintDecFP124s:
+{
+
+    nv_screen_print_dec_fp124s_mem(fp124s_to_print)
+    rts
+}
+fp124s_to_print: .word 0
+
+///////////////////////////////////////////////////////////////////////
+// subroutine to print a fixed point 12.4 number in decimal
+PrintDecFP124u:
+{
+
+    nv_screen_print_dec_fp124s_mem(fp124u_to_print)
+    rts
+}
+fp124u_to_print: .word 0
+
+
+///////////////////////////////////////////////////////////////////////
 PrintHexByteAccum:
 {
     nv_screen_print_hex_byte_a(true)
