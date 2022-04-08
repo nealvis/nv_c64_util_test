@@ -9,6 +9,7 @@
 // import all nv_c64_util macros and data.  The data
 // will go in default place
 #import "../../nv_c64_util/nv_c64_util_macs_and_data.asm"
+#import "../../nv_c64_util/nv_screen_code.asm"
 
 space_str: .text @" \$00"
 passed_str: .text @" PASSED\$00"
@@ -251,22 +252,13 @@ PrintHexFP124:
 }
 fp124_to_print: .word 0
 
-///////////////////////////////////////////////////////////////////////
-// subroutine to print a fixed point 12.4 number in decimal
-PrintDecFP124s:
-{
-
-    nv_screen_print_dec_fp124s_mem(fp124s_to_print)
-    rts
-}
-fp124s_to_print: .word 0
 
 ///////////////////////////////////////////////////////////////////////
 // subroutine to print a fixed point 12.4 number in decimal
 PrintDecFP124u:
 {
 
-    nv_screen_print_dec_fp124s_mem(fp124u_to_print)
+    nv_screen_print_dec_fp124u_mem(fp124u_to_print)
     rts
 }
 fp124u_to_print: .word 0

@@ -1265,18 +1265,15 @@ ResultGood:
 ResultGood:
     .if (create_signed)
     {
-        nv_xfer124_mem_mem(result124, fp124s_to_print)
-        //jsr PrintHexFP124
-        jsr PrintDecFP124s
+        nv_xfer124_mem_mem(result124, nv_fp124s_to_print)
+        jsr NvScreenPrintDecFP124s
     }
     else
     {
         nv_xfer124_mem_mem(result124, fp124u_to_print)
-        //jsr PrintHexFP124
         jsr PrintDecFP124u
     }
     plp
-    //pass_or_fail_overflow(expect_overflow_set)
 
     jsr PrintPassed
 }
