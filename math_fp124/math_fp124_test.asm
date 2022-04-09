@@ -40,34 +40,30 @@ plus_str: .text @"+\$00"
 minus_str: .text @"-\$00"
 equal_str: .text@"=\$00"
 dot_str: .text@".\$00"
-conv124s_str: .text@" CONV S \$00"
-conv124u_str: .text@" CONV U \$00"
+//conv124s_str: .text@" CONV S \$00"
+//conv124u_str: .text@" CONV U \$00"
 //conv16u_124u_str: .text@"16UTO124U \$00"
-rnd124u_str: .text@" RND U\$00"
-rnd124s_str: .text@" RND S \$00"
-abs124s_str: .text@" ABS S \$00"
-ops124s_str: .text@" OPS S \$00"
+//rnd124u_str: .text@" RND U\$00"
+//rnd124s_str: .text@" RND S \$00"
+//abs124s_str: .text@" ABS S \$00"
+//ops124s_str: .text@" OPS S \$00"
 
 title_str: .text @"MATH124\$00"          // null terminated string to print
                                         // via the BASIC routine
-title_rnd124u_str: .text @"TEST RND124U \$00"
-title_rnd124s_str: .text @"TEST RND124S \$00"
+title_rnd124u_str: .text @"RND124U \$00"
+title_rnd124s_str: .text @"RND124S \$00"
 
-title_adc124u_str: .text @"TEST ADC124U \$00"
-title_adc124s_str: .text @"TEST ADC124S \$00"
-title_conv124u_str: .text @"TEST CONV124U \$00"
-title_conv124s_str: .text @"TEST CONV124S \$00"
+title_adc124u_str: .text @"ADC124U \$00"
+title_adc124s_str: .text @"ADC124S \$00"
+title_conv124uTo16u_str: .text @"124U 2 16U \$00"
+title_conv124sTo16s_str: .text @"124S 2 16S \$00"
 title_conv16uTo124u_str: .text @"16U 2 124U \$00"
-
-title_abs124s_str: .text @"TEST ABS124S \$00"
-title_ops124s_str: .text @"TEST OPS124S \$00"
-title_create124u_str: .text @"TEST CREATE124U \$00"
-title_create124s_str: .text @"TEST CREATE124S \$00"
-
-title_closest124u_str: .text @"TEST CLOSEST124U \$00"
-title_closest124s_str: .text @"TEST CLOSEST124S \$00"
-
-closest124_str: .text @"????.?\$00"
+title_abs124s_str: .text @"ABS124S \$00"
+title_ops124s_str: .text @"OPS124S \$00"
+title_create124u_str: .text @"CREATE124U \$00"
+title_create124s_str: .text @"CREATE124S \$00"
+title_closest124u_str: .text @"CLOSEST124U \$00"
+title_closest124s_str: .text @"CLOSEST124S \$00"
 
 #import "../test_util/test_util_op124_data.asm"
 #import "../test_util/test_util_op16_data.asm"
@@ -91,13 +87,14 @@ closest124_str: .text @"????.?\$00"
     test_create124s(0)
 
     test_conv16uTo124u(0)
+    test_conv124uTo16u(0)
+    test_conv124sTo16s(0)
+
     test_abs124s(0)
     test_ops124s(0)
 
     test_rnd124u(0)
     test_rnd124s(0)
-    test_conv124u(0)
-    test_conv124s(0)
     test_adc124u(0)
     test_adc124s(0)
 
@@ -263,27 +260,27 @@ closest124_str: .text @"????.?\$00"
 
 //////////////////////////////////////////////////////////////////////////////
 //
-.macro test_conv124u(init_row)
+.macro test_conv124uTo16u(init_row)
 {
     .var row = init_row
     
     //////////////////////////////////////////////////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_conv124u_str)
+    nv_screen_print_str(title_conv124uTo16u_str)
     //////////////////////////////////////////////////////////////////////////
     .eval row++
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_conv124u(op124_0030, result16, $0003)
+    print_conv124uTo16u(op124_0030, result16, $0003)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //             
-    print_conv124u(op124_FFF7, result16, $0FFF)
+    print_conv124uTo16u(op124_FFF7, result16, $0FFF)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //           
-    print_conv124u(op124_FFF8, result16, $1000)
+    print_conv124uTo16u(op124_FFF8, result16, $1000)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -291,67 +288,67 @@ closest124_str: .text @"????.?\$00"
 
 //////////////////////////////////////////////////////////////////////////////
 //
-.macro test_conv124s(init_row)
+.macro test_conv124sTo16s(init_row)
 {
     .var row = init_row
     
     //////////////////////////////////////////////////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_conv124s_str)
+    nv_screen_print_str(title_conv124sTo16s_str)
     //////////////////////////////////////////////////////////////////////////
     .eval row++
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //             
-    print_conv124s(op124_0030, result16, $0003)
+    print_conv124sTo16s(op124_0030, result16, $0003)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //              
-    print_conv124s(op124_FFF7, result16, $F801)
+    print_conv124sTo16s(op124_FFF7, result16, $F801)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_conv124s(op124_FFF8, result16, $F800)
+    print_conv124sTo16s(op124_FFF8, result16, $F800)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_conv124s(op124_FFFC, result16, $F800)
+    print_conv124sTo16s(op124_FFFC, result16, $F800)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_conv124s(op124_FFF4, result16, $F801)
+    print_conv124sTo16s(op124_FFF4, result16, $F801)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_conv124s(op124_0038, result16, $0004)
+    print_conv124sTo16s(op124_0038, result16, $0004)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_conv124s(op124_0034, result16, $0003)
+    print_conv124sTo16s(op124_0034, result16, $0003)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_conv124s(op124_003C, result16, $0004)
+    print_conv124sTo16s(op124_003C, result16, $0004)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_conv124s(op124_7FFF, result16, $0800)
+    print_conv124sTo16s(op124_7FFF, result16, $0800)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_conv124s(op124_800F, result16, $FFFF)
+    print_conv124sTo16s(op124_800F, result16, $FFFF)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_conv124s(op124_8007, result16, $0000)
+    print_conv124sTo16s(op124_8007, result16, $0000)
 
     ////////    /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_conv124s(op124_8034, result16, $FFFD)
+    print_conv124sTo16s(op124_8034, result16, $FFFD)
 
     /////////////////////
     nv_screen_plot_cursor(row++, 0) //            
-    print_conv124s(op124_8038, result16, $FFFC)
+    print_conv124sTo16s(op124_8038, result16, $FFFC)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -907,13 +904,15 @@ ResultGood:
 
 //////////////////////////////////////////////////////////////////////////////
 // inline macro to print the specified conversion operation at the current 
-// curor location.  nv_conv_mem16u_mem124u is used to do the rounding.  
+// curor location.  
+// converts a 16u value to fp124u value
+//   op16u is the value to convert
+//   result124u will contain the result
+// nv_conv_mem16u_mem124u is used to do the conversion  
 .macro print_conv16uTo124u(op16u, result124u, expected_result, expect_overflow_set)
 {
     lda #1
     sta passed
-
-    //nv_screen_print_str(conv16u_124u_str)
 
     nv_xfer16_mem_mem(op16u, word_to_print)
     jsr PrintHexWord
@@ -944,14 +943,18 @@ ResultGood:
 
 
 //////////////////////////////////////////////////////////////////////////////
-// inline macro to print the specified rounding operation at the current 
-// curor location.  nv_conv124u_mem16u is used to do the rounding.  
-.macro print_conv124u(op1, result, expected_result)
+// inline macro to print the specified conversion operation at the current 
+// curor location.  
+// converts fp124u to 16u rounding off the decimal to whole number
+//   op1 is the fp124u value to convert
+//   result will contain the converted 16u value
+// nv_conv124u_mem16u is used to do the conversion.  
+.macro print_conv124uTo16u(op1, result, expected_result)
 {
     lda #1
     sta passed
 
-    nv_screen_print_str(conv124u_str)
+    //nv_screen_print_str(conv124u_str)
 
     nv_xfer124_mem_mem(op1, fp124_to_print)
     jsr PrintHexFP124
@@ -982,7 +985,7 @@ ResultGood:
     // copy the op1 to the result because the operation is in place
     nv_xfer16_mem_mem(op1, result)
 
-    nv_screen_print_str(rnd124u_str)
+    //nv_screen_print_str(rnd124u_str)
 
     nv_xfer124_mem_mem(op1, fp124_to_print)
     jsr PrintHexFP124
@@ -1000,6 +1003,10 @@ ResultGood:
     nv_xfer124_mem_mem(result, fp124_to_print)
     jsr PrintHexFP124
     
+    nv_screen_print_str(equal_str)
+    nv_xfer124_mem_mem(result, nv_fp124_to_print)
+    jsr NvScreenPrintDecFP124u
+
     plp
     pass_or_fail_overflow(expect_overflow_set)
 
@@ -1018,7 +1025,7 @@ ResultGood:
     // copy the op1 to the result because the operation is in place
     nv_xfer16_mem_mem(op1, result)
 
-    nv_screen_print_str(rnd124s_str)
+    //nv_screen_print_str(rnd124s_str)
 
     nv_xfer124_mem_mem(op1, fp124_to_print)
     jsr PrintHexFP124
@@ -1036,6 +1043,10 @@ ResultGood:
     nv_xfer124_mem_mem(result, fp124_to_print)
     jsr PrintHexFP124
     
+    nv_screen_print_str(equal_str)
+    nv_xfer124_mem_mem(result, nv_fp124_to_print)
+    jsr NvScreenPrintDecFP124s
+
     plp
     pass_or_fail_overflow(expect_overflow_set)
 
@@ -1044,14 +1055,22 @@ ResultGood:
 
 
 //////////////////////////////////////////////////////////////////////////////
-// inline macro to print the specified rounding operation at the current 
-// curor location.  nv_conv124s_mem16s is used to do the rounding.  
-.macro print_conv124s(op1, result, expected_result)
+// inline macro to print the specified conversion operation at the current 
+// curor location.  
+//////////////////////////////////////////////////////////////////////////////
+// inline macro to print the specified conversion operation at the current 
+// curor location.  The decimal part is rounded to nearest whole number
+// Converts fp124s to 16s rounding off the decimal to nearest whole number
+// nv_conv124s_mem16s is used to do the conversion. 
+//   op1 is the fp124s value to convert
+//   result will contain the converted 16u value
+// nv_conv124u_mem16u is used to do the conversion.  
+.macro print_conv124sTo16s(op1, result, expected_result)
 {
     lda #1
     sta passed
 
-    nv_screen_print_str(conv124s_str)
+    //nv_screen_print_str(conv124s_str)
 
     nv_xfer124_mem_mem(op1, fp124_to_print)
     jsr PrintHexFP124
@@ -1124,8 +1143,6 @@ ResultGood:
 
     // copy the op1 to the result because the operation is in place
     nv_xfer16_mem_mem(op1, result)
-
-    //nv_screen_print_str(ops124s_str)
 
     nv_xfer124_mem_mem(op1, fp124_to_print)
     jsr PrintHexFP124

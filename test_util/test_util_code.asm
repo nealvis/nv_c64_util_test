@@ -22,6 +22,7 @@ normal_control_str: nv_screen_white_fg_str()
 passed: .byte 0
 
 bad_carry_str: .text@" C\$00"
+good_carry_str: .text@" C\$00"
 bad_overflow_str: .text@" V\$00"
 bad_neg_str: .text@" N\$00"
 bad_zero_str: .text@" Z\$00"
@@ -134,9 +135,15 @@ NegGood:
     lda #0 
     sta passed
     plp
+    jmp Done
 
 CarryGood: 
+    php
+    nv_screen_print_str(pass_control_str)
+    nv_screen_print_str(good_carry_str)
+    plp
 
+Done:
 }
 
 
@@ -325,7 +332,6 @@ Done:
 .macro screen_print_decimal_immed(num)
 {
     .var src_str = "" + num
-    .print src_str
     .var last_index = 0
     .for (var index=0; index<src_str.size(); index++) 
     {
