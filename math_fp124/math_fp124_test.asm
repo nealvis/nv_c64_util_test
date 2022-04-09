@@ -42,7 +42,7 @@ equal_str: .text@"=\$00"
 dot_str: .text@".\$00"
 conv124s_str: .text@" CONV S \$00"
 conv124u_str: .text@" CONV U \$00"
-conv16u_124u_str: .text@"16UTO124U \$00"
+//conv16u_124u_str: .text@"16UTO124U \$00"
 rnd124u_str: .text@" RND U\$00"
 rnd124s_str: .text@" RND S \$00"
 abs124s_str: .text@" ABS S \$00"
@@ -913,7 +913,7 @@ ResultGood:
     lda #1
     sta passed
 
-    nv_screen_print_str(conv16u_124u_str)
+    //nv_screen_print_str(conv16u_124u_str)
 
     nv_xfer16_mem_mem(op16u, word_to_print)
     jsr PrintHexWord
@@ -929,6 +929,12 @@ ResultGood:
 ResultGood:
     nv_xfer124_mem_mem(result124u, fp124_to_print)
     jsr  PrintHexFP124
+
+    nv_screen_print_str(equal_str)
+
+    nv_xfer124_mem_mem(result124u, nv_fp124_to_print)
+    jsr NvScreenPrintDecFP124u
+
 
     plp
     pass_or_fail_overflow(expect_overflow_set)
@@ -1080,7 +1086,7 @@ ResultGood:
     // copy the op1 to the result because the operation is in place
     nv_xfer16_mem_mem(op1, result)
 
-    nv_screen_print_str(abs124s_str)
+    //nv_screen_print_str(abs124s_str)
 
     nv_xfer124_mem_mem(op1, fp124_to_print)
     jsr PrintHexFP124
@@ -1098,6 +1104,10 @@ ResultGood:
     nv_xfer124_mem_mem(result, fp124_to_print)
     jsr PrintHexFP124
     
+    nv_screen_print_str(equal_str)
+    nv_xfer124_mem_mem(result, nv_fp124_to_print)
+    jsr NvScreenPrintDecFP124s
+
     plp
     //pass_or_fail_overflow(expect_overflow_set)
 
@@ -1115,7 +1125,7 @@ ResultGood:
     // copy the op1 to the result because the operation is in place
     nv_xfer16_mem_mem(op1, result)
 
-    nv_screen_print_str(ops124s_str)
+    //nv_screen_print_str(ops124s_str)
 
     nv_xfer124_mem_mem(op1, fp124_to_print)
     jsr PrintHexFP124
@@ -1133,6 +1143,10 @@ ResultGood:
     nv_xfer124_mem_mem(result, fp124_to_print)
     jsr PrintHexFP124
     
+    nv_screen_print_str(equal_str)
+    nv_xfer124_mem_mem(result, nv_fp124_to_print)
+    jsr NvScreenPrintDecFP124s
+
     plp
     //pass_or_fail_overflow(expect_overflow_set)
 
@@ -1201,9 +1215,20 @@ ResultGood:
 ResultGood:
     nv_xfer124_mem_mem(result124, fp124_to_print)
     jsr PrintHexFP124
+
+    nv_screen_print_str(equal_str)
+    .if(create_signed)
+    {
+        nv_xfer124_mem_mem(result124, nv_fp124_to_print)
+        jsr NvScreenPrintDecFP124s
+    }
+    else
+    {
+        nv_xfer124_mem_mem(result124, nv_fp124_to_print)
+        jsr NvScreenPrintDecFP124u
+    }
     
     plp
-    //pass_or_fail_overflow(expect_overflow_set)
 
     jsr PrintPassed
 }
@@ -1222,21 +1247,7 @@ ResultGood:
     lda #1
     sta passed
 
-    .var sign = 0
-
-    .if (create_signed)
-    {
-        .if (sign == 1)
-        {   
-            nv_screen_print_str(minus_str)
-
-        }
-        .if (sign == 0)
-        {
-            nv_screen_print_str(plus_str)
-        }
-    }
-    nv_screen_print_str(closest124_str)
+    screen_print_decimal_immed(flt_num)
 
     nv_screen_print_str(equal_str)
 
@@ -1265,13 +1276,13 @@ ResultGood:
 ResultGood:
     .if (create_signed)
     {
-        nv_xfer124_mem_mem(result124, nv_fp124s_to_print)
+        nv_xfer124_mem_mem(result124, nv_fp124_to_print)
         jsr NvScreenPrintDecFP124s
     }
     else
     {
-        nv_xfer124_mem_mem(result124, fp124u_to_print)
-        jsr PrintDecFP124u
+        nv_xfer124_mem_mem(result124, nv_fp124_to_print)
+        jsr NvScreenPrintDecFP124u
     }
     plp
 

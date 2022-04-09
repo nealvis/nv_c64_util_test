@@ -252,7 +252,7 @@ PrintHexFP124:
 }
 fp124_to_print: .word 0
 
-
+/*
 ///////////////////////////////////////////////////////////////////////
 // subroutine to print a fixed point 12.4 number in decimal
 PrintDecFP124u:
@@ -262,7 +262,7 @@ PrintDecFP124u:
     rts
 }
 fp124u_to_print: .word 0
-
+*/
 
 ///////////////////////////////////////////////////////////////////////
 PrintHexByteAccum:
@@ -317,3 +317,27 @@ Done:
     plp
 }
 */
+
+//////////////////////////////////////////////////////////////////////////////
+// inline macro to generate code that prints an immediate float value
+// to the screen at current cursor location
+//   num is a number could be float or int 
+.macro screen_print_decimal_immed(num)
+{
+    .var src_str = "" + num
+    .print src_str
+    .var last_index = 0
+    .for (var index=0; index<src_str.size(); index++) 
+    {
+        lda #(src_str.charAt(index))
+        sta temp_decimal_string + index
+        .eval last_index = index
+    }
+    lda #$00
+    sta temp_decimal_string + last_index + 1
+
+    nv_screen_print_str(temp_decimal_string)
+}
+
+temp_decimal_string: 
+  .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
