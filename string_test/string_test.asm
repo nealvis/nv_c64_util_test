@@ -42,16 +42,16 @@ greater_than_str: .text@">\$00"
 less_than_str: .text@"<\$00"
 copy_str: .text@"->\$00"
 dot_str: .text@".\$00"
-//quote_left_str: .text@"\$5B\$00"
-//quote_right_str: .text@"\$5D\$00"
-//quote_left_str: .text@"\$6A\$00"
-//quote_right_str: .text@"\$6B\$00"
 quote_left_str: .text@"\$27\$00"
 quote_right_str: .text@"\$27\$00"
+
+// temp string used to print a char
+temp_char_str: .word $0000
 
 title_str: .text @"STRING\$00"         // null terminated string to print
                                         // via the BASIC routine
 title_str_cmp: .text @"CMP\$00"
+title_str_cpy: .text @"CPY\$00"
 title_str_cat_char: .text @"CAT CHAR\$00"
 title_str_trim_end: .text @"TRIM END \$00"
 
@@ -78,6 +78,7 @@ title_str_trim_end: .text @"TRIM END \$00"
 
     test_str_cmp(0)
     test_str_cpy(0)
+    test_str_cat_a(0)
 
     rts
 
@@ -142,7 +143,7 @@ title_str_trim_end: .text @"TRIM END \$00"
     
     //////////////////////////////////////////////////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    nv_screen_print_str(title_str_cmp)
+    nv_screen_print_str(title_str_cpy)
     //////////////////////////////////////////////////////////////////////////
     .eval row++
 
@@ -208,6 +209,39 @@ title_str_trim_end: .text @"TRIM END \$00"
 
     wait_and_clear_at_row(row, title_str)
 } 
+
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_str_cat_a(init_row)
+{
+    .var row = init_row
+    
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_str_cat_char)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_cat_a(opStr_ABC, 'D', opStr_ABCD)  // $44 is 'D'
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_cat_a(opStr_empty, $41, opStr_A)  // $41 is 'A'
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_cat_a(opStr_EFG, 'H', opStr_EFGH)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_cat_a(opStr_0to9, 'A', opStr_0to9A)
+
+    wait_and_clear_at_row(row, title_str)
+} 
+
+
 
 
 
@@ -335,6 +369,88 @@ IsEqual:
 
 }
 
+//////////////////////////////////////////////////////////////////////////////
+// inline macro to print the specified string comparison at the current 
+// curor location.
+// nv_str_cpy is used to do the comparison  
+.macro print_str_cat_a(str_addr, char_to_cat, expected_str_addr)
+{
+    lda #1
+    sta passed
+
+    // copy the source str to a temp result string so we don't
+    // mess with the original string which is used for other tests
+
+    // set up string 1 parameter
+    lda #<str_addr
+    sta nv_str1_ptr
+    lda #>str_addr
+    sta nv_str1_ptr+1
+
+    // set up string 2 parameter
+    lda #<result_str
+    sta nv_str2_ptr
+    lda #>result_str
+    sta nv_str2_ptr+1
+    
+    // do string copy
+    jsr NvStrCpy    
+
+    // now result string should be the passed string addr
+
+    nv_screen_print_str(quote_left_str)
+    nv_screen_print_str(result_str)
+    nv_screen_print_str(quote_right_str)
+
+    nv_screen_print_str(plus_str)
+    
+    nv_screen_print_str(quote_left_str)
+    lda #char_to_cat
+    sta temp_char_str
+    nv_screen_print_str(temp_char_str)
+    nv_screen_print_str(quote_right_str)
+
+    
+    // set up string 1 parameter
+    lda #<result_str
+    sta nv_str1_ptr
+    lda #>result_str
+    sta nv_str1_ptr+1
+
+    // load accum with the char to concatenate
+    lda #char_to_cat
+    
+    // do the concatenation of the char to the string (result_str)
+    jsr NvStrCatChar_a
+
+    // setup a string compare with the expected result and the 
+    // actual result_str.  
+    // string 1 parameter is already set to result_str above
+    // set up string 2 parameter to expected result string
+    lda #<expected_str_addr
+    sta nv_str2_ptr
+    lda #>expected_str_addr
+    sta nv_str2_ptr+1
+
+    // now do a string compare to make sure the copy worked
+    jsr NvStrCmp
+
+    beq IsEqual
+    
+    // Not Equal here
+    lda #0 
+    sta passed
+
+IsEqual:
+    nv_screen_print_str(copy_str)
+
+    nv_screen_print_str(quote_left_str)
+    nv_screen_print_str(result_str)
+    nv_screen_print_str(quote_right_str)
+
+    jsr PrintPassed
+
+}
 
 
 #import "../test_util/test_util_code.asm"
