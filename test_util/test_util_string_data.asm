@@ -16,12 +16,17 @@ opStr_ABCD: .text @"ABCD\$00"
 opStr_ABCZ: .text @"ABCZ\$00"
 opStr_ABC: .text @"ABC\$00"
 opStr_A: .text @"A\$00"
+opStr_AA: .text @"AA\$00"
+opStr_AAA: .text @"AAA\$00"
 opStr_empty: .text @"\$00"
 
 opStr_EFGH: .text @"EFGH\$00"
 opStr_EFG: .text @"EFG\$00"
 
 opStr_012: .text @"012\$00"
+opStr_012_pt_3400: .text @"012.3400\$00"
+opStr_012_pt_34: .text @"012.34\$00"
+
 opStr_012_pt_345: .text @"012.345\$00"
 opStr_001122: .text @"001122\$00"
 opStr_12_pt_345: .text @"12.345\$00"
