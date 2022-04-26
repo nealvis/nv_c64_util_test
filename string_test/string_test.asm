@@ -236,9 +236,8 @@ title_str_trim_end: .text @"TRIM END \$00"
     print_str_trim_end(opStr_empty, 'A', opStr_empty)  
 
     /////////////////////////////
-    nv_screen_plot_cursor(row++, 0)
+    nv_screen_plot_cursor(row++, 0) 
     print_str_trim_end(opStr_ABCD, '0', opStr_ABCD)  
-
 
     wait_and_clear_at_row(row, title_str)
 } 
