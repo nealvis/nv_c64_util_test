@@ -53,14 +53,15 @@ title_str: .text @"STRING\$00"         // null terminated string to print
 title_str_cmp: .text @"CMP\$00"
 title_str_cpy: .text @"CPY\$00"
 title_str_cat_char: .text @"CAT CHAR\$00"
-title_str_trim_end: .text @"TRIM END \$00"
+title_str_trim_end: .text @"TRIM END\$00"
+title_str_fp124x_to_str: .text@"FP124X 2 STR\$00"
 
 .const CMP_EQUAL = 0
 .const CMP_LESS = -1
 .const CMP_GREATER = 1
 
 
-//#import "../test_util/test_util_op124_data.asm"
+#import "../test_util/test_util_op124_data.asm"
 //#import "../test_util/test_util_op16_data.asm"
 //#import "../test_util/test_util_op8_data.asm"
 #import "../test_util/test_util_string_data.asm"
@@ -80,6 +81,7 @@ title_str_trim_end: .text @"TRIM END \$00"
     test_str_cpy(0)
     test_str_cat_a(0)
     test_str_trim_end(0)
+    test_str_fp124x_to_str(0)
 
     rts
 
@@ -238,6 +240,26 @@ title_str_trim_end: .text @"TRIM END \$00"
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) 
     print_str_trim_end(opStr_ABCD, '0', opStr_ABCD)  
+
+    wait_and_clear_at_row(row, title_str)
+} 
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_str_fp124x_to_str(init_row)
+{
+    .var row = init_row
+    
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_str_fp124x_to_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_fp124x_to_str(false, op124_0018, opStr_0001_pt_5000)  
 
     wait_and_clear_at_row(row, title_str)
 } 
@@ -503,6 +525,70 @@ IsEqual:
     
     // do the concatenation of the char to the string (result_str)
     jsr NvStrTrimEnd
+
+    // setup a string compare with the expected result and the 
+    // actual result_str.  
+    // string 1 parameter is already set to result_str above
+    // set up string 2 parameter to expected result string
+    lda #<expected_str_addr
+    sta nv_str2_ptr
+    lda #>expected_str_addr
+    sta nv_str2_ptr+1
+
+    // now do a string compare to make sure the copy worked
+    jsr NvStrCmp
+
+    beq IsEqual
+    
+    // Not Equal here
+    lda #0 
+    sta passed
+
+IsEqual:
+    nv_screen_print_str(copy_str)
+
+    nv_screen_print_str(quote_left_str)
+    nv_screen_print_str(result_str)
+    nv_screen_print_str(quote_right_str)
+
+    jsr PrintPassed
+
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+// inline macro to print the specified string 124x to str function 
+// at the current curor location.
+// NvStrFP124xToStr is used to do the comparison  
+.macro print_str_fp124x_to_str(is_signed, op124x, expected_str_addr)  
+{
+    lda #1
+    sta passed
+
+    nv_screen_print_hex_fp124_mem(op124x, true)
+      
+    // set up the result string to hold the result
+    lda #<result_str
+    sta nv_str1_ptr
+    lda #>result_str
+    sta nv_str1_ptr+1
+
+    // set the fp124x parameter for the subroutine
+    nv_xfer124_mem_mem(op124x, nv_fp124_for_to_str)
+
+    // set the carry flag to indicate signed or unsigned fp124
+    .if (is_signed)
+    {
+        sec
+    }
+    else
+    {
+        clc
+    }
+    
+    // call the string conversion subroutine
+    jsr NvStrFP124xToStr
 
     // setup a string compare with the expected result and the 
     // actual result_str.  

@@ -33,6 +33,7 @@ opStr_12_pt_345: .text @"12.345\$00"
 opStr_012_pt_3450: .text @"012.3450\$00"
 opStr_0012_pt_34500: .text @"012.3450\$00"
 
+opStr_0001_pt_5000: .text @"0001.5000\$00"
 opStr_A2Z: .text@"ABCDEFGHIJKLMNOPQRSTUVWXYZ\$00"
 opStr_0to9: .text@"0123456789\$00"
 opStr_0to9A: .text@"0123456789A\$00"
