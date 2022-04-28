@@ -54,6 +54,7 @@ title_str_cmp: .text @"CMP\$00"
 title_str_cpy: .text @"CPY\$00"
 title_str_cat_char: .text @"CAT CHAR\$00"
 title_str_trim_end: .text @"TRIM END\$00"
+title_str_trim_start: .text @"TRIM START\$00"
 title_str_fp124x_to_str: .text@"FP124X 2 STR\$00"
 
 .const CMP_EQUAL = 0
@@ -81,6 +82,7 @@ title_str_fp124x_to_str: .text@"FP124X 2 STR\$00"
     test_str_cpy(0)
     test_str_cat_a(0)
     test_str_trim_end(0)
+    test_str_trim_start(0)
     test_str_fp124x_to_str(0)
 
     rts
@@ -215,31 +217,134 @@ title_str_fp124x_to_str: .text@"FP124X 2 STR\$00"
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_str_trim_end(opStr_ABCD, 'D', opStr_ABC)  
+    print_str_trim_end(opStr_ABCD, 'D', 0, opStr_ABC)  
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_str_trim_end(opStr_012_pt_3400, '0', opStr_012_pt_34)  
+    print_str_trim_end(opStr_012_pt_3400, '0', 0, opStr_012_pt_34)  
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_str_trim_end(opStr_A, 'A', opStr_empty)  
+    print_str_trim_end(opStr_A, 'A', 0, opStr_empty)  
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_str_trim_end(opStr_AA, 'A', opStr_empty)  
+    print_str_trim_end(opStr_AA, 'A', 0, opStr_empty)  
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_str_trim_end(opStr_AAA, 'A', opStr_empty)  
+    print_str_trim_end(opStr_AAA, 'A', 0, opStr_empty)  
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_str_trim_end(opStr_empty, 'A', opStr_empty)  
+    print_str_trim_end(opStr_AA, 'A', 1, opStr_A)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_trim_end(opStr_AA, 'A', 2, opStr_empty)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_trim_end(opStr_AA, 'A', 3, opStr_empty)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_trim_end(opStr_AAA, 'A', 1, opStr_AA)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_trim_end(opStr_AAA, 'A', 2, opStr_A)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_trim_end(opStr_empty, 'A', 0, opStr_empty)  
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) 
-    print_str_trim_end(opStr_ABCD, '0', opStr_ABCD)  
+    print_str_trim_end(opStr_ABCD, '0', 0, opStr_ABCD)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) 
+    print_str_trim_end(opStr_0012_pt_3450, '0', 0, opStr_0012_pt_345)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) 
+    print_str_trim_end(opStr_0012_pt_3450, '0', 1, opStr_0012_pt_345)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) 
+    print_str_trim_end(opStr_0012_pt_3450, '0', 2, opStr_0012_pt_345)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) 
+    print_str_trim_end(opStr_12_pt_3400, '0', 0, opStr_12_pt_34)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) 
+    print_str_trim_end(opStr_12_pt_3400, '0', 1, opStr_12_pt_340)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) 
+    print_str_trim_end(opStr_12_pt_3400, '0', 2, opStr_12_pt_34)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) 
+    print_str_trim_end(opStr_12_pt_3400, '0', 3, opStr_12_pt_34)  
+
+    wait_and_clear_at_row(row, title_str)
+} 
+
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_str_trim_start(init_row)
+{
+    .var row = init_row
+    
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_str_trim_start)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_trim_start(opStr_ABCD, 'A', 0, opStr_BCD)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_trim_start(opStr_012_pt_3400, '0', 0, opStr_12_pt_3400)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_trim_start(opStr_A, 'A', 0, opStr_empty)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_trim_start(opStr_AA, 'A', 0, opStr_empty)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_trim_start(opStr_AAA, 'A', 0, opStr_empty)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_trim_start(opStr_empty, 'A', 0, opStr_empty)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) 
+    print_str_trim_start(opStr_ABCD, '0', 0, opStr_ABCD)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) 
+    print_str_trim_start(opStr_0012_pt_3450, '0', 0, opStr_12_pt_3450)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) 
+    print_str_trim_start(opStr_0012_pt_3450, '0', 1, opStr_012_pt_3450)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) 
+    print_str_trim_start(opStr_0012_pt_3450, '0', 2, opStr_12_pt_3450)  
 
     wait_and_clear_at_row(row, title_str)
 } 
@@ -259,7 +364,31 @@ title_str_fp124x_to_str: .text@"FP124X 2 STR\$00"
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
-    print_str_fp124x_to_str(false, op124_0018, opStr_0001_pt_5000)  
+    print_str_fp124x_to_str(false, op124_0018, opStr_1_pt_5)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_fp124x_to_str(false, op124_0010, opStr_1)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_fp124x_to_str(false, op124_0000, opStr_0)  
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_fp124x_to_str(true, op124_8010, opStr_n_1)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_fp124x_to_str(true, op124_800F, opStr_n_0_pt_9375)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_fp124x_to_str(true, op124_8034, opStr_n_3_pt_25)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_str_fp124x_to_str(true, op124_0034, opStr_3_pt_25)
 
     wait_and_clear_at_row(row, title_str)
 } 
@@ -475,7 +604,7 @@ IsEqual:
 // inline macro to print the specified string trim end function 
 // curor location.
 // nv_str_trim_end is used to do the comparison  
-.macro print_str_trim_end(str_addr, char_to_trim, expected_str_addr)
+.macro print_str_trim_end(str_addr, char_to_trim, max_trim, expected_str_addr)
 {
     lda #1
     sta passed
@@ -522,8 +651,11 @@ IsEqual:
 
     // load accum with the char to trim
     lda #char_to_trim
-    
-    // do the concatenation of the char to the string (result_str)
+
+    // set x with the max number of chars to trim, 0 means no limit
+    ldx #max_trim
+
+    // do the trim of the chars from end of the string (result_str)
     jsr NvStrTrimEnd
 
     // setup a string compare with the expected result and the 
@@ -555,6 +687,93 @@ IsEqual:
 
 }
 
+
+//////////////////////////////////////////////////////////////////////////////
+// inline macro to print the specified string trim start function 
+// curor location.
+// nv_str_trim_start is used to do the comparison  
+.macro print_str_trim_start(str_addr, char_to_trim, max_trim, expected_str_addr)
+{
+    lda #1
+    sta passed
+
+    // copy the source str to a temp result string so we don't
+    // mess with the original string which is used for other tests
+
+    // set up string 1 parameter
+    lda #<str_addr
+    sta nv_str1_ptr
+    lda #>str_addr
+    sta nv_str1_ptr+1
+
+    // set up string 2 parameter
+    lda #<result_str
+    sta nv_str2_ptr
+    lda #>result_str
+    sta nv_str2_ptr+1
+    
+    // do string copy
+    jsr NvStrCpy    
+
+    // now result string should be the passed string addr
+    // we'll operate on this string to leave the parameter intact
+
+    nv_screen_print_str(quote_left_str)
+    nv_screen_print_str(result_str)
+    nv_screen_print_str(quote_right_str)
+
+    nv_screen_print_str(minus_str)
+    
+    nv_screen_print_str(quote_left_str)
+    lda #char_to_trim
+    sta temp_char_str
+    nv_screen_print_str(temp_char_str)
+    nv_screen_print_str(quote_right_str)
+
+    
+    // set up string 1 parameter
+    lda #<result_str
+    sta nv_str1_ptr
+    lda #>result_str
+    sta nv_str1_ptr+1
+
+    // load accum with the char to trim
+    lda #char_to_trim
+
+    // set x with the max number of chars to trim, 0 means no limit
+    ldx #max_trim
+
+    // do the trim of the chars from end of the string (result_str)
+    jsr NvStrTrimStart
+
+    // setup a string compare with the expected result and the 
+    // actual result_str.  
+    // string 1 parameter is already set to result_str above
+    // set up string 2 parameter to expected result string
+    lda #<expected_str_addr
+    sta nv_str2_ptr
+    lda #>expected_str_addr
+    sta nv_str2_ptr+1
+
+    // now do a string compare to make sure the copy worked
+    jsr NvStrCmp
+
+    beq IsEqual
+    
+    // Not Equal here
+    lda #0 
+    sta passed
+
+IsEqual:
+    nv_screen_print_str(copy_str)
+
+    nv_screen_print_str(quote_left_str)
+    nv_screen_print_str(result_str)
+    nv_screen_print_str(quote_right_str)
+
+    jsr PrintPassed
+
+}
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -588,7 +807,8 @@ IsEqual:
     }
     
     // call the string conversion subroutine
-    jsr NvStrFP124xToStr
+    //jsr NvStrFP124xToStr
+    jsr NvStrFP124xToStrWithTrim
 
     // setup a string compare with the expected result and the 
     // actual result_str.  
