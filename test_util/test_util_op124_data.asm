@@ -77,6 +77,7 @@ op124_800F: .word $800F // -0.9375
 op124_8007: .word $8007 // -0.4375
 
 op124_8010: .word $8010 // -1.0
+op124_8100: .word $8100 
 
 op124_FFF7: .word $FFF7 
 op124_FFFF: .word $FFFF 

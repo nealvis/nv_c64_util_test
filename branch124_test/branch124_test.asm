@@ -46,24 +46,28 @@ greater_equal_str: .text@" >= \$00"
 less_than_str: .text@" < \$00"
 greater_than_str: .text@" > \$00"
 less_equal_str: .text@" <= \$00" 
+negative_str: .text@" IS NEG \$00"
+positive_str: .text@" IS POS \$00"
 
 title_str: .text @"BRANCH124\$00"          // null terminated string to print
                                            // via the BASIC routine
-title_cmp124u_str: .text @"TEST CMP124U \$00"
-title_beq124u_str: .text @"TEST BEQ124U \$00"
-title_bne124u_str: .text @"TEST BNE124U \$00"
-title_blt124u_str: .text @"TEST BLT124U \$00"
-title_ble124u_str: .text @"TEST BLE124U \$00"
-title_bgt124u_str: .text @"TEST BGT124U \$00"
-title_bge124u_str: .text @"TEST BGE124U \$00"
+title_cmp124u_str: .text @"CMP124U\$00"
+title_beq124u_str: .text @"BEQ124U\$00"
+title_bne124u_str: .text @"BNE124U\$00"
+title_blt124u_str: .text @"BLT124U\$00"
+title_ble124u_str: .text @"BLE124U\$00"
+title_bgt124u_str: .text @"BGT124U\$00"
+title_bge124u_str: .text @"BGE124U\$00"
 
-title_cmp124s_str: .text @"TEST CMP124S \$00"
-title_beq124s_str: .text @"TEST BEQ124S \$00"
-title_bne124s_str: .text @"TEST BNE124S \$00"
-title_blt124s_str: .text @"TEST BLT124S \$00"
-title_ble124s_str: .text @"TEST BLE124S \$00"
-title_bgt124s_str: .text @"TEST BGT124S \$00"
-title_bge124s_str: .text @"TEST BGE124S \$00"
+title_cmp124s_str: .text @"CMP124S\$00"
+title_beq124s_str: .text @"BEQ124S\$00"
+title_bne124s_str: .text @"BNE124S\$00"
+title_blt124s_str: .text @"BLT124S\$00"
+title_ble124s_str: .text @"BLE124S\$00"
+title_bgt124s_str: .text @"BGT124S\$00"
+title_bge124s_str: .text @"BGE124S\$00"
+title_bpl124s_str: .text @"BPL124S\$00"
+title_bmi124s_str: .text @"BMI124S\$00"
 
 
 result: .word $0000
@@ -94,6 +98,9 @@ opLowOnes: .word $00FF
     nv_screen_print_str(title_str)
 
     // signed tests
+    test_bpl124s(0)
+    test_bmi124s(0)
+
     test_cmp124s(0)
     test_beq124s(0)
     test_bne124s(0)
@@ -457,6 +464,79 @@ opLowOnes: .word $00FF
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
     print_beq124(true, op124_8034, op124_8034, true)
+
+    wait_and_clear_at_row(row, title_str)
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Test the bpl124s macro
+.macro test_bpl124s(init_row)
+{
+    .var row = init_row
+
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_bpl124s_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bpl124s(op124_0000, true)
+
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bpl124s(op124_8000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bpl124s(op124_0010, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bpl124s(op124_8010, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bpl124s(op124_8100, false)
+
+    wait_and_clear_at_row(row, title_str)
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Test the bpl124s macro
+.macro test_bmi124s(init_row)
+{
+    .var row = init_row
+
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_bmi124s_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bmi124s(op124_0000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bmi124s(op124_8000, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bmi124s(op124_0010, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bmi124s(op124_8010, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_bmi124s(op124_8100, true)
 
     wait_and_clear_at_row(row, title_str)
 }
@@ -1356,6 +1436,78 @@ Done:
     nv_xfer124_mem_mem(addr2, fp124_to_print)
     jsr PrintHexFP124
 
+    jsr PrintPassed
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Print to current screen location the branch plus 124 operation
+// Use nv_bpl124s to do it.
+//   addr1: is the address of LSB of one fp124s (addr1+1 is MSB)
+.macro print_bpl124s(addr1, expect_to_branch)
+{
+    lda #1 
+    sta passed
+
+    nv_xfer124_mem_mem(addr1, fp124_to_print)
+    jsr PrintHexFP124
+   
+    nv_bpl124s(addr1, BranchTarget)
+
+    // didn't branch here
+    .if (expect_to_branch)
+    {
+        lda #0 
+        sta passed
+    }
+
+    nv_screen_print_str(negative_str)
+    jmp Done
+BranchTarget:
+    // did branch here
+    .if (!expect_to_branch)
+    {
+        lda #0 
+        sta passed
+    }
+    nv_screen_print_str(positive_str)
+
+Done:
+    jsr PrintPassed
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Print to current screen location the branch minus 124 operation
+// Use nv_bmi124s to do it.
+//   addr1: is the address of LSB of one fp124s (addr1+1 is MSB)
+.macro print_bmi124s(addr1, expect_to_branch)
+{
+    lda #1 
+    sta passed
+
+    nv_xfer124_mem_mem(addr1, fp124_to_print)
+    jsr PrintHexFP124
+   
+    nv_bmi124s(addr1, BranchTarget)
+
+    // didn't branch here
+    .if (expect_to_branch)
+    {
+        lda #0 
+        sta passed
+    }
+
+    nv_screen_print_str(positive_str)
+    jmp Done
+BranchTarget:
+    // did branch here
+    .if (!expect_to_branch)
+    {
+        lda #0 
+        sta passed
+    }
+    nv_screen_print_str(negative_str)
+
+Done:
     jsr PrintPassed
 }
 
