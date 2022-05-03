@@ -293,6 +293,24 @@ title_build_close_124s_str: .text @"BLD CLOSE124S \$00"
     nv_screen_plot_cursor(row++, 0) //           
     print_conv124uTo16u(op124_FFF8, result16, $1000)
 
+
+    // the tests below test that operation works using same operand as result
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //  
+    nv_xfer124_mem_mem(op124_0030, result16)          
+    print_conv124uTo16u(result16, result16, $0003)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //  
+    nv_xfer124_mem_mem(op124_FFF7, result16)          
+    print_conv124uTo16u(result16, result16, $0FFF)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //   
+    nv_xfer124_mem_mem(op124_FFF8, result16)                      
+    print_conv124uTo16u(result16, result16, $1000)
+
     wait_and_clear_at_row(row, title_str)
 }
 
@@ -353,13 +371,36 @@ title_build_close_124s_str: .text @"BLD CLOSE124S \$00"
     nv_screen_plot_cursor(row++, 0) //            
     print_conv124sTo16s(op124_8007, result16, $0000)
 
-    ////////    /////////////////////////////
+    //////////////////////
     nv_screen_plot_cursor(row++, 0) //            
     print_conv124sTo16s(op124_8034, result16, $FFFD)
 
     /////////////////////
     nv_screen_plot_cursor(row++, 0) //            
     print_conv124sTo16s(op124_8038, result16, $FFFC)
+
+
+    // tests below are testing that result and operand can be same memory location
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) // 
+    nv_xfer124_mem_mem(op124_003C, result16)           
+    print_conv124sTo16s(result16, result16, $0004)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_xfer124_mem_mem(op124_7FFF, result16)           
+    print_conv124sTo16s(result16, result16, $0800)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_xfer124_mem_mem(op124_800F, result16)           
+    print_conv124sTo16s(result16, result16, $FFFF)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_xfer124_mem_mem(op124_8007, result16)
+    print_conv124sTo16s(result16, result16, $0000)
 
     wait_and_clear_at_row(row, title_str)
 }
