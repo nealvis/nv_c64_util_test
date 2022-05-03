@@ -148,31 +148,33 @@ sprite_collision_reg_value: .byte 0 // updated each frame with sprite coll
 
         // setup everything for the sprite_ship so its ready to enable
         jsr ship_1.Setup
-
+/*
         // setup everything for the sprite_asteroid so its ready to enable
         jsr asteroid_1.Setup
         jsr asteroid_2.Setup
         jsr asteroid_3.Setup
         jsr asteroid_4.Setup
         jsr asteroid_5.Setup
-
+*/
 
         // initialize sprite locations from their extra data blocks 
         jsr ship_1.SetLocationFromExtraData
+/*
         jsr asteroid_1.SetLocationFromExtraData
         jsr asteroid_2.SetLocationFromExtraData
         jsr asteroid_3.SetLocationFromExtraData
         jsr asteroid_4.SetLocationFromExtraData
         jsr asteroid_5.SetLocationFromExtraData
-        
+*/        
         // enable sprites
         jsr ship_1.Enable
+/*
         jsr asteroid_1.Enable
         jsr asteroid_2.Enable
         jsr asteroid_3.Enable
         jsr asteroid_4.Enable
         jsr asteroid_5.Enable
-
+*/
 .var showTiming = true
 .var showFrameCounters = true
         //sei
@@ -221,12 +223,14 @@ PartialSecond2:
             sta $D020                                     // visualize timing
         }
         jsr ship_1.MoveInExtraData
+
+/*        
         jsr asteroid_1.MoveInExtraData
         jsr asteroid_2.MoveInExtraData
         jsr asteroid_3.MoveInExtraData
         jsr asteroid_4.MoveInExtraData
         jsr asteroid_5.MoveInExtraData
-
+*/
         lda #1 
         bit change_up_flag
         beq NoChangeUp
@@ -251,12 +255,15 @@ NoChangeUp:
         }
 
         jsr ship_1.SetLocationFromExtraData
+/*
         jsr asteroid_1.SetLocationFromExtraData
         jsr asteroid_2.SetLocationFromExtraData
         jsr asteroid_3.SetLocationFromExtraData
         jsr asteroid_4.SetLocationFromExtraData
         jsr asteroid_5.SetLocationFromExtraData
+*/
 
+/*
         nv_sprite_raw_get_sprite_collisions_in_a()
         sta sprite_collision_reg_value
 
@@ -267,7 +274,7 @@ NoChangeUp:
         bmi IgnoreCollision
 HandleCollision:
         nv_sprite_raw_disable_from_mem(ship_collision_sprite)
-
+*/
         //nv_screen_plot_cursor(0, 15)
         //nv_screen_print_hex_byte_at_addr(closest_sprite, true)
         //nv_key_wait_any_key()
@@ -290,6 +297,7 @@ ProgramDone:
 // subroutine to cycle the color of a sprite just to show how
 // the nv_sprite_set_color_from_memory macro works.
 ChangeUp:
+/*
         ldx cycling_color
         inx
         cpx #NV_COLOR_BLUE // blue is default backgroumd, so skip that one
@@ -319,6 +327,7 @@ SkipShipMax:
         sta asteroid_1.y_vel
 
 SkipAsteroidMin:
+*/
         rts
 
 //////////////////////////////////////////////////////////////////////////////
@@ -334,6 +343,7 @@ CheckShipCollision:
 
 //////////////////////////////////////////////////////////////////////////////
 // Namespace with everything related to asteroid 1
+/*
 .namespace asteroid_1
 {
         .var info = nv_sprite_info_struct("asteroid_1", 1, 
@@ -618,26 +628,32 @@ SetBounceAllOn:
 SetWrapAllOn:
         nv_sprite_set_all_actions_sr(info, NV_SPRITE_ACTION_WRAP)
 }
-
+*/
 
 //////////////////////////////////////////////////////////////////////////////
 // namespace with everything related to ship sprite
 .namespace ship_1
 {
         .var info = nv_sprite_info_struct("ship_1", 0,
-                                          22, 50, 4, 1,  // init x, y, VelX, VelY 
+                                          NvBuildClosest124s(22),  // x 
+                                          NvBuildClosest124s(50),  // y
+                                          NvBuildClosest124s(1),   // VelX 
+                                          NvBuildClosest124s(0.5),   // VelY 
                                           sprite_ship, 
                                           sprite_extra, 
                                           1, 0, 1, 0, // bounce on top, left, bottom, right  
-                                          0, 0, 75, 0, // min/max top, left, bottom, right
+                                          NvBuildClosest124s(0),    // min top (0=default)
+                                          NvBuildClosest124s(0),    // min left (0=default)
+                                          NvBuildClosest124s(75),   // max bottom (0=default)
+                                          NvBuildClosest124s(0),    // max right (0=default)
                                           true,       // enabled
                                           0, 0, 0, 0) // hitbox left top right bottom
 
         .var sprite_num = info.num
-        .label x_loc = info.base_addr + NV_SPRITE_X_OFFSET
-        .label y_loc = info.base_addr + NV_SPRITE_Y_OFFSET
-        .label x_vel = info.base_addr + NV_SPRITE_VEL_X_OFFSET
-        .label y_vel = info.base_addr + NV_SPRITE_VEL_Y_OFFSET
+        .label x_loc_fp124s = info.base_addr + NV_SPRITE_X_FP124S_OFFSET
+        .label y_loc_fp124s = info.base_addr + NV_SPRITE_Y_FP124S_OFFSET
+        .label x_vel_fp124s = info.base_addr + NV_SPRITE_VEL_X_FP124S_OFFSET
+        .label y_vel_fp124s = info.base_addr + NV_SPRITE_VEL_Y_FP124S_OFFSET
         .label base_addr = info.base_addr
 
 // the extra data that goes with the sprite
