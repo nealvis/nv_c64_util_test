@@ -221,7 +221,6 @@ PartialSecond2:
             sta $D020                                     // visualize timing
         }
         jsr ship_1.MoveInExtraData
-
        
         jsr asteroid_1.MoveInExtraData
         jsr asteroid_2.MoveInExtraData
@@ -260,8 +259,6 @@ NoChangeUp:
         jsr asteroid_4.SetLocationFromExtraData
         jsr asteroid_5.SetLocationFromExtraData
 
-
-
         nv_sprite_raw_get_sprite_collisions_in_a()
         sta sprite_collision_reg_value
 
@@ -295,7 +292,7 @@ ProgramDone:
 // subroutine to cycle the color of a sprite just to show how
 // the nv_sprite_set_color_from_memory macro works.
 ChangeUp:
-/*
+{
         ldx cycling_color
         inx
         cpx #NV_COLOR_BLUE // blue is default backgroumd, so skip that one
@@ -311,22 +308,41 @@ SetColor:
         nv_sprite_raw_set_color_from_memory(1, cycling_color)
 
         // change some speeds
-        dec ship_1.x_vel          // decrement ship speed
-        bne SkipShipMax         // if its not zero yet then skip setting to max
-        lda #MAX_SPEED          // if it is zero then set it back to the max speed
-        sta ship_1.x_vel          // save the new ship speed (max speed)
+        //dec ship_1.x_vel          // decrement ship speed
+        nv_adc124s(ship_1.x_vel_fp124s, NegativeSpeedIncFp124s, ship_1.x_vel_fp124s)
+        
+        //bne SkipShipMax
+        nv_bgt124s_immed(ship_1.x_vel_fp124s, NvBuildClosest124s(0), SkipShipMax)         // if its not zero yet then skip setting to max
+        
+        //lda #MAX_SPEED            // if it is zero then set it back to the max speed
+        //sta ship_1.x_vel          // save the new ship speed (max speed)
+        nv_xfer124_mem_mem(MaxSpeedFp124s, ship_1.x_vel_fp124s)
+        
+SkipShipMax:  
+        // now change asteroid 1 speed
+        nv_adc124s(asteroid_1.y_vel_fp124s, PositiveSpeedIncFp124s, asteroid_1.y_vel_fp124s)
+        nv_blt124s(asteroid_1.y_vel_fp124s, MaxSpeedFp124s, SkipAsteroidMin)  
+        nv_xfer124_mem_mem(MinSpeedFp124s, asteroid_1.y_vel_fp124s)
 
-SkipShipMax:                   
+/*
         inc asteroid_1.y_vel    // increment asteroid Y velocity 
         lda asteroid_1.y_vel    // load new speed just incremented
         cmp #MAX_SPEED+1        // compare new spead with max +1
         bne SkipAsteroidMin     // if we haven't reached max + 1 then skip setting to min
         lda #MIN_SPEED          // else, we have reached max+1 so need to reset it back min
         sta asteroid_1.y_vel
+*/
+
 
 SkipAsteroidMin:
-*/
         rts
+NegativeSpeedIncFp124s: .word NvBuildClosest124s(-1.1)
+PositiveSpeedIncFp124s: .word NvBuildClosest124s(0.9)
+MaxSpeedFp124s: .word NvBuildClosest124s(5.5)
+MinSpeedFp124s: .word NvBuildClosest124s(-5.5)
+
+}
+
 
 //////////////////////////////////////////////////////////////////////////////
 // subroutine to check for collisions with the ship (sprite 0)
@@ -347,8 +363,10 @@ CheckShipCollision:
         .var info = nv_sprite_info_struct("asteroid_1", 1, 
                                           NvBuildClosest124s(30),   // init x
                                           NvBuildClosest124s(180),  // init y
-                                          NvBuildClosest124s(-0.6),   // VelX
-                                          NvBuildClosest124s(2.7),    // VelY
+                                          //NvBuildClosest124s(-0.6),   // VelX
+                                          //NvBuildClosest124s(2.7),    // VelY
+                                          NvBuildClosest124s(2.3),   // VelX
+                                          NvBuildClosest124s(1.7),    // VelY
                                           sprite_asteroid_1, 
                                           sprite_extra, 
                                           1, 1, 1, 1, // bounce on top, left, bottom, right  
@@ -415,6 +433,8 @@ SetWrapAllOn:
                                           NvBuildClosest124s(150),  // init y
                                           NvBuildClosest124s(1.1),    // VelX
                                           NvBuildClosest124s(1.9),    // VelY
+                                          //NvBuildClosest124s(0),   // VelX
+                                          //NvBuildClosest124s(0),    // VelY
                                           sprite_asteroid_2, 
                                           sprite_extra, 
                                           1, 1, 1, 1, // bounce on top, left, bottom, right  
@@ -482,6 +502,9 @@ SetWrapAllOn:
                                           NvBuildClosest124s(200),  // init y
                                           NvBuildClosest124s(1.8),    // VelX
                                           NvBuildClosest124s(-2.7),   // VelY
+                                          //NvBuildClosest124s(0),   // VelX
+                                          //NvBuildClosest124s(0),    // VelY
+
                                           sprite_asteroid_3, 
                                           sprite_extra, 
                                           1, 1, 1, 1, // bounce on top, left, bottom, right  
@@ -549,6 +572,9 @@ SetWrapAllOn:
                                           NvBuildClosest124s(155), // init y 
                                           NvBuildClosest124s(0.4),   // VelX
                                           NvBuildClosest124s(1.3),   // VelY 
+                                          //NvBuildClosest124s(0),   // VelX
+                                          //NvBuildClosest124s(0),    // VelY
+                                          
                                           sprite_asteroid_4, 
                                           sprite_extra, 
                                           0, 0, 0, 0, // bounce on top, left, bottom, right  
@@ -616,6 +642,9 @@ SetWrapAllOn:
                                           NvBuildClosest124s(76), // init y
                                           NvBuildClosest124s(-2.3), // VelX
                                           NvBuildClosest124s(-1.3), // VelY 
+                                          //NvBuildClosest124s(0),   // VelX
+                                          //NvBuildClosest124s(0),    // VelY
+
                                           sprite_asteroid_5, 
                                           sprite_extra, 
                                           0, 0, 0, 0, // bounce on top, left, bottom, right  
@@ -683,6 +712,9 @@ SetWrapAllOn:
                                           NvBuildClosest124s(50),  // y
                                           NvBuildClosest124s(0.8),   // VelX 
                                           NvBuildClosest124s(0.5),   // VelY 
+                                          //NvBuildClosest124s(0.7),   // VelX
+                                          //NvBuildClosest124s(0),    // VelY
+                                          
                                           sprite_ship, 
                                           sprite_extra, 
                                           1, 0, 1, 0, // bounce on top, left, bottom, right  
