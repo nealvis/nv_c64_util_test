@@ -148,36 +148,34 @@ sprite_collision_reg_value: .byte 0 // updated each frame with sprite coll
 
         // setup everything for the sprite_ship so its ready to enable
         jsr ship_1.Setup
-/*
+
         // setup everything for the sprite_asteroid so its ready to enable
         jsr asteroid_1.Setup
         jsr asteroid_2.Setup
         jsr asteroid_3.Setup
         jsr asteroid_4.Setup
         jsr asteroid_5.Setup
-*/
 
         // initialize sprite locations from their extra data blocks 
         jsr ship_1.SetLocationFromExtraData
-/*
+
         jsr asteroid_1.SetLocationFromExtraData
         jsr asteroid_2.SetLocationFromExtraData
         jsr asteroid_3.SetLocationFromExtraData
         jsr asteroid_4.SetLocationFromExtraData
         jsr asteroid_5.SetLocationFromExtraData
-*/        
+    
         // enable sprites
         jsr ship_1.Enable
-/*
+
         jsr asteroid_1.Enable
         jsr asteroid_2.Enable
         jsr asteroid_3.Enable
         jsr asteroid_4.Enable
         jsr asteroid_5.Enable
-*/
+
 .var showTiming = true
 .var showFrameCounters = true
-        //sei
         
 MainLoop:
 
@@ -224,13 +222,13 @@ PartialSecond2:
         }
         jsr ship_1.MoveInExtraData
 
-/*        
+       
         jsr asteroid_1.MoveInExtraData
         jsr asteroid_2.MoveInExtraData
         jsr asteroid_3.MoveInExtraData
         jsr asteroid_4.MoveInExtraData
         jsr asteroid_5.MoveInExtraData
-*/
+
         lda #1 
         bit change_up_flag
         beq NoChangeUp
@@ -255,15 +253,15 @@ NoChangeUp:
         }
 
         jsr ship_1.SetLocationFromExtraData
-/*
+
         jsr asteroid_1.SetLocationFromExtraData
         jsr asteroid_2.SetLocationFromExtraData
         jsr asteroid_3.SetLocationFromExtraData
         jsr asteroid_4.SetLocationFromExtraData
         jsr asteroid_5.SetLocationFromExtraData
-*/
 
-/*
+
+
         nv_sprite_raw_get_sprite_collisions_in_a()
         sta sprite_collision_reg_value
 
@@ -274,7 +272,7 @@ NoChangeUp:
         bmi IgnoreCollision
 HandleCollision:
         nv_sprite_raw_disable_from_mem(ship_collision_sprite)
-*/
+
         //nv_screen_plot_cursor(0, 15)
         //nv_screen_print_hex_byte_at_addr(closest_sprite, true)
         //nv_key_wait_any_key()
@@ -343,21 +341,30 @@ CheckShipCollision:
 
 //////////////////////////////////////////////////////////////////////////////
 // Namespace with everything related to asteroid 1
-/*
+
 .namespace asteroid_1
 {
         .var info = nv_sprite_info_struct("asteroid_1", 1, 
-                                          30, 180, -1, 0,     // init x, y, VelX, VelY
+                                          NvBuildClosest124s(30),   // init x
+                                          NvBuildClosest124s(180),  // init y
+                                          NvBuildClosest124s(-0.6),   // VelX
+                                          NvBuildClosest124s(2.7),    // VelY
                                           sprite_asteroid_1, 
                                           sprite_extra, 
                                           1, 1, 1, 1, // bounce on top, left, bottom, right  
-                                          0, 0, 0, 0, // min/max top, left, bottom, right
+                                          NvBuildClosest124s(0),  // min top, 0=default
+                                          NvBuildClosest124s(0),  // min left, 0=default
+                                          NvBuildClosest124s(0),  // max bottom, 0=default 
+                                          NvBuildClosest124s(0),  // max right, 0=default
                                           true,       // enabled
-                                          0, 0, 0, 0) // hitbox left top right bottom
-        .label x_loc = info.base_addr + NV_SPRITE_X_OFFSET
-        .label y_loc = info.base_addr + NV_SPRITE_Y_OFFSET
-        .label x_vel = info.base_addr + NV_SPRITE_VEL_X_OFFSET
-        .label y_vel = info.base_addr + NV_SPRITE_VEL_Y_OFFSET
+                                          0, // hitbox left
+                                          0, // hitbox top
+                                          0, // hitbox right
+                                          0) // hitbox bottom
+        .label x_loc_fp124s = info.base_addr + NV_SPRITE_X_FP124S_OFFSET
+        .label y_loc_fp124s = info.base_addr + NV_SPRITE_Y_FP124S_OFFSET
+        .label x_vel_fp124s = info.base_addr + NV_SPRITE_VEL_X_FP124S_OFFSET
+        .label y_vel_fp124s = info.base_addr + NV_SPRITE_VEL_Y_FP124S_OFFSET
 
 // sprite extra data
 sprite_extra: 
@@ -382,11 +389,11 @@ Setup:
 // to move in the sprite registsers (and have screen reflect it) call the 
 // SetLocationFromExtraData subroutine.
 MoveInExtraData:
-        //lda #>info.base_addr
-        //ldx #<info.base_addr
-        //jsr NvSpriteMoveInExtra
-        //rts
-        nv_sprite_move_any_direction_sr(info)
+        lda #>info.base_addr
+        ldx #<info.base_addr
+        jsr NvSpriteMoveInExtra
+        rts
+        //nv_sprite_move_any_direction_sr(info)
 
 Enable:
         nv_sprite_raw_enable_sr(info.num)
@@ -398,22 +405,32 @@ SetWrapAllOn:
         nv_sprite_set_all_actions_sr(info, NV_SPRITE_ACTION_WRAP)
 }
 
+
 //////////////////////////////////////////////////////////////////////////////
 // Namespace with everything related to asteroid 2
 .namespace asteroid_2
 {
         .var info = nv_sprite_info_struct("asteroid_2", 2, 
-                                          80, 150, 1, 2, // init x, y, VelX, VelY
+                                          NvBuildClosest124s(80),   // init x 
+                                          NvBuildClosest124s(150),  // init y
+                                          NvBuildClosest124s(1.1),    // VelX
+                                          NvBuildClosest124s(1.9),    // VelY
                                           sprite_asteroid_2, 
                                           sprite_extra, 
                                           1, 1, 1, 1, // bounce on top, left, bottom, right  
-                                          0, 0, 0, 0, // min/max top, left, bottom, right
+                                          NvBuildClosest124s(0),  // min top, 0=default
+                                          NvBuildClosest124s(0),  // min left, 0=default
+                                          NvBuildClosest124s(0),  // max bottom, 0=default 
+                                          NvBuildClosest124s(0),  // max right, 0=default
                                           true,       // enabled
-                                          0, 0, 0, 0) // hitbox left, top, right bottom              
-        .label x_loc = info.base_addr + NV_SPRITE_X_OFFSET
-        .label y_loc = info.base_addr + NV_SPRITE_Y_OFFSET
-        .label x_vel = info.base_addr + NV_SPRITE_VEL_X_OFFSET
-        .label y_vel = info.base_addr + NV_SPRITE_VEL_Y_OFFSET
+                                          0, // hitbox left
+                                          0, // hitbox top
+                                          0, // hitbox right
+                                          0) // hitbox bottom
+        .label x_loc_fp124s = info.base_addr + NV_SPRITE_X_FP124S_OFFSET
+        .label y_loc_fp124s = info.base_addr + NV_SPRITE_Y_FP124S_OFFSET
+        .label x_vel_fp124s = info.base_addr + NV_SPRITE_VEL_X_FP124S_OFFSET
+        .label y_vel_fp124s = info.base_addr + NV_SPRITE_VEL_Y_FP124S_OFFSET
 
 // sprite extra data
 sprite_extra:
@@ -438,11 +455,11 @@ Setup:
 // to move in the sprite registsers (and have screen reflect it) call the 
 // SetLocationFromExtraData subroutine.
 MoveInExtraData:
-        //lda #>info.base_addr
-        //ldx #<info.base_addr
-        //jsr NvSpriteMoveInExtra
-        //rts
-        nv_sprite_move_any_direction_sr(info)
+        lda #>info.base_addr
+        ldx #<info.base_addr
+        jsr NvSpriteMoveInExtra
+        rts
+        //nv_sprite_move_any_direction_sr(info)
 
 Enable:
         nv_sprite_raw_enable_sr(info.num)
@@ -461,18 +478,27 @@ SetWrapAllOn:
 .namespace asteroid_3
 {
         .var info = nv_sprite_info_struct("asteroid_3", 3, 
-                                          75, 200, 2, -3,  // init x, y, VelX, VelY
+                                          NvBuildClosest124s(75),   // init x 
+                                          NvBuildClosest124s(200),  // init y
+                                          NvBuildClosest124s(1.8),    // VelX
+                                          NvBuildClosest124s(-2.7),   // VelY
                                           sprite_asteroid_3, 
                                           sprite_extra, 
                                           1, 1, 1, 1, // bounce on top, left, bottom, right  
-                                          0, 0, 0, 0, // min/max top, left, bottom, right
-                                          true,       // enabled
-                                          0, 0, 0, 0) // hitbox left top right bottom
+                                          NvBuildClosest124s(0),  // min top, 0=default
+                                          NvBuildClosest124s(0),  // min left, 0=default
+                                          NvBuildClosest124s(0),  // max bottom, 0=default 
+                                          NvBuildClosest124s(0),  // max right, 0=default
+                                         true,       // enabled
+                                          0, // hitbox left
+                                          0, // hitbox top
+                                          0, // hitbox right
+                                          0) // hitbox bottom
 
-        .label x_loc = info.base_addr + NV_SPRITE_X_OFFSET
-        .label y_loc = info.base_addr + NV_SPRITE_Y_OFFSET
-        .label x_vel = info.base_addr + NV_SPRITE_VEL_X_OFFSET
-        .label y_vel = info.base_addr + NV_SPRITE_VEL_Y_OFFSET
+        .label x_loc_fp124s = info.base_addr + NV_SPRITE_X_FP124S_OFFSET
+        .label y_loc_fp124s = info.base_addr + NV_SPRITE_Y_FP124S_OFFSET
+        .label x_vel_fp124s = info.base_addr + NV_SPRITE_VEL_X_FP124S_OFFSET
+        .label y_vel_fp124s = info.base_addr + NV_SPRITE_VEL_Y_FP124S_OFFSET
 
 // sprite extra data
 sprite_extra:
@@ -497,11 +523,11 @@ Setup:
 // to move in the sprite registsers (and have screen reflect it) call the 
 // SetLocationFromExtraData subroutine.
 MoveInExtraData:
-        //lda #>info.base_addr
-        //ldx #<info.base_addr
-        //jsr NvSpriteMoveInExtra
-        //rts
-        nv_sprite_move_any_direction_sr(info)
+        lda #>info.base_addr
+        ldx #<info.base_addr
+        jsr NvSpriteMoveInExtra
+        rts
+        //nv_sprite_move_any_direction_sr(info)
 
 Enable:
         nv_sprite_raw_enable_sr(info.num)
@@ -519,18 +545,27 @@ SetWrapAllOn:
 .namespace asteroid_4
 {
         .var info = nv_sprite_info_struct("asteroid_4", 4, 
-                                          255, 155, 1, 1, // init x, y, VelX, VelY 
+                                          NvBuildClosest124s(255), // init x
+                                          NvBuildClosest124s(155), // init y 
+                                          NvBuildClosest124s(0.4),   // VelX
+                                          NvBuildClosest124s(1.3),   // VelY 
                                           sprite_asteroid_4, 
                                           sprite_extra, 
                                           0, 0, 0, 0, // bounce on top, left, bottom, right  
-                                          0, 0, 0, 0, // min/max top, left, bottom, right
+                                          NvBuildClosest124s(0),  // min top, 0=default
+                                          NvBuildClosest124s(0),  // min left, 0=default
+                                          NvBuildClosest124s(0),  // max bottom, 0=default 
+                                          NvBuildClosest124s(0),  // max right, 0=default
                                           true,       // enabled
-                                          0, 0, 0, 0) // hitbox left top right bottom
+                                          0, // hitbox left
+                                          0, // hitbox top
+                                          0, // hitbox right
+                                          0) // hitbox bottom
 
-        .label x_loc = info.base_addr + NV_SPRITE_X_OFFSET
-        .label y_loc = info.base_addr + NV_SPRITE_Y_OFFSET
-        .label x_vel = info.base_addr + NV_SPRITE_VEL_X_OFFSET
-        .label y_vel = info.base_addr + NV_SPRITE_VEL_Y_OFFSET
+        .label x_loc_fp124s = info.base_addr + NV_SPRITE_X_FP124S_OFFSET
+        .label y_loc_fp124s = info.base_addr + NV_SPRITE_Y_FP124S_OFFSET
+        .label x_vel_fp124s = info.base_addr + NV_SPRITE_VEL_X_FP124S_OFFSET
+        .label y_vel_fp124s = info.base_addr + NV_SPRITE_VEL_Y_FP124S_OFFSET
 
 // sprite extra data
 sprite_extra:
@@ -555,11 +590,11 @@ Setup:
 // to move in the sprite registsers (and have screen reflect it) call the 
 // SetLocationFromExtraData subroutine.
 MoveInExtraData:
-        //lda #>info.base_addr
-        //ldx #<info.base_addr
-        //jsr NvSpriteMoveInExtra
-        //rts
-        nv_sprite_move_any_direction_sr(info)
+        lda #>info.base_addr
+        ldx #<info.base_addr
+        jsr NvSpriteMoveInExtra
+        rts
+        //nv_sprite_move_any_direction_sr(info)
 
 Enable:
         nv_sprite_raw_enable_sr(info.num)
@@ -577,18 +612,27 @@ SetWrapAllOn:
 .namespace asteroid_5
 {
         .var info = nv_sprite_info_struct("asteroid_5", 5,
-                                          85, 76, -2, -1, // init x, y, VelX, VelY 
+                                          NvBuildClosest124s(85), // init x
+                                          NvBuildClosest124s(76), // init y
+                                          NvBuildClosest124s(-2.3), // VelX
+                                          NvBuildClosest124s(-1.3), // VelY 
                                           sprite_asteroid_5, 
                                           sprite_extra, 
                                           0, 0, 0, 0, // bounce on top, left, bottom, right  
-                                          0, 0, 0, 0, // min/max top, left, bottom, right
+                                          NvBuildClosest124s(0),  // min top, 0=default
+                                          NvBuildClosest124s(0),  // min left, 0=default
+                                          NvBuildClosest124s(0),  // max bottom, 0=default 
+                                          NvBuildClosest124s(0),  // max right, 0=default
                                           true,       // enabled
-                                          0, 0, 0, 0) // hitbox left top right bottom
+                                          0, // hitbox left
+                                          0, // hitbox top
+                                          0, // hitbox right
+                                          0) // hitbox bottom
 
-        .label x_loc = info.base_addr + NV_SPRITE_X_OFFSET
-        .label y_loc = info.base_addr + NV_SPRITE_Y_OFFSET
-        .label x_vel = info.base_addr + NV_SPRITE_VEL_X_OFFSET
-        .label y_vel = info.base_addr + NV_SPRITE_VEL_Y_OFFSET
+        .label x_loc_fp124s = info.base_addr + NV_SPRITE_X_FP124S_OFFSET
+        .label y_loc_fp124s = info.base_addr + NV_SPRITE_Y_FP124S_OFFSET
+        .label x_vel_fp124s = info.base_addr + NV_SPRITE_VEL_X_FP124S_OFFSET
+        .label y_vel_fp124s = info.base_addr + NV_SPRITE_VEL_Y_FP124S_OFFSET
 
 // sprite extra data
 sprite_extra:
@@ -613,11 +657,11 @@ Setup:
 // to move in the sprite registsers (and have screen reflect it) call the 
 // SetLocationFromExtraData subroutine.
 MoveInExtraData:
-        //lda #>info.base_addr
-        //ldx #<info.base_addr
-        //jsr NvSpriteMoveInExtra
-        //rts
-        nv_sprite_move_any_direction_sr(info)
+        lda #>info.base_addr
+        ldx #<info.base_addr
+        jsr NvSpriteMoveInExtra
+        rts
+        //nv_sprite_move_any_direction_sr(info)
 
 Enable:
         nv_sprite_raw_enable_sr(info.num)
@@ -628,7 +672,7 @@ SetBounceAllOn:
 SetWrapAllOn:
         nv_sprite_set_all_actions_sr(info, NV_SPRITE_ACTION_WRAP)
 }
-*/
+
 
 //////////////////////////////////////////////////////////////////////////////
 // namespace with everything related to ship sprite
@@ -637,7 +681,7 @@ SetWrapAllOn:
         .var info = nv_sprite_info_struct("ship_1", 0,
                                           NvBuildClosest124s(22),  // x 
                                           NvBuildClosest124s(50),  // y
-                                          NvBuildClosest124s(1),   // VelX 
+                                          NvBuildClosest124s(0.8),   // VelX 
                                           NvBuildClosest124s(0.5),   // VelY 
                                           sprite_ship, 
                                           sprite_extra, 
