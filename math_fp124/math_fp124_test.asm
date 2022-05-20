@@ -86,6 +86,8 @@ title_build_close_124s_str: .text @"BLD CLOSE124S \$00"
     nv_screen_plot_cursor(row++, 32)
     nv_screen_print_str(title_str)
 
+    //test_time_adc124s(0)
+
     test_adc124s(0)
     test_adc124u(0)
 
@@ -97,7 +99,6 @@ title_build_close_124s_str: .text @"BLD CLOSE124S \$00"
 
     test_closest124s(0)
     test_closest124u(0)
-
     test_create124u(0)
     test_create124s(0)
 
@@ -111,12 +112,10 @@ title_build_close_124s_str: .text @"BLD CLOSE124S \$00"
     test_rnd124u(0)
     test_rnd124s(0)
 
-    test_time_adc124s(0)
-
     rts
 
 //////////////////////////////////////////////////////////////////////
-.macro CallCorrectAdc124s()
+.macro CallCorrectAdc124s(op1_fp124s, op2_fp124s, result_fp124s)
 {
     .const CALL_NEW = 2
     .const CALL_NEW_RUIN_OPS = 3
@@ -126,11 +125,13 @@ title_build_close_124s_str: .text @"BLD CLOSE124S \$00"
 
     .if (routine_to_call == CALL_NEW_RUIN_OPS)
     {
-        jsr NvAdc124sRuinOps
+        //jsr NvAdc124sRuinOps
+        nv_call_NvAdc124sRuinOps(op1_fp124s, op2_fp124s, result_fp124s)
     }
     else
     {
-        jsr NvAdc124s
+        //jsr NvAdc124s
+        nv_call_NvAdc124s(op1_fp124s, op2_fp124s, result_fp124s)
     }
 
 }
@@ -189,69 +190,69 @@ TopInner:
     }
 
     //print_adc124s(op124_FFFF, op124_8001, result124, $8000, true)
-    nv_xfer124_mem_mem(op124_FFFF, NvAdc124sOp1)
-    nv_xfer124_mem_mem(op124_8001, NvAdc124sOp2)
-    CallCorrectAdc124s()
+    //nv_xfer124_mem_mem(op124_FFFF, NvAdc124sOp1)
+    //nv_xfer124_mem_mem(op124_8001, NvAdc124sOp2)
+    CallCorrectAdc124s(op124_FFFF, op124_8001, 0)
 
     //print_adc124s(op124_FFFF, op124_8007, result124, $7FFA, true)
-    nv_xfer124_mem_mem(op124_FFFF, NvAdc124sOp1)
-    nv_xfer124_mem_mem(op124_8007, NvAdc124sOp2)
-    CallCorrectAdc124s()
+    //nv_xfer124_mem_mem(op124_FFFF, NvAdc124sOp1)
+    //nv_xfer124_mem_mem(op124_8007, NvAdc124sOp2)
+    CallCorrectAdc124s(op124_FFFF, op124_8007, 0)
 
     //print_adc124s(op124_FFFE, op124_8001, result124, $FFFF, false)
-    nv_xfer124_mem_mem(op124_FFFE, NvAdc124sOp1)
-    nv_xfer124_mem_mem(op124_8001, NvAdc124sOp2)
-    CallCorrectAdc124s()
+    //nv_xfer124_mem_mem(op124_FFFE, NvAdc124sOp1)
+    //nv_xfer124_mem_mem(op124_8001, NvAdc124sOp2)
+    CallCorrectAdc124s(op124_FFFE, op124_8001, 0)
 
     //print_adc124s(op124_0031, op124_8010, result124, $0021, false)
-    nv_xfer124_mem_mem(op124_0031, NvAdc124sOp1)
-    nv_xfer124_mem_mem(op124_0010, NvAdc124sOp2)
-    CallCorrectAdc124s()
+    //nv_xfer124_mem_mem(op124_0031, NvAdc124sOp1)
+    //nv_xfer124_mem_mem(op124_0010, NvAdc124sOp2)
+    CallCorrectAdc124s(op124_0031, op124_0010, 0)
 
     //print_adc124s(op124_0031, op124_8010, result124, $0021, false)
-    nv_xfer124_mem_mem(op124_0031, NvAdc124sOp1)
-    nv_xfer124_mem_mem(op124_8010, NvAdc124sOp2)
-    CallCorrectAdc124s()
+    //nv_xfer124_mem_mem(op124_0031, NvAdc124sOp1)
+    //nv_xfer124_mem_mem(op124_8010, NvAdc124sOp2)
+    CallCorrectAdc124s(op124_0031, op124_8010, 0)
 
     //print_adc124s(op124_8010, op124_8010, result124, $8020, false)
-    nv_xfer124_mem_mem(op124_8010, NvAdc124sOp1)
-    nv_xfer124_mem_mem(op124_8010, NvAdc124sOp2)
-    CallCorrectAdc124s()
+    //nv_xfer124_mem_mem(op124_8010, NvAdc124sOp1)
+    //nv_xfer124_mem_mem(op124_8010, NvAdc124sOp2)
+    CallCorrectAdc124s(op124_8010, op124_8010, 0)
 
     //print_adc124s(op124_7FFF, op124_0010, result124, $FFF1, true)
-    nv_xfer124_mem_mem(op124_7FFF, NvAdc124sOp1)
-    nv_xfer124_mem_mem(op124_0010, NvAdc124sOp2)
-    CallCorrectAdc124s()
+    //nv_xfer124_mem_mem(op124_7FFF, NvAdc124sOp1)
+    //nv_xfer124_mem_mem(op124_0010, NvAdc124sOp2)
+    CallCorrectAdc124s(op124_7FFF, op124_0010, 0)
 
     //print_adc124s(op124_8000, op124_8010, result124, $8010, false)
-    nv_xfer124_mem_mem(op124_8000, NvAdc124sOp1)
-    nv_xfer124_mem_mem(op124_8010, NvAdc124sOp2)
-    CallCorrectAdc124s()
+    //nv_xfer124_mem_mem(op124_8000, NvAdc124sOp1)
+    //nv_xfer124_mem_mem(op124_8010, NvAdc124sOp2)
+    CallCorrectAdc124s(op124_8000, op124_8010, 0)
 
     //print_adc124s(op124_FFFF, op124_8010, result124, $7FF1, true)
-    nv_xfer124_mem_mem(op124_FFFF, NvAdc124sOp1)
-    nv_xfer124_mem_mem(op124_8010, NvAdc124sOp2)
-    CallCorrectAdc124s()
+    //nv_xfer124_mem_mem(op124_FFFF, NvAdc124sOp1)
+    //nv_xfer124_mem_mem(op124_8010, NvAdc124sOp2)
+    CallCorrectAdc124s(op124_FFFF, op124_8010, 0)
 
     //print_adc124s(op124_7FFF, op124_0001, result124, $8000, true)
-    nv_xfer124_mem_mem(op124_7FFF, NvAdc124sOp1)
-    nv_xfer124_mem_mem(op124_0001, NvAdc124sOp2)
-    CallCorrectAdc124s()
+    //nv_xfer124_mem_mem(op124_7FFF, NvAdc124sOp1)
+    //nv_xfer124_mem_mem(op124_0001, NvAdc124sOp2)
+    CallCorrectAdc124s(op124_7FFF, op124_0001, 0)
 
     //print_adc124s(op124_FFFF, op124_7FFF, result124, $0000, false)
-    nv_xfer124_mem_mem(op124_FFFF, NvAdc124sOp1)
-    nv_xfer124_mem_mem(op124_7FFF, NvAdc124sOp2)
-    CallCorrectAdc124s()
+    //nv_xfer124_mem_mem(op124_FFFF, NvAdc124sOp1)
+    //nv_xfer124_mem_mem(op124_7FFF, NvAdc124sOp2)
+    CallCorrectAdc124s(op124_FFFF, op124_7FFF, 0)
 
     //print_adc124s(op124_0031, op124_8038, result124, $8007, false)
-    nv_xfer124_mem_mem(op124_0031, NvAdc124sOp1)
-    nv_xfer124_mem_mem(op124_8038, NvAdc124sOp2)
-    CallCorrectAdc124s()
+    //nv_xfer124_mem_mem(op124_0031, NvAdc124sOp1)
+    //nv_xfer124_mem_mem(op124_8038, NvAdc124sOp2)
+    CallCorrectAdc124s(op124_0031, op124_8038, 0)
 
     //print_adc124s(op124_8031, op124_0038, result124, $0007, false)
-    nv_xfer124_mem_mem(op124_8031, NvAdc124sOp1)
-    nv_xfer124_mem_mem(op124_0038, NvAdc124sOp2)
-    CallCorrectAdc124s()
+    //nv_xfer124_mem_mem(op124_8031, NvAdc124sOp1)
+    //nv_xfer124_mem_mem(op124_0038, NvAdc124sOp2)
+    CallCorrectAdc124s(op124_8031, op124_0038, 0)
 
     .if (!use_jiffy_counter)
     {
@@ -1391,11 +1392,11 @@ inner_count: .byte 0
     nv_screen_print_str(equal_str)
 
     //nv_adc124s(op1, op2, result)
-    nv_xfer124_mem_mem(op1, NvAdc124sOp1)
-    nv_xfer124_mem_mem(op2, NvAdc124sOp2)
+    //nv_xfer124_mem_mem(op1, NvAdc124sOp1)
+    //nv_xfer124_mem_mem(op2, NvAdc124sOp2)
     //jsr NvAdc124sOld
-    CallCorrectAdc124s()
-    nv_xfer124_mem_mem(NvAdc124sResult, result)
+    CallCorrectAdc124s(op1, op2, result)
+    //nv_xfer124_mem_mem(NvAdc124sResult, result)
 
     php
     nv_beq16_immed(result, expected_result, ResultGood)
