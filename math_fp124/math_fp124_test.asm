@@ -1102,6 +1102,11 @@ inner_count: .byte 0
     //////////////////////////////////////////////////////////////////////////
     .eval row++
 
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_build_closest124(true, -1.1, $8012)
+
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
     print_build_closest124(true, 0.0, $0000)
@@ -1916,7 +1921,7 @@ ResultGood:
 
 //////////////////////////////////////////////////////////////////////////////
 // inline macro to create and print the closest specified fp124 at
-// the current cursor location.  nv_closest124(s|u)_immedflot is used 
+// the current cursor location.  nv_closest124(s|u)_immedflt is used 
 // to do the operation. 
 // macro params
 //  create_signed: if true then create an fp124s else create fp124u
