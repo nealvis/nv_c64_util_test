@@ -55,6 +55,7 @@ title_rnd124s_str: .text @"RND124S \$00"
 
 title_adc124u_str: .text @"ADC124U \$00"
 title_adc124s_str: .text @"ADC124S \$00"
+title_time_str: .text @"TIME \$00"
 title_conv124uTo16u_str: .text @"124U 2 16U \$00"
 title_conv124sTo16s_str: .text @"124S 2 16S \$00"
 title_conv16uTo124u_str: .text @"16U 2 124U \$00"
@@ -85,6 +86,11 @@ title_build_close_124s_str: .text @"BLD CLOSE124S \$00"
     nv_screen_plot_cursor(row++, 32)
     nv_screen_print_str(title_str)
 
+    test_time_adc124s(0)
+
+    test_adc124s(0)
+    test_adc124u(0)
+
     test_build_close124s(0)
     test_build_close124u(0)
 
@@ -106,10 +112,191 @@ title_build_close_124s_str: .text @"BLD CLOSE124S \$00"
 
     test_rnd124u(0)
     test_rnd124s(0)
-    test_adc124u(0)
-    test_adc124s(0)
 
     rts
+
+//////////////////////////////////////////////////////////////////////
+.macro CallCorrectAdc124s()
+{
+    .const CALL_NEW = 2
+    .const CALL_NEW_RUIN_OPS = 3
+
+    .var routine_to_call = CALL_NEW_RUIN_OPS
+    //.var routine_to_call = CALL_NEW
+
+    .if (routine_to_call == CALL_NEW_RUIN_OPS)
+    {
+        jsr NvAdc124sRuinOps
+    }
+    else
+    {
+        jsr NvAdc124s
+    }
+
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
+.macro test_time_adc124s(init_row)
+{
+    .var row = init_row
+    //.var use_jiffy_counter = false 
+    .var use_jiffy_counter = true
+
+    //////////////////////////////////////////////////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    nv_screen_print_str(title_time_str)
+    nv_screen_print_str(title_adc124s_str)
+    //////////////////////////////////////////////////////////////////////////
+    .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) 
+
+    ldy #$5
+    sty outer_count
+
+    .if (use_jiffy_counter)
+    {
+        // start jiffy timer at 0
+        lda #$0
+        sta $a2
+        sta $a1
+        sta $a0
+    }
+    else
+    {
+        // turn off maskable interupts
+        sei
+    }
+
+
+TopOuter:
+
+    ldx #$FF
+    stx inner_count
+TopInner:
+
+    .if (!use_jiffy_counter)
+    {
+        lda #NV_COLOR_LITE_BLUE               // change border color to  
+        sta $D020                              // visualize timing
+
+        nv_sprite_wait_specific_scanline(51)         // wait for particular scanline.
+
+        lda #NV_COLOR_GREEN                    // change border color to  
+        sta $D020                              // visualize timing
+    }
+
+    //print_adc124s(op124_FFFF, op124_8001, result124, $8000, true)
+    nv_xfer124_mem_mem(op124_FFFF, NvAdc124sOp1)
+    nv_xfer124_mem_mem(op124_8001, NvAdc124sOp2)
+    CallCorrectAdc124s()
+
+    //print_adc124s(op124_FFFF, op124_8007, result124, $7FFA, true)
+    nv_xfer124_mem_mem(op124_FFFF, NvAdc124sOp1)
+    nv_xfer124_mem_mem(op124_8007, NvAdc124sOp2)
+    CallCorrectAdc124s()
+
+    //print_adc124s(op124_FFFE, op124_8001, result124, $FFFF, false)
+    nv_xfer124_mem_mem(op124_FFFE, NvAdc124sOp1)
+    nv_xfer124_mem_mem(op124_8001, NvAdc124sOp2)
+    CallCorrectAdc124s()
+
+    //print_adc124s(op124_0031, op124_8010, result124, $0021, false)
+    nv_xfer124_mem_mem(op124_0031, NvAdc124sOp1)
+    nv_xfer124_mem_mem(op124_0010, NvAdc124sOp2)
+    CallCorrectAdc124s()
+
+    //print_adc124s(op124_0031, op124_8010, result124, $0021, false)
+    nv_xfer124_mem_mem(op124_0031, NvAdc124sOp1)
+    nv_xfer124_mem_mem(op124_8010, NvAdc124sOp2)
+    CallCorrectAdc124s()
+
+    //print_adc124s(op124_8010, op124_8010, result124, $8020, false)
+    nv_xfer124_mem_mem(op124_8010, NvAdc124sOp1)
+    nv_xfer124_mem_mem(op124_8010, NvAdc124sOp2)
+    CallCorrectAdc124s()
+
+    //print_adc124s(op124_7FFF, op124_0010, result124, $FFF1, true)
+    nv_xfer124_mem_mem(op124_7FFF, NvAdc124sOp1)
+    nv_xfer124_mem_mem(op124_0010, NvAdc124sOp2)
+    CallCorrectAdc124s()
+
+    //print_adc124s(op124_8000, op124_8010, result124, $8010, false)
+    nv_xfer124_mem_mem(op124_8000, NvAdc124sOp1)
+    nv_xfer124_mem_mem(op124_8010, NvAdc124sOp2)
+    CallCorrectAdc124s()
+
+    //print_adc124s(op124_FFFF, op124_8010, result124, $7FF1, true)
+    nv_xfer124_mem_mem(op124_FFFF, NvAdc124sOp1)
+    nv_xfer124_mem_mem(op124_8010, NvAdc124sOp2)
+    CallCorrectAdc124s()
+
+    //print_adc124s(op124_7FFF, op124_0001, result124, $8000, true)
+    nv_xfer124_mem_mem(op124_7FFF, NvAdc124sOp1)
+    nv_xfer124_mem_mem(op124_0001, NvAdc124sOp2)
+    CallCorrectAdc124s()
+
+    //print_adc124s(op124_FFFF, op124_7FFF, result124, $0000, false)
+    nv_xfer124_mem_mem(op124_FFFF, NvAdc124sOp1)
+    nv_xfer124_mem_mem(op124_7FFF, NvAdc124sOp2)
+    CallCorrectAdc124s()
+
+    //print_adc124s(op124_0031, op124_8038, result124, $8007, false)
+    nv_xfer124_mem_mem(op124_0031, NvAdc124sOp1)
+    nv_xfer124_mem_mem(op124_8038, NvAdc124sOp2)
+    CallCorrectAdc124s()
+
+    //print_adc124s(op124_8031, op124_0038, result124, $0007, false)
+    nv_xfer124_mem_mem(op124_8031, NvAdc124sOp1)
+    nv_xfer124_mem_mem(op124_0038, NvAdc124sOp2)
+    CallCorrectAdc124s()
+
+    .if (!use_jiffy_counter)
+    {
+        lda #NV_COLOR_LITE_BLUE               // change border color to  
+        sta $D020                              // visualize timing
+    }
+    dec inner_count
+    beq DoneInner
+    jmp TopInner
+DoneInner:
+
+    dec outer_count
+    beq DoneOuter
+    jmp TopOuter
+
+DoneOuter:
+    
+    .if (use_jiffy_counter)
+    {
+        lda $a0
+        nv_screen_print_hex_byte_a(true) 
+
+        lda $a1
+        nv_screen_print_hex_byte_a(false) 
+
+        lda $a2
+        nv_screen_print_hex_byte_a(false) 
+    }
+    else
+    {
+        // enable interupts again
+        cli
+
+    }
+    .eval row = row+2
+    nv_screen_plot_cursor(row++, 0) 
+
+    nv_screen_print_str(title_adc124s_str)
+
+    wait_and_clear_at_row(row, title_str)
+
+}
+
+outer_count: .byte 0
+inner_count: .byte 0
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -122,6 +309,18 @@ title_build_close_124s_str: .text @"BLD CLOSE124S \$00"
     nv_screen_print_str(title_adc124s_str)
     //////////////////////////////////////////////////////////////////////////
     .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       V
+    print_adc124s(op124_FFFF, op124_8001, result124, $8000, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       V
+    print_adc124s(op124_FFFF, op124_8007, result124, $7FFA, true)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       V
+    print_adc124s(op124_FFFE, op124_8001, result124, $FFFF, false)
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //                       V
@@ -153,10 +352,6 @@ title_build_close_124s_str: .text @"BLD CLOSE124S \$00"
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //                       V
-    print_adc124s(op124_FFFF, op124_8001, result124, $8000, true)
-
-    /////////////////////////////
-    nv_screen_plot_cursor(row++, 0) //                       V
     print_adc124s(op124_FFFF, op124_7FFF, result124, $0000, false)
 
     /////////////////////////////
@@ -166,7 +361,6 @@ title_build_close_124s_str: .text @"BLD CLOSE124S \$00"
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //                       V
     print_adc124s(op124_8031, op124_0038, result124, $0007, false)
-
 
     wait_and_clear_at_row(row, title_str)
 } 
@@ -1170,7 +1364,12 @@ title_build_close_124s_str: .text @"BLD CLOSE124S \$00"
 
     nv_screen_print_str(equal_str)
 
-    nv_adc124s(op1, op2, result)
+    //nv_adc124s(op1, op2, result)
+    nv_xfer124_mem_mem(op1, NvAdc124sOp1)
+    nv_xfer124_mem_mem(op2, NvAdc124sOp2)
+    //jsr NvAdc124sOld
+    CallCorrectAdc124s()
+    nv_xfer124_mem_mem(NvAdc124sResult, result)
 
     php
     nv_beq16_immed(result, expected_result, ResultGood)
@@ -1775,5 +1974,5 @@ ResultGood:
 }
 
 
-
+#import "../../nv_c64_util/nv_math124_code.asm"
 #import "../test_util/test_util_code.asm"

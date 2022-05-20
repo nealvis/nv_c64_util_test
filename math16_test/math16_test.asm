@@ -95,6 +95,15 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
     .eval row++
 
     /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //               C      V      N
+    print_adc16(op16_FFFE, op16_8001, result, $7FFF, true, true, false)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //               C      V      N
+    print_adc16(op16_FF00, op16_8000, result, $7F00, true, true, false)
+
+
+    /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //                C      V      N
     print_adc16(op16_8000, op16_8000, result, $0000, true, true, false)
 
@@ -635,7 +644,6 @@ title_sbc16_str: .text @"TEST SBC16 \$00"
     jsr PrintHexWord
         
     nv_screen_print_str(equal_str)
-
     nv_adc16x(op1, op2, result)
     php
     nv_beq16_immed(result, expected_result, ResultGood)

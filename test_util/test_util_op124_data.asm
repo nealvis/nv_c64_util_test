@@ -81,6 +81,7 @@ op124_8100: .word $8100
 
 op124_FFF7: .word $FFF7 
 op124_FFFF: .word $FFFF 
+op124_FFFE: .word $FFFE 
 
 op124_FE00: .word $FE00
 op124_7E00: .word $7E00
