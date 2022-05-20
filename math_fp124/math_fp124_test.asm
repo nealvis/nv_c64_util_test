@@ -86,8 +86,6 @@ title_build_close_124s_str: .text @"BLD CLOSE124S \$00"
     nv_screen_plot_cursor(row++, 32)
     nv_screen_print_str(title_str)
 
-    test_time_adc124s(0)
-
     test_adc124s(0)
     test_adc124u(0)
 
@@ -112,6 +110,8 @@ title_build_close_124s_str: .text @"BLD CLOSE124S \$00"
 
     test_rnd124u(0)
     test_rnd124s(0)
+
+    test_time_adc124s(0)
 
     rts
 
@@ -309,6 +309,32 @@ inner_count: .byte 0
     nv_screen_print_str(title_adc124s_str)
     //////////////////////////////////////////////////////////////////////////
     .eval row++
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       V
+    print_adc124s(op124_0058, op124_8012, result124, $0046, false)  // 5.5 + -1.125 = 4.375
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       V
+    print_adc124s(op124_0046, op124_8012, result124, $0034, false)  // 4.375 + -1.125 = 3.25
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       V
+    print_adc124s(op124_0034, op124_8012, result124, $0022, false)   // 3.25 + -1.125 = 2.125
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       V
+    print_adc124s(op124_0022, op124_8012, result124, $0010, false)   // 2.125 + -1.125 = 1.0
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       V
+    print_adc124s(op124_0010, op124_8012, result124, $8002, false)   // 1.0 + -1.125 = -0.125
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0) //                       V
+    print_adc124s(op124_8002, op124_8012, result124, $8014, false)   // -0.125 + -1.125 = -1.25
+
+
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0) //                       V
