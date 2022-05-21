@@ -86,7 +86,7 @@ title_build_close_124s_str: .text @"BLD CLOSE124S \$00"
     nv_screen_plot_cursor(row++, 32)
     nv_screen_print_str(title_str)
 
-    //test_time_adc124s(0)
+    test_time_adc124s(0)
 
     test_adc124s(0)
     test_adc124u(0)
@@ -126,12 +126,12 @@ title_build_close_124s_str: .text @"BLD CLOSE124S \$00"
     .if (routine_to_call == CALL_NEW_RUIN_OPS)
     {
         //jsr NvAdc124sRuinOps
-        nv_call_NvAdc124sRuinOps(op1_fp124s, op2_fp124s, result_fp124s)
+        nv_call_NvAdc124sRuinOps(op1_fp124s, op2_fp124s, result_fp124s, (result_fp124s != 0))
     }
     else
     {
         //jsr NvAdc124s
-        nv_call_NvAdc124s(op1_fp124s, op2_fp124s, result_fp124s)
+        nv_call_NvAdc124s(op1_fp124s, op2_fp124s, result_fp124s, (result_fp124s != 0))
     }
 
 }
