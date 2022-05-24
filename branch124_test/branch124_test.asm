@@ -228,6 +228,14 @@ opLowOnes: .word $00FF
 
     /////////////////////////////
     nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_8080, op124_0000, CMP_LESS)
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
+    print_cmp124(true, op124_0080, op124_8000, CMP_GREATER) 
+
+    /////////////////////////////
+    nv_screen_plot_cursor(row++, 0)
     print_cmp124(true, op1Beef, op2Beef, CMP_EQUAL)
 
     /////////////////////////////
