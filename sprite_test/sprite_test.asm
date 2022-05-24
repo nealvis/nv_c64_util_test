@@ -140,6 +140,21 @@ sprite_collision_reg_value: .byte 0 // updated each frame with sprite coll
 // it will go from $1000-$2FFF
 *=$1000 "Main Start"
 
+.var showTiming = true               // set true to show boarder colors for timing of each frame
+.var showFrameCounters = false       // set true to show the frame counters at top of screen
+.var frame_step = false              // set true to step frame by frame
+.var do_collision_detection = false  // set to true to check for ship/asteroid collisions
+.var do_ship_move_in_extra = true
+.var do_ship_extra_to_screen = true
+.var do_asteroids_move_in_extra = false
+.var do_asteroids_extra_to_screen = false
+.var disable_interupts = false
+
+
+.if (disable_interupts == true)
+{
+        sei
+}
         // clear the screen just to have an empty canvas
         nv_screen_clear()
 
@@ -174,9 +189,6 @@ sprite_collision_reg_value: .byte 0 // updated each frame with sprite coll
         jsr asteroid_4.Enable
         jsr asteroid_5.Enable
 
-.var showTiming = true
-.var showFrameCounters = true
-        
 MainLoop:
 
         nv_adc16x_mem_immed(frame_counter, 1, frame_counter)
@@ -220,13 +232,19 @@ PartialSecond2:
             lda #NV_COLOR_LITE_GREEN                      // change border color back to
             sta $D020                                     // visualize timing
         }
+
+.if (do_ship_move_in_extra)
+{
         jsr ship_1.MoveInExtraData
-       
+}
+.if (do_asteroids_move_in_extra)
+{
         jsr asteroid_1.MoveInExtraData
         jsr asteroid_2.MoveInExtraData
         jsr asteroid_3.MoveInExtraData
         jsr asteroid_4.MoveInExtraData
         jsr asteroid_5.MoveInExtraData
+}
 
         lda #1 
         bit change_up_flag
@@ -251,22 +269,33 @@ NoChangeUp:
             sta $D020                              // visualize timing
         }
 
+        
+.if (do_ship_extra_to_screen)
+{
         jsr ship_1.SetLocationFromExtraData
-
+}
+.if (do_asteroids_extra_to_screen)
+{
         jsr asteroid_1.SetLocationFromExtraData
         jsr asteroid_2.SetLocationFromExtraData
         jsr asteroid_3.SetLocationFromExtraData
         jsr asteroid_4.SetLocationFromExtraData
         jsr asteroid_5.SetLocationFromExtraData
+}
 
-        nv_sprite_raw_get_sprite_collisions_in_a()
-        sta sprite_collision_reg_value
-
-
-        //// call routine to update sprite x and y positions on screen
-        jsr CheckShipCollision
-        lda ship_collision_sprite     // closest_sprite
+        .if (do_collision_detection)
+        {
+            nv_sprite_raw_get_sprite_collisions_in_a()
+            sta sprite_collision_reg_value
+            jsr CheckShipCollision
+            lda ship_collision_sprite     // closest_sprite
+        }
+        else
+        {
+            lda #$FFFF
+        }
         bmi IgnoreCollision
+
 HandleCollision:
         nv_sprite_raw_disable_from_mem(ship_collision_sprite)
 
@@ -275,9 +304,32 @@ HandleCollision:
         //nv_key_wait_any_key()
 
 IgnoreCollision:
+
+.if (frame_step == true)
+{
+        nv_screen_plot_cursor(5, 0)
+        nv_screen_print_dec_fp124s_mem(ship_1.x_loc_fp124s)
+
+        nv_sprite_raw_get_location(0, ship_x, ship_y)
+
+        nv_screen_plot_cursor(10, 0)
+        nv_screen_print_hex_word_mem(ship_x, true)
+        nv_screen_plot_cursor(10, 7)
+        nv_screen_print_hex_byte_mem(ship_y, true)
+
+        nv_key_wait_any_key()
+}
         jmp MainLoop
 
+ship_x: .word $0000
+ship_y: .byte $00
+
 ProgramDone:
+
+.if (disable_interupts == true)
+{
+        cli 
+}
         // Done moving sprites, move cursor out of the way 
         // and return, but leave the sprites on the screen
         // also set border color to normal
@@ -310,7 +362,7 @@ SetColor:
         // change some speeds
         //dec ship_1.x_vel          // decrement ship speed
         //nv_adc124s(ship_1.x_vel_fp124s, NegativeSpeedIncFp124s, ship_1.x_vel_fp124s, scratch16_a, scratch16_b)
-        nv_call_NvAdc124s(ship_1.x_vel_fp124s, NegativeSpeedIncFp124s, ship_1.x_vel_fp124s)
+        nv_call_NvAdc124s(ship_1.x_vel_fp124s, NegativeSpeedIncFp124s, ship_1.x_vel_fp124s, true)
         
         //bne SkipShipMax
         //nv_bgt124s_immed(ship_1.x_vel_fp124s, NvBuildClosest124s(0), SkipShipMax)         // if its not zero yet then skip setting to max
@@ -322,16 +374,16 @@ SetColor:
         
 SkipShipMax:  
 
-
+/*
         nv_screen_plot_cursor(5, 0)
         nv_screen_print_dec_fp124s_mem(NegativeSpeedIncFp124s)
         nv_screen_plot_cursor(6, 0)
         nv_screen_print_dec_fp124s_mem(ship_1.x_vel_fp124s)
-
+*/
 
         // now change asteroid 1 speed
         //nv_adc124s(asteroid_1.y_vel_fp124s, PositiveSpeedIncFp124s, asteroid_1.y_vel_fp124s, scratch16_a, scratch16_b)
-        nv_call_NvAdc124s(asteroid_1.y_vel_fp124s, PositiveSpeedIncFp124s, asteroid_1.y_vel_fp124s)
+        nv_call_NvAdc124s(asteroid_1.y_vel_fp124s, PositiveSpeedIncFp124s, asteroid_1.y_vel_fp124s, true)
         
         nv_blt124s(asteroid_1.y_vel_fp124s, MaxSpeedFp124s, SkipAsteroidMin)  
         nv_xfer124_mem_mem(MinSpeedFp124s, asteroid_1.y_vel_fp124s)
@@ -348,10 +400,18 @@ SkipShipMax:
 
 SkipAsteroidMin:
         rts
-NegativeSpeedIncFp124s: .word NvBuildClosest124s(-1.1)
+NegativeSpeedIncFp124s: .word NvBuildClosest124s(-0.0)
+PositiveSpeedIncFp124s: .word NvBuildClosest124s(0.9)
+MaxSpeedFp124s: .word NvBuildClosest124s(1)
+MinSpeedFp124s: .word NvBuildClosest124s(-5.5)
+
+/*
+NegativeSpeedIncFp124s: .word NvBuildClosest124s(-0.1)
 PositiveSpeedIncFp124s: .word NvBuildClosest124s(0.9)
 MaxSpeedFp124s: .word NvBuildClosest124s(5.5)
 MinSpeedFp124s: .word NvBuildClosest124s(-5.5)
+
+*/
 
 }
 
@@ -722,8 +782,8 @@ SetWrapAllOn:
         .var info = nv_sprite_info_struct("ship_1", 0,
                                           NvBuildClosest124s(22),  // x 
                                           NvBuildClosest124s(50),  // y
-                                          NvBuildClosest124s(0.8),   // VelX 
-                                          NvBuildClosest124s(0.5),   // VelY 
+                                          NvBuildClosest124s(0.9),   // VelX 
+                                          NvBuildClosest124s(0.0),   // VelY 
                                           //NvBuildClosest124s(0.7),   // VelX
                                           //NvBuildClosest124s(0),    // VelY
                                           
