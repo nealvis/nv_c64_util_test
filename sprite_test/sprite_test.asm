@@ -824,7 +824,7 @@ Setup:
 
 // subroutine to move the sprite in memory only (the extra data)
 // this will not update the sprite registers to actually move the sprite, but
-// to do that just call SetShipeLocFromMem
+// to do that just call SetShipLocFromMem
 MoveInExtraData:
         lda #>info.base_addr
         ldx #<info.base_addr
