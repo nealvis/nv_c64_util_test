@@ -146,8 +146,8 @@ sprite_collision_reg_value: .byte 0 // updated each frame with sprite coll
 .var do_collision_detection = false  // set to true to check for ship/asteroid collisions
 .var do_ship_move_in_extra = true
 .var do_ship_extra_to_screen = true
-.var do_asteroids_move_in_extra = false
-.var do_asteroids_extra_to_screen = false
+.var do_asteroids_move_in_extra = true
+.var do_asteroids_extra_to_screen = true
 .var disable_interupts = false
 
 
@@ -782,8 +782,8 @@ SetWrapAllOn:
         .var info = nv_sprite_info_struct("ship_1", 0,
                                           NvBuildClosest124s(22),  // x 
                                           NvBuildClosest124s(50),  // y
-                                          NvBuildClosest124s(0.9),   // VelX 
-                                          NvBuildClosest124s(0.0),   // VelY 
+                                          NvBuildClosest124s(1.9),   // VelX 
+                                          NvBuildClosest124s(-0.9),   // VelY 
                                           //NvBuildClosest124s(0.7),   // VelX
                                           //NvBuildClosest124s(0),    // VelY
                                           
