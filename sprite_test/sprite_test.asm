@@ -148,7 +148,7 @@ sprite_collision_reg_value: .byte 0 // updated each frame with sprite coll
 .var do_ship_extra_to_screen = true
 .var do_asteroids_move_in_extra = true
 .var do_asteroids_extra_to_screen = true
-.var disable_interupts = false
+.var disable_interupts = true
 
 
 .if (disable_interupts == true)
