@@ -362,7 +362,7 @@ SetColor:
         // change some speeds
         //dec ship_1.x_vel          // decrement ship speed
         //nv_adc124s(ship_1.x_vel_fp124s, NegativeSpeedIncFp124s, ship_1.x_vel_fp124s, scratch16_a, scratch16_b)
-        nv_call_NvAdc124s(ship_1.x_vel_fp124s, NegativeSpeedIncFp124s, ship_1.x_vel_fp124s, true)
+        nv_call_NvAdc124s(ship_1.x_vel_fp124s, NegativeSpeedIncFp124s, ship_1.x_vel_fp124s, true, false)
         
         //bne SkipShipMax
         //nv_bgt124s_immed(ship_1.x_vel_fp124s, NvBuildClosest124s(0), SkipShipMax)         // if its not zero yet then skip setting to max
@@ -383,7 +383,7 @@ SkipShipMax:
 
         // now change asteroid 1 speed
         //nv_adc124s(asteroid_1.y_vel_fp124s, PositiveSpeedIncFp124s, asteroid_1.y_vel_fp124s, scratch16_a, scratch16_b)
-        nv_call_NvAdc124s(asteroid_1.y_vel_fp124s, PositiveSpeedIncFp124s, asteroid_1.y_vel_fp124s, true)
+        nv_call_NvAdc124s(asteroid_1.y_vel_fp124s, PositiveSpeedIncFp124s, asteroid_1.y_vel_fp124s, true, false)
         
         nv_blt124s(asteroid_1.y_vel_fp124s, MaxSpeedFp124s, SkipAsteroidMin)  
         nv_xfer124_mem_mem(MinSpeedFp124s, asteroid_1.y_vel_fp124s)
