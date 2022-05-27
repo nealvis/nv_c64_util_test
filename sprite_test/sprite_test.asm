@@ -143,11 +143,11 @@ sprite_collision_reg_value: .byte 0 // updated each frame with sprite coll
 .var showTiming = true               // set true to show boarder colors for timing of each frame
 .var showFrameCounters = false       // set true to show the frame counters at top of screen
 .var frame_step = false              // set true to step frame by frame
-.var do_collision_detection = false   // set to true to check for ship/asteroid collisions
+.var do_collision_detection = true   // set to true to check for ship/asteroid collisions
 .var do_ship_move_in_extra = true
 .var do_ship_extra_to_screen = true
-.var do_asteroids_move_in_extra = false
-.var do_asteroids_extra_to_screen = false
+.var do_asteroids_move_in_extra = true
+.var do_asteroids_extra_to_screen = true
 .var do_changeup = true
 .var disable_interupts = true
 
