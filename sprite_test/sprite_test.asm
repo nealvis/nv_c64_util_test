@@ -143,11 +143,12 @@ sprite_collision_reg_value: .byte 0 // updated each frame with sprite coll
 .var showTiming = true               // set true to show boarder colors for timing of each frame
 .var showFrameCounters = false       // set true to show the frame counters at top of screen
 .var frame_step = false              // set true to step frame by frame
-.var do_collision_detection = false  // set to true to check for ship/asteroid collisions
+.var do_collision_detection = false   // set to true to check for ship/asteroid collisions
 .var do_ship_move_in_extra = true
 .var do_ship_extra_to_screen = true
-.var do_asteroids_move_in_extra = true
-.var do_asteroids_extra_to_screen = true
+.var do_asteroids_move_in_extra = false
+.var do_asteroids_extra_to_screen = false
+.var do_changeup = true
 .var disable_interupts = true
 
 
@@ -251,7 +252,10 @@ PartialSecond2:
         beq NoChangeUp
 YesChangeUp:
         // every few seconds change up some sprite properties
+.if (do_changeup)
+{
         jsr ChangeUp 
+}
         lda #0 
         sta change_up_flag
 NoChangeUp:
@@ -360,6 +364,7 @@ SetColor:
         nv_sprite_raw_set_color_from_memory(1, cycling_color)
 
         // change some speeds
+
         //dec ship_1.x_vel          // decrement ship speed
         //nv_adc124s(ship_1.x_vel_fp124s, NegativeSpeedIncFp124s, ship_1.x_vel_fp124s, scratch16_a, scratch16_b)
         nv_call_NvAdc124s(ship_1.x_vel_fp124s, NegativeSpeedIncFp124s, ship_1.x_vel_fp124s, true, false)
@@ -382,6 +387,7 @@ SkipShipMax:
 */
 
         // now change asteroid 1 speed
+
         //nv_adc124s(asteroid_1.y_vel_fp124s, PositiveSpeedIncFp124s, asteroid_1.y_vel_fp124s, scratch16_a, scratch16_b)
         nv_call_NvAdc124s(asteroid_1.y_vel_fp124s, PositiveSpeedIncFp124s, asteroid_1.y_vel_fp124s, true, false)
         
@@ -400,9 +406,9 @@ SkipShipMax:
 
 SkipAsteroidMin:
         rts
-NegativeSpeedIncFp124s: .word NvBuildClosest124s(-0.0)
+NegativeSpeedIncFp124s: .word NvBuildClosest124s(-0.7)
 PositiveSpeedIncFp124s: .word NvBuildClosest124s(0.9)
-MaxSpeedFp124s: .word NvBuildClosest124s(1)
+MaxSpeedFp124s: .word NvBuildClosest124s(3.2)
 MinSpeedFp124s: .word NvBuildClosest124s(-5.5)
 
 /*
